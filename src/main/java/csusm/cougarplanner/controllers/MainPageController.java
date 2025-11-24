@@ -1,5 +1,8 @@
 package csusm.cougarplanner.controllers;
 
+import csusm.cougarplanner.models.Assignment;
+import csusm.cougarplanner.models.AssignmentDisplay;
+import csusm.cougarplanner.models.CourseManager;
 import csusm.cougarplanner.transitions.ExponentialTransitionScale;
 import csusm.cougarplanner.transitions.ExponentialTransitionTranslation;
 import csusm.cougarplanner.Launcher;
@@ -12,6 +15,7 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.effect.BoxBlur;
 import javafx.scene.input.MouseEvent;
@@ -22,6 +26,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 
+import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.time.LocalDate;
@@ -319,14 +324,6 @@ public class MainPageController implements Initializable {
      *                              instead of day view.
      */
     private void performToggleViewByWeek(boolean userClickedViewByWeek) {
-        /*String headerText = dateLabel.getText();
-        String headerText1 = headerText.substring(0,4);
-        String headerText2 = headerText.substring(defaultView ? 8 : 7);
-
-        String textToBeAdded = defaultView ? "day" : "week";
-
-        dateLabel.setText(headerText1 + textToBeAdded + headerText2);*/
-
         weekRectangle.setVisible(userClickedViewByWeek);
         dayRectangle.setVisible(!userClickedViewByWeek);
 
@@ -347,6 +344,11 @@ public class MainPageController implements Initializable {
 
     @FXML
     private AnchorPane sundayContentsPane, mondayContentsPane, tuesdayContentsPane, wednesdayContentsPane, thursdayContentsPane, fridayContentsPane, saturdayContentsPane;
+
+    @FXML
+    private VBox sundayContentsVBox, mondayContentsVBox, tuesdayContentsVBox, wednesdayContentsVBox, thursdayContentsVBox, fridayContentsVBox, saturdayContentsVBox;
+
+    private VBox[] courseContainers;
 
     @FXML
     private AnchorPane sundayDayHeaderPane, mondayDayHeaderPane, tuesdayDayHeaderPane, wednesdayDayHeaderPane, thursdayDayHeaderPane, fridayDayHeaderPane, saturdayDayHeaderPane;
@@ -606,6 +608,105 @@ public class MainPageController implements Initializable {
                 headerPaneDecoration7
         };
 
+        courseContainers = new VBox[] {
+                sundayContentsVBox,
+                mondayContentsVBox,
+                tuesdayContentsVBox,
+                wednesdayContentsVBox,
+                thursdayContentsVBox,
+                fridayContentsVBox,
+                saturdayContentsVBox
+        };
+
+        AssignmentDisplay[] assignments = {
+                new AssignmentDisplay(new Assignment(
+                        "12345",
+                        "CS 111",
+                        "Intro Functions",
+                        "2025-11-25",
+                        "11:59",
+                        4
+                ), "CompSci"),
+                new AssignmentDisplay(new Assignment(
+                        "43434",
+                        "Bio 104a",
+                        "Macro Biology",
+                        "2025-11-23",
+                        "11:49",
+                        5
+                ), "Biology"),
+                new AssignmentDisplay(new Assignment(
+                        "15432",
+                        "Bio 104a",
+                        "Electron Transport Chain",
+                        "2025-11-28",
+                        "11:59",
+                        2
+                ), "Biology"),
+                new AssignmentDisplay(new Assignment(
+                        "64432",
+                        "Bio 104a",
+                        "ATP production",
+                        "2025-11-26",
+                        "11:45",
+                        5
+                ), "Biology"),
+                new AssignmentDisplay(new Assignment(
+                        "33333",
+                        "Bio 104a",
+                        "DNA",
+                        "2025-12-01",
+                        "11:59",
+                        2
+                ), "Biology"),
+                new AssignmentDisplay(new Assignment(
+                        "44444",
+                        "Bio 104a",
+                        "Midterm 1 review",
+                        "2025-12-02",
+                        "11:59",
+                        1
+                ), "Biology"),
+                new AssignmentDisplay(new Assignment(
+                        "10000",
+                        "Phys 201",
+                        "Dynamics",
+                        "2025-11-24",
+                        "05:00",
+                        1
+                ), "Physics"),
+                new AssignmentDisplay(new Assignment(
+                        "10101",
+                        "Phys 201",
+                        "Mechanical Energy",
+                        "2025-12-02",
+                        "05:00",
+                        4
+                ), "Physics"),
+                new AssignmentDisplay(new Assignment(
+                        "95832",
+                        "Math 260",
+                        "Chain Rule",
+                        "2025-12-01",
+                        "11:59",
+                        3
+                ), "Calc 1"),
+                new AssignmentDisplay(new Assignment(
+                        "59597",
+                        "Geo 100",
+                        "Speaking 1",
+                        "2025-12-03",
+                        "11:59",
+                        4
+                ), "Oral Communication")
+        };
+
+        AssignmentDisplay[] bioAssignments = new AssignmentDisplay[5];
+        System.arraycopy(assignments, 1, bioAssignments, 0, bioAssignments.length);
+
+        AssignmentDisplay[] physicsAssignments = new AssignmentDisplay[2];
+        System.arraycopy(assignments, 6, physicsAssignments, 0, physicsAssignments.length);
+
         for (int i = 0; i < viewingButtonDecorations.length; i++) {
             viewingButtonDecorationInitLocations[i] = viewingButtonDecorations[i].getTranslateX();
         }
@@ -623,6 +724,19 @@ public class MainPageController implements Initializable {
             dateMemory = (dateDisplayed == null) ? LocalDate.now() : dateDisplayed;
             displayDateParentPaneCenter = displayDateParent.getWidth() / 2; //calculate the center point of the displayDateParentPane when the object is rendered
             updateDate("today", Optional.empty());
+
+            System.out.println("before courseManager created");
+            CourseManager biology = new CourseManager(bioAssignments, weekStart, weekDisplayed);
+            CourseManager physics = new CourseManager(physicsAssignments, weekStart, weekDisplayed);
+            System.out.println("after courseManager created");
+
+            System.out.println("before render anything");
+            biology.renderHeaders(courseContainers);
+            System.out.println("after render headers - before render bars");
+            biology.renderBars(courseContainers);
+            System.out.println("after render everything");
+            physics.renderHeaders(courseContainers);
+            physics.renderBars(courseContainers);
         });
     }
 }
