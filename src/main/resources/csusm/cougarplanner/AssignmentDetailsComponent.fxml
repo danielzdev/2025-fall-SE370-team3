@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane fx:id="hoverAssignmentWindow" prefHeight="45.0" prefWidth="150.0" style="-fx-background-color: #DFC1FF; -fx-border-color: transparent; -fx-border-width: 2;" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml/1" fx:controller="csusm.cougarplanner.controllers.AssignmentDetailsComponentController">
+   <children>
+      <Label fx:id="hoverAssignmentLabel" layoutX="14.0" layoutY="14.0" style="-fx-blend-mode: color_burn;" text="Label" textFill="#363636" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="5.0">
+         <font>
+            <Font name="Arial Rounded MT Bold" size="16.0" />
+         </font>
+      </Label>
+      <AnchorPane prefHeight="200.0" prefWidth="105.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="30.0">
+         <children>
+            <HBox prefHeight="100.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <children>
+                  <VBox prefHeight="200.0" prefWidth="100.0">
+                     <children>
+                        <Pane fx:id="springGreenMask" prefHeight="10.0" prefWidth="200.0" style="-fx-background-color: #DFC1FF;" />
+                        <Pane prefHeight="5.0" prefWidth="200.0" style="-fx-background-color: springgreen;" />
+                     </children>
+                  </VBox>
+                  <VBox prefHeight="200.0" prefWidth="100.0">
+                     <children>
+                        <Pane fx:id="chartreuseMask" prefHeight="10.0" prefWidth="200.0" style="-fx-background-color: #DFC1FF;" />
+                        <Pane prefHeight="5.0" prefWidth="200.0" style="-fx-background-color: chartreuse;" />
+                     </children>
+                  </VBox>
+                  <VBox prefHeight="200.0" prefWidth="100.0">
+                     <children>
+                        <Pane fx:id="yellowMask" prefHeight="10.0" prefWidth="200.0" style="-fx-background-color: #DFC1FF;" />
+                        <Pane prefHeight="5.0" prefWidth="200.0" style="-fx-background-color: yellow;" />
+                     </children>
+                  </VBox>
+                  <VBox prefHeight="200.0" prefWidth="100.0">
+                     <children>
+                        <Pane fx:id="orangeMask" prefHeight="10.0" prefWidth="200.0" style="-fx-background-color: #DFC1FF;" />
+                        <Pane prefHeight="5.0" prefWidth="200.0" style="-fx-background-color: orange;" />
+                     </children>
+                  </VBox>
+                  <VBox prefHeight="200.0" prefWidth="100.0">
+                     <children>
+                        <Pane fx:id="redMask" prefHeight="10.0" prefWidth="200.0" style="-fx-background-color: #DFC1FF;" />
+                        <Pane prefHeight="5.0" prefWidth="200.0" style="-fx-background-color: red;" />
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+         </children>
+      </AnchorPane>
+   </children>
+</AnchorPane>

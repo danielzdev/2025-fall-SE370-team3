@@ -210,49 +210,37 @@
                                                             <children>
                                                                 <AnchorPane fx:id="sundayContentsPane" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #ffffff;">
                                                                     <children>
-                                                                        <VBox prefHeight="404.6666666666667" prefWidth="143.33333333333334" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                                                            <children>
-                                                                                <Pane prefHeight="30.0" prefWidth="200.0" style="-fx-background-color: #696969;">
-                                                                                    <children>
-                                                                                        <Label layoutX="37.0" layoutY="6.0" text="Course 1" textFill="WHITE">
-                                                                                            <font>
-                                                                                                <Font name="Arial Rounded MT Bold" size="16.0" />
-                                                                                            </font>
-                                                                                        </Label>
-                                                                                    </children>
-                                                                                </Pane>
-                                                                                <Pane prefHeight="3.0" prefWidth="200.0" style="-fx-background-color: #bcbec0;" />
-                                                                            </children></VBox>
+                                                                        <VBox fx:id="sundayContentsVBox" prefHeight="404.6666666666667" prefWidth="143.33333333333334" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                                     </children>
                                                                 </AnchorPane>
                                                                 <AnchorPane fx:id="mondayContentsPane" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #ffffff;">
                                                                     <children>
-                                                                        <VBox prefHeight="404.6666666666667" prefWidth="143.33333333333334" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                                        <VBox fx:id="mondayContentsVBox" prefHeight="404.6666666666667" prefWidth="143.33333333333334" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                                     </children>
                                                                 </AnchorPane>
                                                                 <AnchorPane fx:id="tuesdayContentsPane" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #ffffff;">
                                                                     <children>
-                                                                        <VBox prefHeight="404.6666666666667" prefWidth="143.33333333333334" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                                        <VBox fx:id="tuesdayContentsVBox" prefHeight="404.6666666666667" prefWidth="143.33333333333334" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                                     </children>
                                                                 </AnchorPane>
                                                                 <AnchorPane fx:id="wednesdayContentsPane" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #ffffff;">
                                                                     <children>
-                                                                        <VBox prefHeight="404.6666666666667" prefWidth="143.33333333333334" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                                        <VBox fx:id="wednesdayContentsVBox" prefHeight="404.6666666666667" prefWidth="143.33333333333334" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                                     </children>
                                                                 </AnchorPane>
                                                                 <AnchorPane fx:id="thursdayContentsPane" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #ffffff;">
                                                                     <children>
-                                                                        <VBox prefHeight="404.6666666666667" prefWidth="143.33333333333334" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                                        <VBox fx:id="thursdayContentsVBox" prefHeight="404.6666666666667" prefWidth="143.33333333333334" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                                     </children>
                                                                 </AnchorPane>
                                                                 <AnchorPane fx:id="fridayContentsPane" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #ffffff;">
                                                                     <children>
-                                                                        <VBox prefHeight="404.6666666666667" prefWidth="144.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                                        <VBox fx:id="fridayContentsVBox" prefHeight="404.6666666666667" prefWidth="144.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                                     </children>
                                                                 </AnchorPane>
                                                                 <AnchorPane fx:id="saturdayContentsPane" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #ffffff;">
                                                                     <children>
-                                                                        <VBox prefHeight="404.6666666666667" prefWidth="144.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                                        <VBox fx:id="saturdayContentsVBox" prefHeight="404.6666666666667" prefWidth="144.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                                     </children>
                                                                 </AnchorPane>
                                                             </children>
@@ -264,6 +252,12 @@
                                                         <Pane layoutX="571.0" layoutY="8.0" prefHeight="390.0" prefWidth="2.0" style="-fx-background-color: #696969; -fx-background-radius: 10;" AnchorPane.bottomAnchor="8.0" AnchorPane.topAnchor="8.0" />
                                                         <Pane layoutX="716.0" layoutY="8.0" prefHeight="390.0" prefWidth="2.0" style="-fx-background-color: #696969; -fx-background-radius: 10;" AnchorPane.bottomAnchor="8.0" AnchorPane.topAnchor="8.0" />
                                                         <Pane layoutX="860.0" layoutY="8.0" prefHeight="390.0" prefWidth="2.0" style="-fx-background-color: #696969; -fx-background-radius: 10;" AnchorPane.bottomAnchor="8.0" AnchorPane.topAnchor="8.0" />
+                                          <AnchorPane fx:id="assignmentsWeekViewHitboxField" prefHeight="487.3333333333333" prefWidth="1006.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                             <children>
+                                                <AnchorPane layoutY="33.0" prefHeight="10.0" prefWidth="143.0" style="-fx-background-color: #696969;" visible="false" />
+                                                <AnchorPane layoutX="143.0" layoutY="33.0" prefHeight="10.0" prefWidth="430.0" style="-fx-background-color: #696969;" visible="false" />
+                                             </children>
+                                          </AnchorPane>
                                                     </children>
                                                 </AnchorPane>
                                             </children>
