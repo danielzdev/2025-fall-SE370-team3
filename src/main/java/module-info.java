@@ -10,4 +10,5 @@ module CougarPlanner {
     opens csusm.cougarplanner.controllers to javafx.fxml;
     exports csusm.cougarplanner.models;
     opens csusm.cougarplanner.models to javafx.fxml;
+    opens csusm.cougarplanner.services to com.google.gson;
 }

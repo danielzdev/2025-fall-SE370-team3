@@ -1,0 +1,196 @@
+================================================================================================================
+Sprint #1
+================================================================================================================
+
+Meeting Date & Time: Thursday 9/18 @ 10 AM
+Meeting Location: Library (Reserved Private Room)
+Attendees: Kenneth Wilkins, Amanda Chaaban, Daniel Zapata, Quinten Roman
+Meeting Minutes: 30
+Meeting Type: Planning Meeting
+User Story: N/A
+Discussion Points: Finalized our Teamwork Statement from Lab 3 and user stories from Lab 4.
+
+----------------------------------------------------------------------------------------------------------------
+
+Meeting Date & Time: Monday 9/29 @ 1:30 PM
+Meeting Location: Discord
+Attendees: Kenneth Wilkins, Amanda Chaaban, Daniel Zapata, Quinten Roman
+Meeting Minutes: 15
+Meeting Type: Daily Standup
+User Story: N/A
+Discussion Points: Began defining team roles and ownership and began our Project Planning Proposal document.
+Link: https://docs.google.com/document/d/1-jWnQ2icLphkPqDwMEAXsngPgOqJUXYtNWVOtYokbQw/edit?usp=sharing
+
+----------------------------------------------------------------------------------------------------------------
+
+Meeting Date & Time: Wednesday 10/08 @ 9:30 PM
+Meeting Location: Library (Reserved Private Room)
+Attendees: Kenneth Wilkins, Amanda Chaaban, Daniel Zapata, Quinten Roman
+Meeting Minutes: 90
+Meeting Type: Retrospective and Product Review
+User Stories Completed:
+- As a developer, I want to set up the core architecture (GuiController, Displays, Models, Services/API).
+- As a user, I want the app to decide whether to show me orientation or the main week view.
+- As a new user, I want to see an orientation screen to enter my token and preferences.
+- As a user, I want my profile info saved in a .profile file.
+- As a user, I want the app to check my internet connection and confirm my token.
+- As a user, I want the app to validate my token during orientation.
+- As a developer, I want data models for Assignments and Announcements.
+
+Discussion Points: Defined team roles and ownership and completed our Project Planning Proposal document.
+
+
+================================================================================================================
+Sprint #2
+================================================================================================================
+
+Meeting Date & Time: Monday 10/13 @ 1:20 PM
+Meeting Location: Outside of Classroom
+Attendees: Kenneth Wilkins, Amanda Chaaban, Daniel Zapata, Quinten Roman
+Meeting Minutes: 10
+Meeting Type: Daily Standup
+User Story: N/A
+Discussion Points: Each person’s progress on Cougar Sprint Tasks and Project Planning Proposal.
+
+----------------------------------------------------------------------------------------------------------------
+
+Meeting Date & Time: Wednesday 10/15 @ 1:20 PM
+Meeting Location: Outside of Classroom
+Attendees: Kenneth Wilkins, Amanda Chaaban, Daniel Zapata, Quinten Roman
+Meeting Minutes: 10
+Meeting Type: Daily Standup
+User Story: N/A
+Discussion Points: Each person’s progress on Cougar Sprint Tasks and Project Planning Proposal.
+
+----------------------------------------------------------------------------------------------------------------
+
+Meeting Date & Time: Monday 10/20 @ 1:20 PM
+Meeting Location: Outside of Classroom
+Attendees: Kenneth Wilkins, Amanda Chaaban, Daniel Zapata, Quinten Roman
+Meeting Minutes: 10
+Meeting Type: Daily Standup
+User Story: N/A
+Discussion Points: Each person’s progress on Cougar Sprint Tasks and Project Planning Proposal.
+
+----------------------------------------------------------------------------------------------------------------
+
+Meeting Date & Time: Friday 10/24 @ 2:30 PM
+Meeting Location: Discord
+Attendees: Kenneth Wilkins, Amanda Chaaban, Daniel Zapata, Quinten Roman
+Meeting Minutes: 60
+Meeting Type: Planning Meeting
+User Stories:
+- As a user, I want consistent date/time formatting and week start alignment.
+- As a user, I want the app to fetch courses, assignments, and announcements.
+- As a user, I want to view data by week or day with simple navigation.
+Discussion Points:
+- Restructured project planning into Google Docs format.
+- Finalized draft of SRS document.
+Link: https://docs.google.com/document/d/15VRtNEZz7TYgmIhV9UYcA1XDE6IFSYo7Mzpx_3afhX8/edit?usp=sharing
+
+----------------------------------------------------------------------------------------------------------------
+
+Meeting Date & Time: Thursday 10/30 @ 11 AM
+Meeting Location: Library (Reserved Private Room)
+Attendees: Kenneth Wilkins, Amanda Chaaban, Daniel Zapata, Quinten Roman
+Meeting Minutes: 90
+Meeting Type: Retrospective
+Discussion Points:
+- Wrapped up Sprint 2
+- Discussed improving communication and refining shared documents
+- Planned meeting dates in advance
+
+
+================================================================================================================
+Sprint #3
+================================================================================================================
+
+Meeting Date & Time: Monday 10/27 @ 1:20 PM
+Meeting Location: Outside of Classroom
+Attendees: Kenneth Wilkins, Amanda Chaaban, Daniel Zapata, Quinten Roman
+Meeting Minutes: 10
+Meeting Type: Daily Standup
+Discussion Points: Each person’s progress on Cougar Sprint Tasks and Project Planning Proposal.
+
+----------------------------------------------------------------------------------------------------------------
+
+Meeting Date & Time: Wednesday 10/29 @ 1:20 PM
+Meeting Location: Outside of Classroom
+Attendees: Kenneth Wilkins, Amanda Chaaban, Daniel Zapata, Quinten Roman
+Meeting Minutes: 10
+Meeting Type: Daily Standup
+Discussion Points: Each person’s progress on Cougar Sprint Tasks and Project Planning Proposal.
+
+----------------------------------------------------------------------------------------------------------------
+
+Meeting Date & Time: Monday 11/03 @ 1:20 PM
+Meeting Location: Outside of Classroom
+Attendees: Kenneth Wilkins, Amanda Chaaban, Daniel Zapata, Quinten Roman
+Meeting Minutes: 10
+Meeting Type: Daily Standup
+Discussion Points: Each person’s progress on Cougar Sprint Tasks and Project Planning Proposal.
+
+----------------------------------------------------------------------------------------------------------------
+
+Meeting Date & Time: Wednesday 11/05 @ 9:30 AM
+Meeting Location: Library (Reserved Private Room)
+Attendees: Kenneth Wilkins, Amanda Chaaban, Daniel Zapata, Quinten Roman
+Meeting Minutes: 120
+Meeting Type: Retrospective & Planning for Sprint 4
+User Stories:
+- As a user, I want invalid .profile options fixed automatically.
+- As a user, I want offline mode if token missing but local data exists.
+- As a user, I want Canvas updates to merge with existing data without losing difficulty ratings.
+Discussion Points:
+- Shared reflections on Sprint 3
+- Revised objectives and removed countdown timer and recent changes pop-up.
+
+
+================================================================================================================
+Sprint #4
+================================================================================================================
+
+Meeting Date & Time: Monday 11/03
+Meeting Location: Outside of Classroom
+Attendees: Kenneth Wilkins, Amanda Chaaban, Daniel Zapata, Quinten Roman
+Meeting Minutes: 10
+Meeting Type: Daily Standup
+Discussion Points: Progress on Cougar Sprint Tasks and Project Planning Proposal.
+
+----------------------------------------------------------------------------------------------------------------
+
+Meeting Date & Time: Wednesday 11/06 @ 1:20 PM
+Meeting Location: Outside of Classroom
+Attendees: Kenneth Wilkins, Amanda Chaaban, Daniel Zapata, Quinten Roman
+Meeting Minutes: 10
+Meeting Type: Daily Standup
+Discussion Points: Progress on Cougar Sprint Tasks and Project Planning Proposal.
+
+----------------------------------------------------------------------------------------------------------------
+
+Meeting Date & Time: Monday 11/10 @ 1:20 PM
+Meeting Location: Outside of Classroom
+Attendees: Kenneth Wilkins, Amanda Chaaban, Daniel Zapata, Quinten Roman
+Meeting Minutes: 10
+Meeting Type: Daily Standup
+Discussion Points: Progress on Cougar Sprint Tasks and Project Planning Proposal.
+
+----------------------------------------------------------------------------------------------------------------
+
+Meeting Date & Time: Wednesday 11/12 @ 1:20 PM
+Meeting Location: Library (Outside of Classroom)
+Attendees: Kenneth Wilkins, Amanda Chaaban, Daniel Zapata, Quinten Roman
+Meeting Minutes: 10
+Meeting Type: Retrospective & Planning for Sprint 4
+Discussion Points: Progress on Cougar Sprint Tasks and Project Planning Proposal.
+
+----------------------------------------------------------------------------------------------------------------
+
+Meeting Date & Time: Monday 11/17
+Meeting Location: (Not specified)
+Attendees: Kenneth Wilkins, Amanda Chaaban, Daniel Zapata, Quinten Roman
+Meeting Minutes: (Not specified)
+Meeting Type: Retrospective Meeting
+User Story: N/A
+Discussion Points: N/A
+----------------------------------------------------------------------------------------------------------------

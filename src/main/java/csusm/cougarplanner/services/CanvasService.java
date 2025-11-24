@@ -64,32 +64,45 @@ public final class CanvasService {
      * Returns empty list on API errors or parsing failures.
      */
     public List<Assignment> fetchAssignments(WeekRange range) {
-        String json = api.getAssignmentsJson();
-        if (json == null) {
+        // First get all courses
+        List<Course> courses = fetchCourses();
+        if (courses.isEmpty()) {
             return Collections.emptyList();
         }
 
-        try {
-            Type listType = new TypeToken<List<AssignmentDto>>() {}.getType();
-            List<AssignmentDto> dtos = gson.fromJson(json, listType);
+        List<Assignment> allAssignments = new ArrayList<>();
 
-            if (dtos == null) {
-                return Collections.emptyList();
-            }
+        // Get assignments from each course
+        for (Course course : courses) {
+            try {
+                int courseId = Integer.parseInt(course.getCourseId());
+                String json = api.getAssignmentsJson(courseId);
+                if (json == null) {
+                    continue; // Skip this course if API call failed
+                }
 
-            List<Assignment> assignments = new ArrayList<>();
-            for (AssignmentDto dto : dtos) {
-                if (dto.id != null && dto.course_id != null) {
-                    Optional<LocalDate> dueDate = DateTimeUtil.parseDateFromDateTime(dto.due_at);
-                    if (dueDate.isPresent() && isDateInRange(dueDate.get(), range)) {
-                        assignments.add(mapToAssignment(dto));
+                Type listType = new TypeToken<List<AssignmentDto>>() {}.getType();
+                List<AssignmentDto> dtos = gson.fromJson(json, listType);
+
+                if (dtos == null) {
+                    continue; // Skip this course if parsing failed
+                }
+
+                for (AssignmentDto dto : dtos) {
+                    if (dto.id != null && dto.course_id != null) {
+                        Optional<LocalDate> dueDate = DateTimeUtil.parseDateFromDateTime(dto.due_at);
+                        if (dueDate.isPresent() && isDateInRange(dueDate.get(), range)) {
+                            allAssignments.add(mapToAssignment(dto));
+                        }
                     }
                 }
+            } catch (Exception e) {
+                // Skip this course if any error occurs
+                continue;
             }
-            return assignments;
-        } catch (Exception e) {
-            return Collections.emptyList();
         }
+
+        return allAssignments;
     }
 
     /**
@@ -190,25 +203,25 @@ public final class CanvasService {
 
     private static class CourseDto {
 
-        Long id;
-        String name;
+        public Long id;
+        public String name;
     }
 
     private static class AssignmentDto {
 
-        Long id;
-        Long course_id;
-        String name;
-        String due_at;
+        public Long id;
+        public Long course_id;
+        public String name;
+        public String due_at;
     }
 
     private static class AnnouncementDto {
 
-        Long id;
-        Long course_id;
-        String title;
-        String posted_at;
-        String message;
-        String body;
+        public Long id;
+        public Long course_id;
+        public String title;
+        public String posted_at;
+        public String message;
+        public String body;
     }
 }

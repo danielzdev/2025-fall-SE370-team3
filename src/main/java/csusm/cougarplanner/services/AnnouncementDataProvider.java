@@ -1,11 +1,13 @@
 package csusm.cougarplanner.services;
 
+import csusm.cougarplanner.io.AnnouncementsRepository;
 import csusm.cougarplanner.models.Announcement;
 import csusm.cougarplanner.models.AnnouncementDisplay;
-import csusm.cougarplanner.io.AnnouncementsRepository;
+import csusm.cougarplanner.util.DateTimeUtil;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -79,6 +81,8 @@ public class AnnouncementDataProvider extends AbstractItemDataProvider<Announcem
             enrichedAnnouncements.add(displayItem);
         }
 
+        // Sort the enriched announcements before returning
+        sortAnnouncements(enrichedAnnouncements);
         return enrichedAnnouncements;
     }
 
@@ -92,5 +96,23 @@ public class AnnouncementDataProvider extends AbstractItemDataProvider<Announcem
     public String getEmptyMessage()
     {
         return "No announcements for this class.";
+    }
+
+    /**
+     * Sorts the announcement display list by posted_at datetime then course name.
+     *
+     * @param announcements List of AnnouncementDisplay objects to sort in-place
+     */
+    private void sortAnnouncements(List<AnnouncementDisplay> announcements) {
+        Collections.sort(announcements, (a, b) -> {
+            // 1. Compare posted_at datetime (empty datetimes go last)
+            int dateTimeCompare = DateTimeUtil.compareDateTime(a.getPostedAt(), b.getPostedAt());
+            if (dateTimeCompare != 0) return dateTimeCompare;
+
+            // 2. Compare course names A→Z
+            String courseA = a.getCourseName() != null ? a.getCourseName() : "";
+            String courseB = b.getCourseName() != null ? b.getCourseName() : "";
+            return courseA.compareToIgnoreCase(courseB);
+        });
     }
 }

@@ -12,6 +12,7 @@ import java.time.Duration;
 import java.util.Scanner;
 
 public class API {
+
     // Copy Paste Token - 19556~rezxwQ4UHQ6GGyfW7XVumLWkGwUDthwa3RmvCZXmnRE8GNNTRK24CvCKQzKF7LZV
     private final String AUTH_TOKEN;
     private final String baseURI = "https://csusm.instructure.com/api/v1/";
@@ -97,12 +98,12 @@ public class API {
      * Returns response body as String on 2xx status codes, null otherwise.
      * Does not throw on non-2xx responses.
      */
-    public String getAssignmentsJson() {
+    public String getAssignmentsJson(int courseId) {
         if (AUTH_TOKEN == null || AUTH_TOKEN.isBlank()) {
             return null;
         }
 
-        String url = baseURI + "courses/" + "self/assignments?per_page=100";
+        String url = baseURI + "courses/" + courseId + "/assignments?include[]=submission&order_by=due_at&per_page=100";
 
         try {
             HttpRequest req = HttpRequest.newBuilder()
