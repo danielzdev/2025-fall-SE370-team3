@@ -1,15 +1,27 @@
 package csusm.cougarplanner.controllers;
 
+import csusm.cougarplanner.API;
+import csusm.cougarplanner.io.AssignmentsRepository;
+import csusm.cougarplanner.io.CoursesRepository;
 import csusm.cougarplanner.models.Assignment;
 import csusm.cougarplanner.models.AssignmentDisplay;
+import csusm.cougarplanner.models.Course;
 import csusm.cougarplanner.models.CourseManager;
+import csusm.cougarplanner.services.CanvasService;
 import csusm.cougarplanner.transitions.ExponentialTransitionScale;
 import csusm.cougarplanner.transitions.ExponentialTransitionTranslation;
-import csusm.cougarplanner.Launcher;
-import csusm.cougarplanner.config.Profile;
-import csusm.cougarplanner.config.ProfileReader;
 import csusm.cougarplanner.util.DateTimeUtil;
+import csusm.cougarplanner.util.WeekRange;
 import csusm.cougarplanner.util.WeekUtil;
+import java.io.IOException;
+import java.net.URL;
+import java.nio.file.Path;
+import java.time.LocalDate;
+import java.time.Month;
+import java.time.format.TextStyle;
+import java.util.Locale;
+import java.util.Optional;
+import java.util.ResourceBundle;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -26,15 +38,15 @@ import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.format.TextStyle;
-import java.util.Optional;
-import java.util.ResourceBundle;
-import java.util.Locale;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class MainPageController implements Initializable {
 
@@ -44,7 +56,9 @@ public class MainPageController implements Initializable {
     private Node currentlySelectedObject = null;
 
     private void selectNewObject(Node node) {
-        if (currentlySelectedObject != null) { currentlySelectedObject.setStyle(null); }
+        if (currentlySelectedObject != null) {
+            currentlySelectedObject.setStyle(null);
+        }
         currentlySelectedObject = node;
     }
 
@@ -77,8 +91,7 @@ public class MainPageController implements Initializable {
         if (viewingMenuIsOpen) {
             plannerBody.setEffect((event.getEventType() == MouseEvent.MOUSE_ENTERED) ? null : new BoxBlur());
             viewingMenu.setOpacity((event.getEventType() == MouseEvent.MOUSE_ENTERED) ? 0.25 : 1.0);
-        }
-        else {
+        } else {
             plannerBody.setEffect(null);
             viewingMenu.setOpacity(1.0);
         }
@@ -87,7 +100,9 @@ public class MainPageController implements Initializable {
     @FXML
     private void highlightFromText(MouseEvent event) {
         if (event.getSource() instanceof Label label) {
-            label.setStyle("-fx-text-fill: " + ((event.getEventType() == MouseEvent.MOUSE_ENTERED) ? "#ffe777" : "#ffffff"));
+            label.setStyle(
+                "-fx-text-fill: " + ((event.getEventType() == MouseEvent.MOUSE_ENTERED) ? "#ffe777" : "#ffffff")
+            );
         }
     }
 
@@ -130,19 +145,30 @@ public class MainPageController implements Initializable {
                 viewingMenuLabelMutable.setStyle("-fx-text-fill: #ffffff");
 
                 for (int i = 0; i < viewingButtonDecorations.length; i++) {
-                    transition[i] = new ExponentialTransitionTranslation(viewingButtonDecorations[i], true, viewingButtonDecorations[i].getTranslateX(), viewingButtonDecorationInitLocations[i] + 5 * (i + 1), Duration.millis(500));
+                    transition[i] = new ExponentialTransitionTranslation(
+                        viewingButtonDecorations[i],
+                        true,
+                        viewingButtonDecorations[i].getTranslateX(),
+                        viewingButtonDecorationInitLocations[i] + 5 * (i + 1),
+                        Duration.millis(500)
+                    );
                 }
 
                 for (int i = 0; i < viewingButtonDecorations.length; i++) {
                     transition[i].play();
                 }
-            }
-            else {
+            } else {
                 viewingMenuLabel.setStyle("-fx-text-fill: #D5D5D5");
                 viewingMenuLabelMutable.setStyle("-fx-text-fill: #D5D5D5");
 
                 for (int i = 0; i < viewingButtonDecorations.length; i++) {
-                    transition[i] = new ExponentialTransitionTranslation(viewingButtonDecorations[i], true, viewingButtonDecorations[i].getTranslateX(), viewingButtonDecorationInitLocations[i], Duration.millis(400));
+                    transition[i] = new ExponentialTransitionTranslation(
+                        viewingButtonDecorations[i],
+                        true,
+                        viewingButtonDecorations[i].getTranslateX(),
+                        viewingButtonDecorationInitLocations[i],
+                        Duration.millis(400)
+                    );
                 }
 
                 for (int i = 0; i < viewingButtonDecorations.length; i++) {
@@ -173,7 +199,11 @@ public class MainPageController implements Initializable {
             case "previousWeek":
                 /*dateDisplayed = dateDisplayed.minusWeeks(1).minusDays(dateDisplayed.getDayOfWeek().getValue() - 1);
                 weekDisplayed = weekDisplayed.minusWeeks(1);*/
-                LocalDate[] weekNavigationBounds = WeekUtil.getNavigationWeekBounds(weekDisplayed, weekStartSetting, "previous"); //get the beginning of the previous week
+                LocalDate[] weekNavigationBounds = WeekUtil.getNavigationWeekBounds(
+                    weekDisplayed,
+                    weekStartSetting,
+                    "previous"
+                ); //get the beginning of the previous week
                 dateDisplayed = weekNavigationBounds[1]; //choose to display the last day of the previous week
                 weekDisplayed = weekNavigationBounds[0]; //get the first day of the previous week
                 break;
@@ -190,7 +220,11 @@ public class MainPageController implements Initializable {
             case "nextWeek":
                 /*dateDisplayed = dateDisplayed.plusWeeks(1).minusDays(dateDisplayed.getDayOfWeek().getValue() - 1);
                 weekDisplayed = weekDisplayed.plusWeeks(1);*/
-                dateDisplayed = weekDisplayed = WeekUtil.getNavigationWeekBounds(weekDisplayed, weekStartSetting, "next")[0]; //display the first day of the next week
+                dateDisplayed = weekDisplayed = WeekUtil.getNavigationWeekBounds(
+                    weekDisplayed,
+                    weekStartSetting,
+                    "next"
+                )[0]; //display the first day of the next week
                 break;
             case "nextDay":
                 dateDisplayed = dateDisplayed.plusDays(1);
@@ -203,7 +237,8 @@ public class MainPageController implements Initializable {
                 }
                 break;
             case "changeWeekStart":
-                if (weekStart) { //if the start of the week is changed to sunday
+                if (weekStart) {
+                    //if the start of the week is changed to sunday
                     weekDisplayed = weekDisplayed.minusDays(1);
 
                     //if the date that the user last had selected is now outside the bounds of the changed week
@@ -211,8 +246,8 @@ public class MainPageController implements Initializable {
                         //the date that the user previously had selected was sunday of the given week (on the very right) which was removed from the planner page (which shifted left)
                         dateDisplayed = dateDisplayed.minusDays(1); //change the date to sunday of that week
                     } //otherwise don't change the date displayed
-
-                } else { //if the start of the week is changed to monday
+                } else {
+                    //if the start of the week is changed to monday
                     weekDisplayed = weekDisplayed.plusDays(1);
 
                     //if the date that the user last had selected is now outside the bounds of the changed week
@@ -251,11 +286,19 @@ public class MainPageController implements Initializable {
         components[2] = addNumberSuffix(components[2]); //day of month string, e.g. 1st, 2nd, 3rd, etc...
 
         //sets the text in the date label to the date selected with the format: Mon Nov 10th
-        dateLabel.setText(dateDisplayed.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.ENGLISH) + ", " + components[1] + " " + components[2]);
+        dateLabel.setText(
+            dateDisplayed.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.ENGLISH) +
+                ", " +
+                components[1] +
+                " " +
+                components[2]
+        );
 
-        dateLabel.widthProperty().addListener((observable, oldValue, newValue) -> {
-            dateLabel.setLayoutX(displayDateParentPaneCenter - (dateLabel.getWidth() / 2) );
-        });
+        dateLabel
+            .widthProperty()
+            .addListener((observable, oldValue, newValue) -> {
+                dateLabel.setLayoutX(displayDateParentPaneCenter - (dateLabel.getWidth() / 2));
+            });
     }
 
     //adds the number suffix onto the end of the day. E.g. 1st, 2nd, 3rd, etc...
@@ -268,8 +311,7 @@ public class MainPageController implements Initializable {
 
         if (lastTwoDigits >= 11 && lastTwoDigits <= 13) {
             suffix = "th";
-        }
-        else {
+        } else {
             suffix = switch (lastDigit) {
                 case 1 -> "st";
                 case 2 -> "nd";
@@ -334,8 +376,9 @@ public class MainPageController implements Initializable {
         profile.setDefaultView(defaultView ? "week" : "day");
 
         organizePlannerByWeekStart(); //the first day of the week isn't changed on the day-week view that's hidden, so it needs to be updated
-        if (!defaultView) { //the user changed the planner to see the day view
-            changeDayViewed(weekDayViewed);//planner defaults to viewing the first day; change this to the day selected. weekDayViewed is updated before toggleViewByWeek is called
+        if (!defaultView) {
+            //the user changed the planner to see the day view
+            changeDayViewed(weekDayViewed); //planner defaults to viewing the first day; change this to the day selected. weekDayViewed is updated before toggleViewByWeek is called
         }
     }
 
@@ -366,15 +409,33 @@ public class MainPageController implements Initializable {
     private boolean firstDayOfWeekWeekTracker = true; //true - sunday, false - monday
     private boolean firstDayOfWeekDayTracker = true; //true - sunday, false - monday
 
-    private final String[] weekOrganizedStartingSunday = { "SUNDAY", "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY" };
-    private final String[] weekOrganizedStartingMonday = { "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY" };
+    private final String[] weekOrganizedStartingSunday = {
+        "SUNDAY",
+        "MONDAY",
+        "TUESDAY",
+        "WEDNESDAY",
+        "THURSDAY",
+        "FRIDAY",
+        "SATURDAY",
+    };
+    private final String[] weekOrganizedStartingMonday = {
+        "MONDAY",
+        "TUESDAY",
+        "WEDNESDAY",
+        "THURSDAY",
+        "FRIDAY",
+        "SATURDAY",
+        "SUNDAY",
+    };
 
     private void organizePlannerByWeekStart() {
-        if (defaultView) { //if the user is currently seeing planner week view
+        if (defaultView) {
+            //if the user is currently seeing planner week view
             if (weekStart != firstDayOfWeekWeekTracker) {
                 performWeekOrganization(weekHeaderLabels);
             }
-        } else { //if the user is currently seeing the planner day view
+        } else {
+            //if the user is currently seeing the planner day view
             if (weekStart != firstDayOfWeekDayTracker) {
                 performWeekOrganization(dayHeaderLabels);
             }
@@ -382,7 +443,8 @@ public class MainPageController implements Initializable {
     }
 
     private void performWeekOrganization(Label[] arrayOfLabels) {
-        if (weekStart) { //change the week beginning to sunday
+        if (weekStart) {
+            //change the week beginning to sunday
             for (int i = 0; i < arrayOfLabels.length; i++) {
                 arrayOfLabels[i].setText(weekOrganizedStartingSunday[i]);
             }
@@ -392,7 +454,8 @@ public class MainPageController implements Initializable {
             } else {
                 firstDayOfWeekDayTracker = true;
             }
-        } else { //change the week beginning to monday
+        } else {
+            //change the week beginning to monday
             for (int i = 0; i < arrayOfLabels.length; i++) {
                 arrayOfLabels[i].setText(weekOrganizedStartingMonday[i]);
             }
@@ -418,7 +481,12 @@ public class MainPageController implements Initializable {
 
             ExponentialTransitionScale transition;
             //an exponential transition that scales the size of the header decoration. The details of the transition change based on mouse behavior.
-            transition = new ExponentialTransitionScale(headerPaneDecorations[index], headerPaneDecorations[index].getScaleX(), (mouseEntered) ? 2 : 0, Duration.millis(200.0));
+            transition = new ExponentialTransitionScale(
+                headerPaneDecorations[index],
+                headerPaneDecorations[index].getScaleX(),
+                (mouseEntered) ? 2 : 0,
+                Duration.millis(200.0)
+            );
             transition.play();
         }
     }
@@ -430,11 +498,11 @@ public class MainPageController implements Initializable {
     private void selectHeaderFromPane(MouseEvent event) {
         //if the event was called from a Pane, assign it to the object titled pane
         if (event.getSource() instanceof Pane pane) {
-
             //if the transition is allowed to complete (not stopped by a double click) then it will execute this code:
             singleClick.setOnFinished(e -> {
                 //establish the event behavior on a single click
-                if (pane != currentlySelectedObject) { //if the user clicked the already selected object, do nothing.
+                if (pane != currentlySelectedObject) {
+                    //if the user clicked the already selected object, do nothing.
                     selectNewObject(pane);
                     pane.setStyle("-fx-background-color: #BDBDBD");
                     updateDate("clickInput", Optional.of(event)); //update the date based on what was clicked
@@ -447,10 +515,10 @@ public class MainPageController implements Initializable {
 
             //user double-clicked and wishes to open up the day selected in the 'day view' menu
             if (event.getClickCount() == 2) {
-                singleClick.stop();                                                //upon a second click, stop the countdown for a single click
+                singleClick.stop(); //upon a second click, stop the countdown for a single click
                 weekDayViewed = Integer.parseInt((String) pane.getUserData()) - 1; //get the index for the week day currently displayed
                 weekDayViewed += (weekDayViewed == 7) ? -7 : 0;
-                toggleViewByWeek();                                                //change the planner view
+                toggleViewByWeek(); //change the planner view
             }
         }
     }
@@ -465,7 +533,8 @@ public class MainPageController implements Initializable {
         if (event.getSource() instanceof Label label) {
             boolean userClickedSunday = label.getText().equals("Sunday");
 
-            if (weekStart != userClickedSunday) { //if the user clicks the other unselected option
+            if (weekStart != userClickedSunday) {
+                //if the user clicks the other unselected option
                 sundayRectangle.setVisible(userClickedSunday);
                 mondayRectangle.setVisible(!userClickedSunday);
 
@@ -474,9 +543,11 @@ public class MainPageController implements Initializable {
 
                 organizePlannerByWeekStart();
                 updateDate("changeWeekStart", Optional.empty());
-                if (!defaultView) { //if the user is currently seeing the day view
+                if (!defaultView) {
+                    //if the user is currently seeing the day view
                     weekDayViewed = dateDisplayed.getDayOfWeek().getValue();
-                    if (weekStart) { //if the user changed the start of the week to be sunday
+                    if (weekStart) {
+                        //if the user changed the start of the week to be sunday
                         weekDayViewed += (weekDayViewed == 7) ? -7 : 0;
                     } else {
                         weekDayViewed--;
@@ -496,12 +567,13 @@ public class MainPageController implements Initializable {
         selectNewObject(viewingHitbox); //filler object to allow new selection
 
         if (defaultView) { //if viewing week
-            updateDate("previousWeek", Optional.empty());
+            navigateWeek(-1); // go to previous week
         }
         else { //if viewing day
             weekDayViewed += (weekDayViewed == 0) ? 6 : -1;
             changeDayViewed(weekDayViewed);
-            updateDate("previousDay", Optional.empty());
+            WeekRange dayWeek = getWeekRange(dateDisplayed);
+            populateCoursesAndAssignments(dayWeek);
         }
     }
 
@@ -510,12 +582,13 @@ public class MainPageController implements Initializable {
         selectNewObject(viewingHitbox); //filler object to allow new selection
 
         if (defaultView) { //if viewing week
-            updateDate("nextWeek", Optional.empty());
+            navigateWeek(1); // go to next week
         }
         else { //if viewing day
             weekDayViewed += (weekDayViewed == 6) ? -6 : 1;
             changeDayViewed(weekDayViewed);
-            updateDate("nextDay", Optional.empty());
+            WeekRange dayWeek = getWeekRange(dateDisplayed);
+            populateCoursesAndAssignments(dayWeek);
         }
     }
 
@@ -558,6 +631,93 @@ public class MainPageController implements Initializable {
         Platform.exit();
     }
 
+    private CanvasService canvasService;
+    private final CoursesRepository coursesRepository = new CoursesRepository();
+    private final AssignmentsRepository assignmentsRepository = new AssignmentsRepository();
+
+    private void populateCoursesAndAssignments(WeekRange week) {
+        List<Course> courses = new ArrayList<>();
+        List<Assignment> assignments = new ArrayList<>();
+        boolean apiSuccess = false;
+
+        // Attempt API fetch
+        try {
+            courses = canvasService.fetchCourses();
+            assignments = canvasService.fetchAssignments(week);
+
+            if (!courses.isEmpty() && !assignments.isEmpty()) {
+                apiSuccess = true;
+
+                // Save API data to local CSV
+                try {
+                    coursesRepository.upsertAll(courses);
+                    assignmentsRepository.upsertAll(assignments);
+                } catch (IOException e) {
+                    System.err.println("Error saving API data to local files: " + e.getMessage());
+                }
+            }
+        } catch (Exception e) {
+            apiSuccess = false;
+        }
+
+        if (!apiSuccess) {
+            // Fallback to local CSV if API failed
+            try {
+                courses = coursesRepository.findAll();
+                assignments = assignmentsRepository.findByWeek(week.startIncl(), week.endExcl());
+            } catch (IOException e) {
+                courses = new ArrayList<>();
+                assignments = new ArrayList<>();
+                System.err.println("Error reading local data: " + e.getMessage());
+            }
+        }
+
+        // Clear previous content
+        for (VBox vbox : courseContainers) vbox.getChildren().clear();
+
+        for (Course course : courses) {
+            List<Assignment> courseAssignments = assignments.stream()
+                    .filter(a -> a.getCourseId().equals(course.getCourseId()))
+                    .toList();
+
+            if (!courseAssignments.isEmpty()) {
+                AssignmentDisplay[] displayAssignments = courseAssignments.stream()
+                        .map(a -> new AssignmentDisplay(a, course.getCourseName()))
+                        .toArray(AssignmentDisplay[]::new);
+
+                CourseManager manager = new CourseManager(displayAssignments, weekStart, dateDisplayed);
+                manager.renderHeaders(courseContainers);
+                manager.renderBars(courseContainers);
+            }
+        }
+    }
+
+    private WeekRange getWeekRange(LocalDate date) {
+        LocalDate weekStart = date.minusDays(date.getDayOfWeek().getValue() - 1);
+        LocalDate weekEnd = weekStart.plusDays(7);
+        return new WeekRange(weekStart, weekEnd);
+    }
+
+    private void navigateWeek(int offsetWeeks) {
+        dateDisplayed = dateDisplayed.plusWeeks(offsetWeeks);
+        WeekRange newWeek = getWeekRange(dateDisplayed);
+        populateCoursesAndAssignments(newWeek);
+    }
+
+    private String getAuthToken() {
+        try (Scanner sc = new Scanner(new File("data/profile.properties"))) {
+            while (sc.hasNextLine()) {
+                String line = sc.nextLine().trim();
+                if (line.startsWith("authToken=")) {
+                    return line.substring("authToken=".length()).trim();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         listOfDayHeaders = new AnchorPane[] {
@@ -567,7 +727,7 @@ public class MainPageController implements Initializable {
             wednesdayDayHeaderPane,
             thursdayDayHeaderPane,
             fridayDayHeaderPane,
-            saturdayDayHeaderPane
+            saturdayDayHeaderPane,
         };
 
         weekHeaderLabels = new Label[] {
@@ -577,7 +737,7 @@ public class MainPageController implements Initializable {
             weekWednesdayHeaderLabel,
             weekThursdayHeaderLabel,
             weekFridayHeaderLabel,
-            weekSaturdayHeaderLabel
+            weekSaturdayHeaderLabel,
         };
 
         dayHeaderLabels = new Label[] {
@@ -587,7 +747,7 @@ public class MainPageController implements Initializable {
             dayWednesdayHeaderLabel,
             dayThursdayHeaderLabel,
             dayFridayHeaderLabel,
-            daySaturdayHeaderLabel
+            daySaturdayHeaderLabel,
         };
 
         viewingButtonDecorations = new Pane[] {
@@ -595,30 +755,36 @@ public class MainPageController implements Initializable {
             viewingButtonDecoration2,
             viewingButtonDecoration3,
             viewingButtonDecoration4,
-            viewingButtonDecoration5
+            viewingButtonDecoration5,
         };
 
         headerPaneDecorations = new Pane[] {
-                headerPaneDecoration1,
-                headerPaneDecoration2,
-                headerPaneDecoration3,
-                headerPaneDecoration4,
-                headerPaneDecoration5,
-                headerPaneDecoration6,
-                headerPaneDecoration7
+            headerPaneDecoration1,
+            headerPaneDecoration2,
+            headerPaneDecoration3,
+            headerPaneDecoration4,
+            headerPaneDecoration5,
+            headerPaneDecoration6,
+            headerPaneDecoration7,
         };
 
         courseContainers = new VBox[] {
-                sundayContentsVBox,
-                mondayContentsVBox,
-                tuesdayContentsVBox,
-                wednesdayContentsVBox,
-                thursdayContentsVBox,
-                fridayContentsVBox,
-                saturdayContentsVBox
+            sundayContentsVBox,
+            mondayContentsVBox,
+            tuesdayContentsVBox,
+            wednesdayContentsVBox,
+            thursdayContentsVBox,
+            fridayContentsVBox,
+            saturdayContentsVBox,
         };
 
-        AssignmentDisplay[] assignments = {
+        String token = getAuthToken(); // implement this to read from profile.properties or config
+        API api = new API(token);
+
+        // Initialize canvasService with the API instance
+        canvasService = new CanvasService(api);
+
+        /*AssignmentDisplay[] assignments = {
                 new AssignmentDisplay(new Assignment(
                         "12345",
                         "CS 111",
@@ -705,7 +871,7 @@ public class MainPageController implements Initializable {
         System.arraycopy(assignments, 1, bioAssignments, 0, bioAssignments.length);
 
         AssignmentDisplay[] physicsAssignments = new AssignmentDisplay[2];
-        System.arraycopy(assignments, 6, physicsAssignments, 0, physicsAssignments.length);
+        System.arraycopy(assignments, 6, physicsAssignments, 0, physicsAssignments.length);*/
 
         for (int i = 0; i < viewingButtonDecorations.length; i++) {
             viewingButtonDecorationInitLocations[i] = viewingButtonDecorations[i].getTranslateX();
@@ -721,22 +887,15 @@ public class MainPageController implements Initializable {
         mondayRectangle.setVisible(!weekStart);
 
         Platform.runLater(() -> {
-            dateMemory = (dateDisplayed == null) ? LocalDate.now() : dateDisplayed;
-            displayDateParentPaneCenter = displayDateParent.getWidth() / 2; //calculate the center point of the displayDateParentPane when the object is rendered
+            dateDisplayed = (dateDisplayed == null) ? LocalDate.now() : dateDisplayed;
+            dateMemory = dateDisplayed;
+            displayDateParentPaneCenter = displayDateParent.getWidth() / 2;
+
             updateDate("today", Optional.empty());
 
-            System.out.println("before courseManager created");
-            CourseManager biology = new CourseManager(bioAssignments, weekStart, weekDisplayed);
-            CourseManager physics = new CourseManager(physicsAssignments, weekStart, weekDisplayed);
-            System.out.println("after courseManager created");
-
-            System.out.println("before render anything");
-            biology.renderHeaders(courseContainers);
-            System.out.println("after render headers - before render bars");
-            biology.renderBars(courseContainers);
-            System.out.println("after render everything");
-            physics.renderHeaders(courseContainers);
-            physics.renderBars(courseContainers);
+            // Populate GUI with Canvas data
+            WeekRange currentWeek = getWeekRange(dateDisplayed);
+            populateCoursesAndAssignments(currentWeek);
         });
     }
 }
