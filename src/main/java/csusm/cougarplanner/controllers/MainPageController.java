@@ -1,14 +1,20 @@
 package csusm.cougarplanner.controllers;
 
+import csusm.cougarplanner.API;
+import csusm.cougarplanner.io.AssignmentsRepository;
+import csusm.cougarplanner.io.CoursesRepository;
 import csusm.cougarplanner.models.Assignment;
 import csusm.cougarplanner.models.AssignmentDisplay;
+import csusm.cougarplanner.models.Course;
 import csusm.cougarplanner.models.CourseManager;
+import csusm.cougarplanner.services.CanvasService;
 import csusm.cougarplanner.transitions.ExponentialTransitionScale;
 import csusm.cougarplanner.transitions.ExponentialTransitionTranslation;
 import csusm.cougarplanner.Launcher;
 import csusm.cougarplanner.config.Profile;
 import csusm.cougarplanner.config.ProfileReader;
 import csusm.cougarplanner.util.DateTimeUtil;
+import csusm.cougarplanner.util.WeekRange;
 import csusm.cougarplanner.util.WeekUtil;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
@@ -26,15 +32,15 @@ import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.format.TextStyle;
-import java.util.Optional;
-import java.util.ResourceBundle;
-import java.util.Locale;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class MainPageController implements Initializable {
 
@@ -496,12 +502,13 @@ public class MainPageController implements Initializable {
         selectNewObject(viewingHitbox); //filler object to allow new selection
 
         if (defaultView) { //if viewing week
-            updateDate("previousWeek", Optional.empty());
+            navigateWeek(-1); // go to previous week
         }
         else { //if viewing day
             weekDayViewed += (weekDayViewed == 0) ? 6 : -1;
             changeDayViewed(weekDayViewed);
-            updateDate("previousDay", Optional.empty());
+            WeekRange dayWeek = getWeekRange(dateDisplayed);
+            populateCoursesAndAssignments(dayWeek);
         }
     }
 
@@ -510,12 +517,13 @@ public class MainPageController implements Initializable {
         selectNewObject(viewingHitbox); //filler object to allow new selection
 
         if (defaultView) { //if viewing week
-            updateDate("nextWeek", Optional.empty());
+            navigateWeek(1); // go to next week
         }
         else { //if viewing day
             weekDayViewed += (weekDayViewed == 6) ? -6 : 1;
             changeDayViewed(weekDayViewed);
-            updateDate("nextDay", Optional.empty());
+            WeekRange dayWeek = getWeekRange(dateDisplayed);
+            populateCoursesAndAssignments(dayWeek);
         }
     }
 
@@ -556,6 +564,93 @@ public class MainPageController implements Initializable {
     @FXML
     private void closeApplication(MouseEvent event) {
         Platform.exit();
+    }
+
+    private CanvasService canvasService;
+    private final CoursesRepository coursesRepository = new CoursesRepository();
+    private final AssignmentsRepository assignmentsRepository = new AssignmentsRepository();
+
+    private void populateCoursesAndAssignments(WeekRange week) {
+        List<Course> courses = new ArrayList<>();
+        List<Assignment> assignments = new ArrayList<>();
+        boolean apiSuccess = false;
+
+        // Attempt API fetch
+        try {
+            courses = canvasService.fetchCourses();
+            assignments = canvasService.fetchAssignments(week);
+
+            if (!courses.isEmpty() && !assignments.isEmpty()) {
+                apiSuccess = true;
+
+                // Save API data to local CSV
+                try {
+                    coursesRepository.upsertAll(courses);
+                    assignmentsRepository.upsertAll(assignments);
+                } catch (IOException e) {
+                    System.err.println("Error saving API data to local files: " + e.getMessage());
+                }
+            }
+        } catch (Exception e) {
+            apiSuccess = false;
+        }
+
+        if (!apiSuccess) {
+            // Fallback to local CSV if API failed
+            try {
+                courses = coursesRepository.findAll();
+                assignments = assignmentsRepository.findByWeek(week.startIncl(), week.endExcl());
+            } catch (IOException e) {
+                courses = new ArrayList<>();
+                assignments = new ArrayList<>();
+                System.err.println("Error reading local data: " + e.getMessage());
+            }
+        }
+
+        // Clear previous content
+        for (VBox vbox : courseContainers) vbox.getChildren().clear();
+
+        for (Course course : courses) {
+            List<Assignment> courseAssignments = assignments.stream()
+                    .filter(a -> a.getCourseId().equals(course.getCourseId()))
+                    .toList();
+
+            if (!courseAssignments.isEmpty()) {
+                AssignmentDisplay[] displayAssignments = courseAssignments.stream()
+                        .map(a -> new AssignmentDisplay(a, course.getCourseName()))
+                        .toArray(AssignmentDisplay[]::new);
+
+                CourseManager manager = new CourseManager(displayAssignments, weekStart, dateDisplayed);
+                manager.renderHeaders(courseContainers);
+                manager.renderBars(courseContainers);
+            }
+        }
+    }
+
+    private WeekRange getWeekRange(LocalDate date) {
+        LocalDate weekStart = date.minusDays(date.getDayOfWeek().getValue() - 1);
+        LocalDate weekEnd = weekStart.plusDays(7);
+        return new WeekRange(weekStart, weekEnd);
+    }
+
+    private void navigateWeek(int offsetWeeks) {
+        dateDisplayed = dateDisplayed.plusWeeks(offsetWeeks);
+        WeekRange newWeek = getWeekRange(dateDisplayed);
+        populateCoursesAndAssignments(newWeek);
+    }
+
+    private String getAuthToken() {
+        try (Scanner sc = new Scanner(new File("data/profile.properties"))) {
+            while (sc.hasNextLine()) {
+                String line = sc.nextLine().trim();
+                if (line.startsWith("authToken=")) {
+                    return line.substring("authToken=".length()).trim();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     @Override
@@ -618,7 +713,13 @@ public class MainPageController implements Initializable {
                 saturdayContentsVBox
         };
 
-        AssignmentDisplay[] assignments = {
+        String token = getAuthToken(); // implement this to read from profile.properties or config
+        API api = new API(token);
+
+        // Initialize canvasService with the API instance
+        canvasService = new CanvasService(api);
+
+        /*AssignmentDisplay[] assignments = {
                 new AssignmentDisplay(new Assignment(
                         "12345",
                         "CS 111",
@@ -705,7 +806,7 @@ public class MainPageController implements Initializable {
         System.arraycopy(assignments, 1, bioAssignments, 0, bioAssignments.length);
 
         AssignmentDisplay[] physicsAssignments = new AssignmentDisplay[2];
-        System.arraycopy(assignments, 6, physicsAssignments, 0, physicsAssignments.length);
+        System.arraycopy(assignments, 6, physicsAssignments, 0, physicsAssignments.length);*/
 
         for (int i = 0; i < viewingButtonDecorations.length; i++) {
             viewingButtonDecorationInitLocations[i] = viewingButtonDecorations[i].getTranslateX();
@@ -721,22 +822,15 @@ public class MainPageController implements Initializable {
         mondayRectangle.setVisible(!weekStart);
 
         Platform.runLater(() -> {
-            dateMemory = (dateDisplayed == null) ? LocalDate.now() : dateDisplayed;
-            displayDateParentPaneCenter = displayDateParent.getWidth() / 2; //calculate the center point of the displayDateParentPane when the object is rendered
+            dateDisplayed = (dateDisplayed == null) ? LocalDate.now() : dateDisplayed;
+            dateMemory = dateDisplayed;
+            displayDateParentPaneCenter = displayDateParent.getWidth() / 2;
+
             updateDate("today", Optional.empty());
 
-            System.out.println("before courseManager created");
-            CourseManager biology = new CourseManager(bioAssignments, weekStart, weekDisplayed);
-            CourseManager physics = new CourseManager(physicsAssignments, weekStart, weekDisplayed);
-            System.out.println("after courseManager created");
-
-            System.out.println("before render anything");
-            biology.renderHeaders(courseContainers);
-            System.out.println("after render headers - before render bars");
-            biology.renderBars(courseContainers);
-            System.out.println("after render everything");
-            physics.renderHeaders(courseContainers);
-            physics.renderBars(courseContainers);
+            // Populate GUI with Canvas data
+            WeekRange currentWeek = getWeekRange(dateDisplayed);
+            populateCoursesAndAssignments(currentWeek);
         });
     }
 }
