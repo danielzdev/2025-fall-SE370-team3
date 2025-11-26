@@ -1,6 +1,9 @@
 package csusm.cougarplanner.controllers;
 
 import csusm.cougarplanner.API;
+import csusm.cougarplanner.Launcher;
+import csusm.cougarplanner.config.Profile;
+import csusm.cougarplanner.config.ProfileReader;
 import csusm.cougarplanner.io.AssignmentsRepository;
 import csusm.cougarplanner.io.CoursesRepository;
 import csusm.cougarplanner.models.Assignment;
@@ -197,40 +200,20 @@ public class MainPageController implements Initializable {
                 weekDisplayed = WeekUtil.getWeekStart(dateDisplayed, weekStartSetting);
                 break;
             case "previousWeek":
-                /*dateDisplayed = dateDisplayed.minusWeeks(1).minusDays(dateDisplayed.getDayOfWeek().getValue() - 1);
-                weekDisplayed = weekDisplayed.minusWeeks(1);*/
-                LocalDate[] weekNavigationBounds = WeekUtil.getNavigationWeekBounds(
-                    weekDisplayed,
-                    weekStartSetting,
-                    "previous"
-                ); //get the beginning of the previous week
-                dateDisplayed = weekNavigationBounds[1]; //choose to display the last day of the previous week
-                weekDisplayed = weekNavigationBounds[0]; //get the first day of the previous week
+                dateDisplayed = weekDisplayed = WeekUtil.getNavigationWeekBounds(weekDisplayed, weekStartSetting, "previous")[0]; //display the first day of the next week
                 break;
             case "previousDay":
                 dateDisplayed = dateDisplayed.minusDays(1);
-                /*if (dateDisplayed.isBefore(weekDisplayed)) {
-                    weekDisplayed = weekDisplayed.minusWeeks(1);
-                }*/
                 //if the new date is outside the bounds of the unchanged week
                 if (!WeekUtil.isDateInWeek(dateDisplayed, weekDisplayed, weekStartSetting)) {
                     weekDisplayed = weekDisplayed.minusWeeks(1);
                 }
                 break;
             case "nextWeek":
-                /*dateDisplayed = dateDisplayed.plusWeeks(1).minusDays(dateDisplayed.getDayOfWeek().getValue() - 1);
-                weekDisplayed = weekDisplayed.plusWeeks(1);*/
-                dateDisplayed = weekDisplayed = WeekUtil.getNavigationWeekBounds(
-                    weekDisplayed,
-                    weekStartSetting,
-                    "next"
-                )[0]; //display the first day of the next week
+                dateDisplayed = weekDisplayed = WeekUtil.getNavigationWeekBounds(weekDisplayed, weekStartSetting, "next")[0]; //display the first day of the next week
                 break;
             case "nextDay":
                 dateDisplayed = dateDisplayed.plusDays(1);
-                /*if (dateDisplayed.isAfter(weekDisplayed.plusWeeks(1))) {
-                    weekDisplayed = weekDisplayed.plusWeeks(1);
-                }*/
                 //if the new date is outside the bounds of the unchanged week
                 if (!WeekUtil.isDateInWeek(dateDisplayed, weekDisplayed, weekStartSetting)) {
                     weekDisplayed = weekDisplayed.plusWeeks(1);
@@ -565,31 +548,15 @@ public class MainPageController implements Initializable {
     @FXML
     private void viewPreviousBlock(MouseEvent event) {
         selectNewObject(viewingHitbox); //filler object to allow new selection
-
-        if (defaultView) { //if viewing week
+            updateDate("previousWeek", Optional.empty());
             navigateWeek(-1); // go to previous week
-        }
-        else { //if viewing day
-            weekDayViewed += (weekDayViewed == 0) ? 6 : -1;
-            changeDayViewed(weekDayViewed);
-            WeekRange dayWeek = getWeekRange(dateDisplayed);
-            populateCoursesAndAssignments(dayWeek);
-        }
     }
 
     @FXML
     private void viewNextBlock(MouseEvent event) {
         selectNewObject(viewingHitbox); //filler object to allow new selection
-
-        if (defaultView) { //if viewing week
-            navigateWeek(1); // go to next week
-        }
-        else { //if viewing day
-            weekDayViewed += (weekDayViewed == 6) ? -6 : 1;
-            changeDayViewed(weekDayViewed);
-            WeekRange dayWeek = getWeekRange(dateDisplayed);
-            populateCoursesAndAssignments(dayWeek);
-        }
+        updateDate("nextWeek", Optional.empty());
+        navigateWeek(1); // go to next week
     }
 
     private void changeWeekViewed(String dateViewed) {
@@ -672,9 +639,6 @@ public class MainPageController implements Initializable {
             }
         }
 
-        // Clear previous content
-        for (VBox vbox : courseContainers) vbox.getChildren().clear();
-
         for (Course course : courses) {
             List<Assignment> courseAssignments = assignments.stream()
                     .filter(a -> a.getCourseId().equals(course.getCourseId()))
@@ -685,7 +649,7 @@ public class MainPageController implements Initializable {
                         .map(a -> new AssignmentDisplay(a, course.getCourseName()))
                         .toArray(AssignmentDisplay[]::new);
 
-                CourseManager manager = new CourseManager(displayAssignments, weekStart, dateDisplayed);
+                CourseManager manager = new CourseManager(displayAssignments, weekStart, weekDisplayed);
                 manager.renderHeaders(courseContainers);
                 manager.renderBars(courseContainers);
             }
@@ -699,7 +663,14 @@ public class MainPageController implements Initializable {
     }
 
     private void navigateWeek(int offsetWeeks) {
-        dateDisplayed = dateDisplayed.plusWeeks(offsetWeeks);
+        // Clear previous content
+        for (VBox vbox : courseContainers) vbox.getChildren().clear();
+
+        if (offsetWeeks == 1) {
+            dateDisplayed = dateDisplayed.plusWeeks(offsetWeeks);
+        } else {
+            dateDisplayed = dateDisplayed.minusWeeks(offsetWeeks);
+        }
         WeekRange newWeek = getWeekRange(dateDisplayed);
         populateCoursesAndAssignments(newWeek);
     }
@@ -783,95 +754,6 @@ public class MainPageController implements Initializable {
 
         // Initialize canvasService with the API instance
         canvasService = new CanvasService(api);
-
-        /*AssignmentDisplay[] assignments = {
-                new AssignmentDisplay(new Assignment(
-                        "12345",
-                        "CS 111",
-                        "Intro Functions",
-                        "2025-11-25",
-                        "11:59",
-                        4
-                ), "CompSci"),
-                new AssignmentDisplay(new Assignment(
-                        "43434",
-                        "Bio 104a",
-                        "Macro Biology",
-                        "2025-11-23",
-                        "11:49",
-                        5
-                ), "Biology"),
-                new AssignmentDisplay(new Assignment(
-                        "15432",
-                        "Bio 104a",
-                        "Electron Transport Chain",
-                        "2025-11-28",
-                        "11:59",
-                        2
-                ), "Biology"),
-                new AssignmentDisplay(new Assignment(
-                        "64432",
-                        "Bio 104a",
-                        "ATP production",
-                        "2025-11-26",
-                        "11:45",
-                        5
-                ), "Biology"),
-                new AssignmentDisplay(new Assignment(
-                        "33333",
-                        "Bio 104a",
-                        "DNA",
-                        "2025-12-01",
-                        "11:59",
-                        2
-                ), "Biology"),
-                new AssignmentDisplay(new Assignment(
-                        "44444",
-                        "Bio 104a",
-                        "Midterm 1 review",
-                        "2025-12-02",
-                        "11:59",
-                        1
-                ), "Biology"),
-                new AssignmentDisplay(new Assignment(
-                        "10000",
-                        "Phys 201",
-                        "Dynamics",
-                        "2025-11-24",
-                        "05:00",
-                        1
-                ), "Physics"),
-                new AssignmentDisplay(new Assignment(
-                        "10101",
-                        "Phys 201",
-                        "Mechanical Energy",
-                        "2025-12-02",
-                        "05:00",
-                        4
-                ), "Physics"),
-                new AssignmentDisplay(new Assignment(
-                        "95832",
-                        "Math 260",
-                        "Chain Rule",
-                        "2025-12-01",
-                        "11:59",
-                        3
-                ), "Calc 1"),
-                new AssignmentDisplay(new Assignment(
-                        "59597",
-                        "Geo 100",
-                        "Speaking 1",
-                        "2025-12-03",
-                        "11:59",
-                        4
-                ), "Oral Communication")
-        };
-
-        AssignmentDisplay[] bioAssignments = new AssignmentDisplay[5];
-        System.arraycopy(assignments, 1, bioAssignments, 0, bioAssignments.length);
-
-        AssignmentDisplay[] physicsAssignments = new AssignmentDisplay[2];
-        System.arraycopy(assignments, 6, physicsAssignments, 0, physicsAssignments.length);*/
 
         for (int i = 0; i < viewingButtonDecorations.length; i++) {
             viewingButtonDecorationInitLocations[i] = viewingButtonDecorations[i].getTranslateX();
