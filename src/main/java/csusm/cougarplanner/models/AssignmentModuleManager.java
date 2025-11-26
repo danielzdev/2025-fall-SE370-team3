@@ -2,15 +2,15 @@ package csusm.cougarplanner.models;
 
 import csusm.cougarplanner.controllers.AssignmentDetailsComponentController;
 import csusm.cougarplanner.util.DateTimeUtil;
-import javafx.fxml.Initializable;
-import javafx.scene.paint.Color;
-
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.Random;
 import java.util.ResourceBundle;
+import javafx.fxml.Initializable;
+import javafx.scene.paint.Color;
 
 public class AssignmentModuleManager implements Initializable {
+
     private final Assignment assignment;
     private final AssignmentDisplay assignmentDisplay;
     private final int assignmentDuration = (new Random()).nextInt(14) + 1; //number of days between the date assigned and the due date of the assignment
@@ -27,14 +27,7 @@ public class AssignmentModuleManager implements Initializable {
      * Default constructor, fills each value with blank or null
      */
     public AssignmentModuleManager() {
-        this.assignment = new Assignment(
-        "",
-        "",
-        "",
-        "",
-        "",
-        null
-        );
+        this.assignment = new Assignment("", "", "", "", "", null, "");
 
         this.assignmentDisplay = new AssignmentDisplay(assignment, "");
 
@@ -49,12 +42,13 @@ public class AssignmentModuleManager implements Initializable {
         this.assignmentDisplay = assignment;
 
         this.assignment = new Assignment(
-                assignmentDisplay.getAssignmentId(),
-                assignmentDisplay.getCourseId(),
-                assignmentDisplay.getAssignmentName(),
-                assignmentDisplay.getDueDate(),
-                assignmentDisplay.getDueTime(),
-                assignmentDisplay.getDifficulty()
+            assignmentDisplay.getAssignmentId(),
+            assignmentDisplay.getCourseId(),
+            assignmentDisplay.getAssignmentName(),
+            assignmentDisplay.getDueDate(),
+            assignmentDisplay.getDueTime(),
+            assignmentDisplay.getDifficulty(),
+            assignmentDisplay.getCreatedAt()
         );
 
         empty = false;
@@ -82,21 +76,22 @@ public class AssignmentModuleManager implements Initializable {
      * @param difficulty the difficulty of the assignment, a range from 1 to 5, null if empty
      */
     public AssignmentModuleManager(
-            String assignment_id,
-            String course_id,
-            String course_name,
-            String assignment_name,
-            String due_date,
-            String due_time,
-            Integer difficulty
+        String assignment_id,
+        String course_id,
+        String course_name,
+        String assignment_name,
+        String due_date,
+        String due_time,
+        Integer difficulty
     ) {
         this.assignment = new Assignment(
-                assignment_id,
-                course_id,
-                assignment_name,
-                due_date,
-                due_time,
-                difficulty
+            assignment_id,
+            course_id,
+            assignment_name,
+            due_date,
+            due_time,
+            difficulty,
+            "" // created_at not available in this constructor
         );
 
         this.assignmentDisplay = new AssignmentDisplay(assignment, course_name);
@@ -136,7 +131,10 @@ public class AssignmentModuleManager implements Initializable {
         //iterate through each day of the week, change week beginning to be the iterating variable
         for (; weekBeginning.isBefore(weekEnd.plusDays(1)); weekBeginning = weekBeginning.plusDays(1)) {
             //if the day is within the range of the assignment, add to the counter
-            if (weekBeginning.isAfter(getAssignmentBeginning().minusDays(1)) && weekBeginning.isBefore(DateTimeUtil.parseDate(assignment.getDueDate()).plusDays(1))){
+            if (
+                weekBeginning.isAfter(getAssignmentBeginning().minusDays(1)) &&
+                weekBeginning.isBefore(DateTimeUtil.parseDate(assignment.getDueDate()).plusDays(1))
+            ) {
                 counter++;
             }
         }
@@ -177,7 +175,5 @@ public class AssignmentModuleManager implements Initializable {
     }
 
     @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-
-    }
+    public void initialize(URL url, ResourceBundle resourceBundle) {}
 }

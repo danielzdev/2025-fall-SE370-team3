@@ -8,6 +8,7 @@ public class Assignment {
     private String assignment_id;
     private String course_id;
     private String assignment_name;
+    private String created_at;
     private String due_date;
     private String due_time;
     private Integer difficulty;
@@ -24,6 +25,7 @@ public class Assignment {
      * @param assignment_id unique identifier for the assignment
      * @param course_id identifier of the associated course
      * @param assignment_name the assignment name/title
+     * @param created_at creation timestamp in ISO 8601 format (YYYY-MM-DDTHH:MM:SSZ)
      * @param due_date due date in YYYY-MM-DD format
      * @param due_time due time in HH:MM format
      * @param difficulty user-set difficulty level 1-5
@@ -34,11 +36,13 @@ public class Assignment {
         String assignment_name,
         String due_date,
         String due_time,
-        Integer difficulty
+        Integer difficulty,
+        String created_at
     ) {
         this.assignment_id = assignment_id;
         this.course_id = course_id;
         this.assignment_name = assignment_name;
+        this.created_at = created_at;
         this.due_date = due_date;
         this.due_time = due_time;
         this.difficulty = difficulty;
@@ -155,6 +159,24 @@ public class Assignment {
     }
 
     /**
+     * Gets the assignment creation timestamp.
+     *
+     * @return created_at as string in ISO 8601 format (YYYY-MM-DDTHH:MM:SSZ), may be null or empty
+     */
+    public String getCreatedAt() {
+        return created_at;
+    }
+
+    /**
+     * Sets the assignment creation timestamp.
+     *
+     * @param created_at the creation timestamp in ISO 8601 format (YYYY-MM-DDTHH:MM:SSZ)
+     */
+    public void setCreatedAt(String created_at) {
+        this.created_at = created_at;
+    }
+
+    /**
      * Returns a string representation of the assignment for debugging.
      * Shows all fields including the critical difficulty value.
      *
@@ -172,6 +194,9 @@ public class Assignment {
             '\'' +
             ", assignment_name='" +
             assignment_name +
+            '\'' +
+            ", created_at='" +
+            created_at +
             '\'' +
             ", due_date='" +
             due_date +

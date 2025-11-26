@@ -170,7 +170,9 @@ public final class CanvasService {
         String dueDate = dueDateOpt.map(DateTimeUtil::formatYMD).orElse("");
         String dueTime = dueTimeOpt.map(DateTimeUtil::formatHM).orElse("");
 
-        return new Assignment(assignmentId, courseId, assignmentName, dueDate, dueTime, null);
+        String createdAt = dto.created_at != null ? dto.created_at.trim() : "";
+
+        return new Assignment(assignmentId, courseId, assignmentName, dueDate, dueTime, null, createdAt);
     }
 
     /**
@@ -213,6 +215,7 @@ public final class CanvasService {
         public Long course_id;
         public String name;
         public String due_at;
+        public String created_at;
     }
 
     private static class AnnouncementDto {
