@@ -1,9 +1,7 @@
 package csusm.cougarplanner.controllers;
 
-import csusm.cougarplanner.Launcher;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
@@ -20,14 +18,13 @@ public class AssignmentsCourseHeaderComponentController implements Initializable
     @FXML
     private AnchorPane parentAnchorPane, labelParent;
 
-    private double labelParentCenter;
+    private final double labelParentCenter = (143 + 1.0 / 3) / 2.0;
+    private double courseLabelCenter;
 
     public void setText(String course) {
         courseLabel.setText(course);
 
-        Platform.runLater(() -> {
-            courseLabel.setLayoutX(labelParentCenter - (courseLabel.getWidth() / 2));
-        });
+        Platform.runLater(() -> courseLabel.setLayoutX(labelParentCenter - (courseLabel.getWidth() / 2.0)));
     }
 
     public void setVisibleText(boolean visible) {
@@ -46,17 +43,8 @@ public class AssignmentsCourseHeaderComponentController implements Initializable
         return parentAnchorPane.getHeight();
     }
 
-    public FXMLLoader getFXMLLoader() {
-        String FXMLPath = "AssignmentsCourseHeaderComponent.fxml";
-        return new FXMLLoader(Launcher.class.getResource(FXMLPath));
-    }
-
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         setHeight(25);
-
-        Platform.runLater(() -> {
-            labelParentCenter = labelParent.getWidth() / 2; //evaluate the center of the node after it is rendered
-        });
     }
 }

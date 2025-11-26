@@ -5,6 +5,7 @@ import csusm.cougarplanner.models.Assignment;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.function.IntFunction;
 
 public class AssignmentListHandler {
     /**
@@ -36,18 +37,20 @@ public class AssignmentListHandler {
     }
 
     /**
-     * returns a traditional array of assignment objects assembled from assignments
-     *      in list format.
-     * @param assignments a list of assignments
-     * @return returns a traditional array of assignments
+     * <pre>
+     * converts a list object to a traditional array
+     * @param list the list being converted to an array
+     * @param generator stores lambda expression (int) -> new T[int]; which conveys
+     *                  the future array at the necessary size to list's
+     *                  toArray(T[] a) method.
+     *                  The shorthand for this lambda should be used:
+     *                              T[]::new
+     *                  But replace T with the type of object stored by the list
+     * @return returns the traditional array variation of your list
+     * @param <T>
+     * </pre>
      */
-    public static Assignment[] convertListToAssignmentArray(List<Assignment> assignments) {
-        Assignment[] assignmentArray = new Assignment[assignments.size()];
-
-        for (int i = 0; i < assignments.size(); i++) {
-            assignmentArray[i] = assignments.get(i);
-        }
-
-        return assignmentArray;
+    public static <T> T[] toArray(List<T> list, IntFunction<T[]> generator) {
+        return list.toArray(generator);
     }
 }

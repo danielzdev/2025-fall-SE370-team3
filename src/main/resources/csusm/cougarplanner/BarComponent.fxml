@@ -5,9 +5,9 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="barParent" prefHeight="10.0" prefWidth="143.3" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml/1" fx:controller="csusm.cougarplanner.controllers.BarComponentController">
+<AnchorPane fx:id="barParent" prefHeight="10.0" prefWidth="143.3" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="csusm.cougarplanner.controllers.BarComponentController">
    <children>
-      <Pane fx:id="primaryBar" prefHeight="10.0" prefWidth="143.3" style="-fx-background-color: #FF7B7B; -fx-background-radius: 30; -fx-border-color: transparent; -fx-border-radius: 30;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+      <Pane fx:id="primaryBar" prefHeight="10.0" prefWidth="143.3" style="-fx-background-color: #FF7B7B; -fx-border-color: transparent; -fx-border-radius: 30;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
       <Label fx:id="barLabel" text="Label" textFill="#363636" AnchorPane.bottomAnchor="-10.0" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="-10.0">
          <font>
             <Font name="Arial Rounded MT Bold" size="9.0" />

@@ -109,6 +109,15 @@
                             <children>
                                 <Pane layoutX="30.0" layoutY="-5.333333333333333" prefHeight="10.0" prefWidth="150.0" style="-fx-background-color: #002E5A; -fx-background-radius: 8;" AnchorPane.topAnchor="-5.333333333333333" />
                                 <Pane layoutX="910.0" layoutY="-5.333333333333333" prefHeight="10.0" prefWidth="150.0" style="-fx-background-color: #002E5A; -fx-background-radius: 8;" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="-5.333333333333333" />
+                        <Pane fx:id="displayDateParent" layoutX="412.0" layoutY="-6.0" prefHeight="15.0" prefWidth="203.0" style="-fx-background-color: #002E5A; -fx-background-radius: 8;" AnchorPane.leftAnchor="413.6" AnchorPane.rightAnchor="410.66666666666663">
+                           <children>
+                                      <Label fx:id="dateLabel" layoutX="72.0" layoutY="-11.0" text="DATE" textFill="WHITE">
+                                          <font>
+                                              <Font name="Arial Rounded MT Bold" size="20.0" />
+                                          </font>
+                                      </Label>
+                           </children>
+                        </Pane>
                                 <AnchorPane fx:id="weekPlanner" layoutX="11.0" layoutY="57.0" prefHeight="461.0" prefWidth="1015.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="20.0">
                                     <children>
                                         <VBox prefHeight="382.0" prefWidth="1015.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="0.0">
@@ -199,9 +208,9 @@
                                                         <Pane layoutX="142.0" layoutY="3.0" prefHeight="40.0" prefWidth="2.0" style="-fx-background-color: #696969; -fx-background-radius: 10;" />
                                                         <Pane layoutX="286.0" layoutY="3.0" prefHeight="40.0" prefWidth="2.0" style="-fx-background-color: #696969; -fx-background-radius: 10;" />
                                                         <Pane layoutX="429.0" layoutY="3.0" prefHeight="40.0" prefWidth="2.0" style="-fx-background-color: #696969; -fx-background-radius: 10;" />
-                                                        <Pane layoutX="571.0" layoutY="3.0" prefHeight="40.0" prefWidth="2.0" style="-fx-background-color: #696969; -fx-background-radius: 10;" />
-                                                        <Pane layoutX="716.0" layoutY="3.0" prefHeight="40.0" prefWidth="2.0" style="-fx-background-color: #696969; -fx-background-radius: 10;" />
-                                                        <Pane layoutX="860.0" layoutY="3.0" prefHeight="40.0" prefWidth="2.0" style="-fx-background-color: #696969; -fx-background-radius: 10;" />
+                                                        <Pane layoutX="573.0" layoutY="3.0" prefHeight="40.0" prefWidth="2.0" style="-fx-background-color: #696969; -fx-background-radius: 10;" />
+                                                        <Pane layoutX="717.0" layoutY="3.0" prefHeight="40.0" prefWidth="2.0" style="-fx-background-color: #696969; -fx-background-radius: 10;" />
+                                                        <Pane layoutX="861.0" layoutY="3.0" prefHeight="40.0" prefWidth="2.0" style="-fx-background-color: #696969; -fx-background-radius: 10;" />
                                                     </children>
                                                 </AnchorPane>
                                                 <AnchorPane prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
@@ -249,9 +258,9 @@
                                                         <Pane layoutX="142.0" layoutY="8.0" prefHeight="390.0" prefWidth="2.0" style="-fx-background-color: #696969; -fx-background-radius: 10;" AnchorPane.bottomAnchor="8.0" AnchorPane.topAnchor="8.0" />
                                                         <Pane layoutX="286.0" layoutY="8.0" prefHeight="390.0" prefWidth="2.0" style="-fx-background-color: #696969; -fx-background-radius: 10;" AnchorPane.bottomAnchor="8.0" AnchorPane.topAnchor="8.0" />
                                                         <Pane layoutX="429.0" layoutY="8.0" prefHeight="390.0" prefWidth="2.0" style="-fx-background-color: #696969; -fx-background-radius: 10;" AnchorPane.bottomAnchor="8.0" AnchorPane.topAnchor="8.0" />
-                                                        <Pane layoutX="571.0" layoutY="8.0" prefHeight="390.0" prefWidth="2.0" style="-fx-background-color: #696969; -fx-background-radius: 10;" AnchorPane.bottomAnchor="8.0" AnchorPane.topAnchor="8.0" />
-                                                        <Pane layoutX="716.0" layoutY="8.0" prefHeight="390.0" prefWidth="2.0" style="-fx-background-color: #696969; -fx-background-radius: 10;" AnchorPane.bottomAnchor="8.0" AnchorPane.topAnchor="8.0" />
-                                                        <Pane layoutX="860.0" layoutY="8.0" prefHeight="390.0" prefWidth="2.0" style="-fx-background-color: #696969; -fx-background-radius: 10;" AnchorPane.bottomAnchor="8.0" AnchorPane.topAnchor="8.0" />
+                                                        <Pane layoutX="573.0" layoutY="8.0" prefHeight="390.0" prefWidth="2.0" style="-fx-background-color: #696969; -fx-background-radius: 10;" AnchorPane.bottomAnchor="8.0" AnchorPane.topAnchor="8.0" />
+                                                        <Pane layoutX="717.0" layoutY="8.0" prefHeight="390.0" prefWidth="2.0" style="-fx-background-color: #696969; -fx-background-radius: 10;" AnchorPane.bottomAnchor="8.0" AnchorPane.topAnchor="8.0" />
+                                                        <Pane layoutX="861.0" layoutY="8.0" prefHeight="390.0" prefWidth="2.0" style="-fx-background-color: #696969; -fx-background-radius: 10;" AnchorPane.bottomAnchor="8.0" AnchorPane.topAnchor="8.0" />
                                           <AnchorPane fx:id="assignmentsWeekViewHitboxField" prefHeight="487.3333333333333" prefWidth="1006.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                              <children>
                                                 <AnchorPane layoutY="33.0" prefHeight="10.0" prefWidth="143.0" style="-fx-background-color: #696969;" visible="false" />
@@ -338,21 +347,13 @@
                                                 <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #ffffff;" VBox.vgrow="ALWAYS">
                                                     <children>
                                                         <Pane layoutY="-1.0" prefHeight="2.0" prefWidth="1006.0" style="-fx-background-color: F8BA2BFF; -fx-background-radius: 10;" />
+                                          <AnchorPane fx:id="assignmentDayDisplayContainer" prefHeight="476.6666666666667" prefWidth="1006.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="10.0" />
                                                     </children>
                                                 </AnchorPane>
                                             </children>
                                         </VBox>
                                     </children>
                                 </AnchorPane>
-                        <Pane fx:id="displayDateParent" layoutX="412.0" layoutY="-6.0" prefHeight="15.0" prefWidth="203.0" style="-fx-background-color: #002E5A; -fx-background-radius: 8;" AnchorPane.leftAnchor="413.6" AnchorPane.rightAnchor="410.66666666666663">
-                           <children>
-                                      <Label fx:id="dateLabel" layoutX="72.0" layoutY="-11.0" text="DATE" textFill="WHITE">
-                                          <font>
-                                              <Font name="Arial Rounded MT Bold" size="20.0" />
-                                          </font>
-                                      </Label>
-                           </children>
-                        </Pane>
                             </children>
                         </AnchorPane>
                         <AnchorPane fx:id="viewingMenu" prefWidth="200.0" style="-fx-background-color: #0062a5;" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">

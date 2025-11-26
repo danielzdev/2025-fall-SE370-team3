@@ -2,10 +2,13 @@ package csusm.cougarplanner.controllers;
 
 import csusm.cougarplanner.Launcher;
 import csusm.cougarplanner.util.ColorUtil;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
+import javafx.scene.effect.DropShadow;
+import javafx.scene.effect.InnerShadow;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -123,9 +126,8 @@ public class BarComponentController implements Initializable {
         return barParent.getPrefHeight();
     }
 
-    public FXMLLoader getFXMLLoader() {
-        String FXMLPath = "BarComponent.fxml";
-        return new FXMLLoader(Launcher.class.getResource(FXMLPath));
+    public double getLayoutY() {
+        return barParent.getLayoutY();
     }
 
     @Override
@@ -136,5 +138,9 @@ public class BarComponentController implements Initializable {
         setHeight(15);
 
         primaryBar.setVisible(true);
+
+        Platform.runLater(() -> {
+            primaryBar.setEffect(new DropShadow(10, Color.web("#363636DD")));
+        });
     }
 }

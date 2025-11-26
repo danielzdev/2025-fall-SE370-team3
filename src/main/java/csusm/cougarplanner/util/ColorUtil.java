@@ -55,7 +55,7 @@ public class ColorUtil {
     }
 
     public static Color getAssignmentColor(int bar) {
-        String[] colorCodes = new String[] {"100","110","010","011","001","101","100"};
+        /*String[] colorCodes = new String[] {"100","110","010","011","001","101","100"};
 
         bar = bar % 7;
 
@@ -64,6 +64,12 @@ public class ColorUtil {
         int green = (colorCodes[bar].charAt(1) == '0') ? 100 : 255;
         int blue = (colorCodes[bar].charAt(2) == '0') ? 100 : 255;
 
-        return Color.rgb(red, green, blue);
+        return Color.rgb(red, green, blue);*/
+
+        String[] colorPalate = new String[] { "#F94144", "#F3722C", "#F8961E", "#F9844A", "#F9C74F", "#90BE6D", "#43AA8B", "#4D908E", "#577590", "#277DA1"};
+
+        bar = bar % 10;
+
+        return Color.web(colorPalate[bar]);
     }
 }

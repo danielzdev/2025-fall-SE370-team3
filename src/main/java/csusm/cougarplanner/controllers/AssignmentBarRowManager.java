@@ -25,6 +25,7 @@ public class AssignmentBarRowManager {
     private List<AssignmentModuleManager> assignments; //an array of all the assignments present in this bar
     private Integer row; //the bar that the assignment belongs to, starts at 0 and increases the lower the bar is
     private final LocalDate weekDisplayed; //the first day of the week of the displayed information, this will be changed to sunday if it isn't already
+    private boolean weekStart;
 
     private int numberOfFilledSpaces = 0;
     private int numberOfAssignments;
@@ -37,8 +38,10 @@ public class AssignmentBarRowManager {
         //if the week starts on a monday, change it to sunday so the BarRowController will function properly
         if (weekDisplayed.getDayOfWeek().equals(DayOfWeek.MONDAY)) {
             this.weekDisplayed = weekDisplayed.minusDays(1);
+            this.weekStart = false;
         } else {
             this.weekDisplayed = weekDisplayed;
+            this.weekStart = true;
         }
         System.out.println("AssignmentBarRowManager object created");
     }
@@ -56,7 +59,7 @@ public class AssignmentBarRowManager {
 
             //The bar starts at a default color specified by its row, this is the color of the first assignment in the bar.
             //The next assignments are given the default color of subsequent rows, which staggers the colors used
-            Color assignmentColor = getAssignmentColor(2 * row + i); //The color of assignment i in the bar.
+            Color assignmentColor = getAssignmentColor(3 * row + i); //The color of assignment i in the bar.
 
             //iterate through every day of the assignment, from assignment date (beginning) to due date (ending)
             for (int j = 0; assignmentBeginning.plusDays(j).isBefore(assignmentEnding.plusDays(1)); j++) {
@@ -64,11 +67,11 @@ public class AssignmentBarRowManager {
                 LocalDate dayViewed = assignmentBeginning.plusDays(j); // the date currently being viewed by this iteration of the above for loop (j)
 
                 //if the day viewed is included in the 8-day week.
-                if (dayViewed.isAfter(weekDisplayed.minusDays(1)) && dayViewed.isBefore(weekDisplayed.plusWeeks(1).plusDays(2))) {
+                if (dayViewed.isAfter(weekDisplayed.minusDays(1)) && dayViewed.isBefore(weekDisplayed.plusWeeks(1).plusDays(1))) {
                     //get the week day of the day viewed
                     int weekDay = dayViewed.getDayOfWeek().getValue();
 
-                    //fix the index (getValue() indexes the days of the week like: {Mon, Tue, Wed, Thu, Fri, Sat, Sun}
+                    //fix the index (getValue() indexes the days of the week like: [Mon, Tue, Wed, Thu, Fri, Sat, Sun]
                     weekDay += (weekDay == 7) ? -7 : 0; //if the day of the week is 7 (Sun), subtract 7 to return index order to [Sun, Mon, Tue, Wed, Thu, Fri, Sat]
 
                     //if the day viewed is after the end of the traditional 7-day week bounds (after saturday w/ week starting on sunday)
@@ -87,7 +90,7 @@ public class AssignmentBarRowManager {
                     }
 
                     //if the assignment begins before the beginning of the week
-                    if (dayViewed.isEqual(weekDisplayed) && j > 0) {
+                    if (dayViewed.isEqual(weekDisplayed.plusDays(weekStart ? 0 : 1)) && j > 0) {
                         String temp = "| " + assignments.get(i).getAssignment().getAssignmentName() + " >";
                         String result = temp;
                         if (temp.length() > 13) { result = temp.substring(0, 13) + "... >"; }
@@ -98,7 +101,12 @@ public class AssignmentBarRowManager {
 
                     //if we're looking at the assignment due date
                     if (j == assignments.get(i).getAssignmentDuration()) {
-                        barComponents[weekDay].setVisibleSideBlocks(true, false); //bevel the right corners, square the left ones
+                        barComponents[weekDay].setVisibleSideBlocks(true, false); //square the left corners, bevel the right ones
+                    }
+
+                    //if the assignment is due on the same day it is assigned
+                    if (assignments.get(i).getAssignmentDuration() == 0) {
+                        barComponents[weekDay].setVisibleSideBlocks(false, false); //bevel every corner
                     }
 
                     barComponents[weekDay].setColor(assignmentColor); //set the color of the component
@@ -133,7 +141,7 @@ public class AssignmentBarRowManager {
                     }
                 } else { //if the week starts on Monday
                     if (i != 0) {
-                        courseContainers[i].getChildren().add(temp);
+                        courseContainers[i - 1].getChildren().add(temp);
                     }
                 }
             } catch (IOException e) {

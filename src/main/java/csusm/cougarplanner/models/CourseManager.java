@@ -10,12 +10,50 @@ import javafx.scene.Parent;
 import javafx.scene.layout.VBox;
 
 import java.io.IOException;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
 /**
- * There is one course manager per course, per week
+ * <pre>
+ * There is one course manager per course, per week.
+ *
+ * It is the responsibility of the CourseManager object to
+ *      process, assemble, and render the assignments from
+ *      a given course into a 7-node wide VBox, provided
+ *      externally.
+ * CourseManager does not have a default constructor
+ *      and needs to be constructed using either
+ *      a traditional array of AssignmentDisplay objects
+ *      or two traditional arrays, one containing
+ *      Assignment objects and one containing String
+ *      objects (courseName strings). Additionally, the
+ *      start of the week (Sunday or Monday) and the
+ *      week displayed (LocalDate containing the date of
+ *      the first day of the week) must be passed into
+ *      the constructor.
+ * After the CourseManager object has been constructed
+ *      all you need to do is call renderHeaders(VBox)
+ *      and renderBars(VBox) (in that order) on the
+ *      course whose assignments you want present in
+ *      the display of the planner, and they will populate
+ *      the week view.
+ * Def:
+ *      Bar: A bar is a visual representation of an
+ *      assignment. It is made up of nodes (bar components),
+ *      and it spans the entire duration of the assignment
+ *      (qualified by the boundaries of the week being
+ *      viewed). There is one bar component per day the
+ *      assignment takes up. Here's a visual:
+ * Assignment:  [NULL,  NULL, NULL, NULL, START,  occ,  occ, occ, occ, END]
+ * Week:        [ Sun,   Mon,  Tue,  Wed,   Thu,  Fri,  Sat]
+ * Bar:         [NULL,  NULL, NULL, NULL, <================]
+ * |
+ * With an additional assignment:
+ * Assignment:  [NULL, START,  END, NULL, NULL, NULL, NULL]
+ * Bar:         [NULL, <=========>, NULL, <===============]
+ * </pre>
  */
 public class CourseManager {
     private final int DAYSINWEEK = 8; //this value is 8 to allow for "first day of the week" toggling
@@ -237,9 +275,10 @@ public class CourseManager {
 
     /**
      * Generates a placement array of AssignmentModuleManagers that defines the exact locations and positions
-     *      of each assignment inside of and across rows (bars).
-     *      In the placementArray, each day of the week that the assignment occupies has a copy of the
-     *      assignment controller
+     *      of each assignment inside of and across rows.
+     *      The placementArray logs the location of every assignment with a 2d LinkedList object (I chose
+     *      LinkedList objects because placementArray is going to be read from more than it is going to be
+     *      written to)
      */
     private void generatePlacementArray() {
         //cycle to the next row (bar) after editing each column (day)
@@ -341,7 +380,7 @@ public class CourseManager {
     private void addAssignmentToBar(int row, AssignmentModuleManager assignment) {
         assignment.setBarPosition(row);
 
-        //if the assignment lies outside  the boundaries of the displayed week, don't add it to the placementArray
+        //if the assignment lies outside  the boundaries of the 8-day week, don't add it to the placementArray
         if (!assignment.getAssignmentBeginning().isAfter(weekDisplayed.plusDays((weekStart) ? 7 : 6))) {
             if (placementArray.size() < row + 1) {
                 placementArray.add(new LinkedList<>());
@@ -422,6 +461,38 @@ public class CourseManager {
         return placementArray.get(row);
     }
 
+    public AssignmentModuleManager[] getAllAssignmentModules() {
+        return assignmentsInCourseThisWeek;
+    }
+
+    /**
+     * Returns the number of assignments that are due for this course for this week.
+     * @param weekStart weekStart parameter does not need to be the same as CourseManager's weekStart member
+     * @return a traditional array of AssignmentModuleManagers.
+     */
+    public AssignmentModuleManager[] getAssignmentsDueThisWeek(boolean weekStart) {
+        List<AssignmentModuleManager> assignmentsDueThisWeek = new LinkedList<>();
+        LocalDate referenceWeek;
+
+        //if the CourseManager's week starts on Sunday
+        if (weekDisplayed.getDayOfWeek().equals(DayOfWeek.SUNDAY)) {
+            referenceWeek = weekDisplayed.plusDays((weekStart) ? 0 : 1); //get the correct first day of the week based on weekStart parameter
+        } else {
+            referenceWeek = weekDisplayed.minusDays((weekStart) ? 1 : 0); //get the correct first day of the week based on weekStart parameter
+        }
+
+        for (int i = 0; i < assignmentsInCourseThisWeek.length; i++) {
+            if (WeekUtil.isDateInWeek(assignmentsInCourseThisWeek[i].getAssignmentEnding(), referenceWeek, (weekStart) ? "sunday" : "monday")) {
+
+            }
+        }
+        return null;
+    }
+
+    public AssignmentModuleManager[] getAssignmentsNodDueThisWeek(boolean weekStart) {
+return null;
+    }
+
     public void addAssignment(Assignment assignment, String courseName) {
         addAssignmentHelper(new AssignmentDisplay(assignment, courseName));
     }
@@ -455,8 +526,16 @@ public class CourseManager {
     }
 
 
-    public void updateWeekStart(boolean weekStart) {
+    public void updateWeekStart(VBox[] courseContainers, boolean weekStart) {
+        this.weekStart = weekStart;
+        if (weekStart) { //the week displayed is changed to Sunday
+            this.weekDisplayed = this.weekDisplayed.minusDays(1);
+        } else { //the week displayed is changed to Monday
+            this.weekDisplayed = this.weekDisplayed.plusDays(1);
+        }
 
+        renderHeaders(courseContainers);
+        renderBars(courseContainers);
     }
 
     public void renderHeaders(VBox[] courseContainers) {
