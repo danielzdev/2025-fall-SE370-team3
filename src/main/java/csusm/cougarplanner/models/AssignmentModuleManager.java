@@ -9,11 +9,13 @@ import java.util.ResourceBundle;
 import javafx.fxml.Initializable;
 import javafx.scene.paint.Color;
 
+import static csusm.cougarplanner.util.DateTimeUtil.formatDateTime;
+
 public class AssignmentModuleManager implements Initializable {
 
     private final Assignment assignment;
     private final AssignmentDisplay assignmentDisplay;
-    private final int assignmentDuration = (new Random()).nextInt(14) + 1; //number of days between the date assigned and the due date of the assignment
+    private int assignmentDuration; //number of days between the date assigned and the due date of the assignment
     //!!! assignment duration counts one less day than the complete range of days the assignment takes up;
     //    if the assignment goes from the 17th to the 20th, it takes up 4 total days. However, the assignment
     //    duration value stores 3 for this example. !!!
@@ -51,6 +53,16 @@ public class AssignmentModuleManager implements Initializable {
             assignmentDisplay.getCreatedAt()
         );
 
+        LocalDate beginning = null;
+
+        if (DateTimeUtil.parseDateFromDateTime(assignment.getCreatedAt()).isPresent()) {
+            beginning = DateTimeUtil.parseDateFromDateTime(assignment.getCreatedAt()).get();
+        }
+        LocalDate ending = DateTimeUtil.parseDate(assignment.getDueDate());
+        int i = 0;
+        for (; beginning.plusDays(i).isBefore(ending); i++) {}
+        this.assignmentDuration = i;
+
         empty = false;
     }
 
@@ -61,6 +73,16 @@ public class AssignmentModuleManager implements Initializable {
     public AssignmentModuleManager(Assignment assignment, String courseName) {
         this.assignment = assignment;
         this.assignmentDisplay = new AssignmentDisplay(assignment, courseName);
+
+        LocalDate beginning = null;
+
+        if (DateTimeUtil.parseDateFromDateTime(assignment.getCreatedAt()).isPresent()) {
+            beginning = DateTimeUtil.parseDateFromDateTime(assignment.getCreatedAt()).get();
+        }
+        LocalDate ending = DateTimeUtil.parseDate(assignment.getDueDate());
+        int i = 0;
+        for (; beginning.plusDays(i).isBefore(ending); i++) {}
+        this.assignmentDuration = i;
 
         empty = false;
     }
@@ -143,7 +165,12 @@ public class AssignmentModuleManager implements Initializable {
     }
 
     public LocalDate getAssignmentBeginning() {
-        return (DateTimeUtil.parseDate(assignment.getDueDate()).minusDays(assignmentDuration));
+        LocalDate beginning = null;
+
+        if (DateTimeUtil.parseDateFromDateTime(assignment.getCreatedAt()).isPresent()) {
+            beginning = DateTimeUtil.parseDateFromDateTime(assignment.getCreatedAt()).get();
+        }
+        return beginning;
     }
 
     public LocalDate getAssignmentEnding() {
