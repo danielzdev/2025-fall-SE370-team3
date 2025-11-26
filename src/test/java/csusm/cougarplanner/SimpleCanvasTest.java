@@ -132,4 +132,45 @@ public class SimpleCanvasTest {
             }
         }
     }
+
+    @Test
+    void testPreviousWeekAssignments() {
+        System.out.println("PREVIOUS WEEK ASSIGNMENTS");
+        System.out.println("============================");
+
+        LocalDate now = LocalDate.now();
+
+        // Determine start of this week (Monday)
+        LocalDate currentWeekStart = now.minusDays(now.getDayOfWeek().getValue() - 1);
+
+        // Previous week ranges
+        LocalDate prevWeekStart = currentWeekStart.minusDays(7);
+        LocalDate prevWeekEnd = currentWeekStart;  // end is this week's start
+        WeekRange prevWeek = new WeekRange(prevWeekStart, prevWeekEnd);
+
+        List<Assignment> assignments = canvasService.fetchAssignments(prevWeek);
+        assertNotNull(assignments, "Previous week assignments should not be null");
+
+        System.out.println("Previous week (" + prevWeekStart + " to " + prevWeekEnd.minusDays(1) + "):");
+
+        if (assignments.isEmpty()) {
+            System.out.println("  No assignments due last week");
+        } else {
+            System.out.println("  Found " + assignments.size() + " assignments:");
+            for (Assignment assignment : assignments) {
+                System.out.println(
+                        "    • " +
+                                assignment.getAssignmentName() +
+                                " - Due: " +
+                                assignment.getDueDate() +
+                                " at " +
+                                assignment.getDueTime()
+                );
+
+                assertNotNull(assignment.getAssignmentName(), "Assignment name should not be null");
+                assertNotNull(assignment.getCourseId(), "Assignment course ID should not be null");
+            }
+        }
+    }
+
 }
