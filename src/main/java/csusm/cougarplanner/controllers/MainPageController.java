@@ -4,12 +4,10 @@ import csusm.cougarplanner.API;
 import csusm.cougarplanner.Launcher;
 import csusm.cougarplanner.config.Profile;
 import csusm.cougarplanner.config.ProfileReader;
+import csusm.cougarplanner.io.AnnouncementsRepository;
 import csusm.cougarplanner.io.AssignmentsRepository;
 import csusm.cougarplanner.io.CoursesRepository;
-import csusm.cougarplanner.models.Assignment;
-import csusm.cougarplanner.models.AssignmentDisplay;
-import csusm.cougarplanner.models.Course;
-import csusm.cougarplanner.models.CourseManager;
+import csusm.cougarplanner.models.*;
 import csusm.cougarplanner.services.CanvasService;
 import csusm.cougarplanner.transitions.ExponentialTransitionScale;
 import csusm.cougarplanner.transitions.ExponentialTransitionTranslation;
@@ -128,9 +126,28 @@ public class MainPageController implements Initializable {
                 assignmentsRectangle.setVisible(!userClickedAnnouncements);
 
                 showAnnouncements = userClickedAnnouncements;
+
+                WeekRange currentWeek = getWeekRange(dateDisplayed);
+
+                if (showAnnouncements) {
+                    clearAssignmentDisplay();
+                    populateAnnouncements(currentWeek);
+                } else {
+                    clearAnnouncementDisplay();
+                    populateCoursesAndAssignments(currentWeek);
+                }
             }
         }
     }
+
+    private void clearAnnouncementDisplay() {
+        //announcementContainer.clear(); // replace
+    }
+
+    private void clearAssignmentDisplay() {
+        for (VBox vbox : courseContainers) vbox.getChildren().clear();
+    }
+
 
     @FXML
     private Pane viewingButtonDecoration1, viewingButtonDecoration2, viewingButtonDecoration3, viewingButtonDecoration4, viewingButtonDecoration5;
@@ -376,6 +393,8 @@ public class MainPageController implements Initializable {
 
     private VBox[] courseContainers;
 
+    private VBox[] announcementContainer;
+
     @FXML
     private AnchorPane sundayDayHeaderPane, mondayDayHeaderPane, tuesdayDayHeaderPane, wednesdayDayHeaderPane, thursdayDayHeaderPane, fridayDayHeaderPane, saturdayDayHeaderPane;
 
@@ -601,6 +620,7 @@ public class MainPageController implements Initializable {
     private CanvasService canvasService;
     private final CoursesRepository coursesRepository = new CoursesRepository();
     private final AssignmentsRepository assignmentsRepository = new AssignmentsRepository();
+    private final AnnouncementsRepository announcementsRepository = new AnnouncementsRepository();
 
     private void populateCoursesAndAssignments(WeekRange week) {
         List<Course> courses = new ArrayList<>();
@@ -656,6 +676,59 @@ public class MainPageController implements Initializable {
         }
     }
 
+    private void populateAnnouncements(WeekRange week) {
+        List<Announcement> announcements = new ArrayList<>();
+        boolean apiSuccess = false;
+
+        // Try API first
+        try {
+            announcements = canvasService.fetchAnnouncements(week);
+
+            if (!announcements.isEmpty()) {
+                apiSuccess = true;
+
+                // Save announcements to CSV
+                try {
+                    announcementsRepository.upsertAll(announcements);
+                } catch (IOException e) {
+                    System.err.println("Error saving announcements to CSV: " + e.getMessage());
+                }
+            }
+        } catch (Exception e) {
+            apiSuccess = false;
+        }
+
+        // Fallback to CSV if API fails or returns empty
+        if (!apiSuccess) {
+            try {
+                announcements = announcementsRepository.findByWeek(
+                        week.startIncl(),
+                        week.endExcl()
+                );
+            } catch (IOException e) {
+                System.err.println("Error reading announcements from CSV: " + e.getMessage());
+            }
+        }
+
+        // Print out announcements instead of GUI
+        System.out.println("\n=== ANNOUNCEMENTS FOR WEEK ===");
+        System.out.println(week.startIncl() + " → " + week.endExcl().minusDays(1));
+        System.out.println("-----------------------------------------");
+
+        if (announcements.isEmpty()) {
+            System.out.println("No announcements for this week.");
+            return;
+        }
+
+        for (Announcement ann : announcements) {
+            System.out.println("• " + ann.getTitle());
+            System.out.println("  Posted: " + ann.getPostedAt());
+            System.out.println("  Course ID: " + ann.getCourseId());
+            System.out.println("  Message: " + (ann.getBody() != null ? ann.getBody() : "(empty)"));
+            System.out.println();
+        }
+    }
+
     private WeekRange getWeekRange(LocalDate date) {
         LocalDate weekStart = date.minusDays(date.getDayOfWeek().getValue() - 1);
         LocalDate weekEnd = weekStart.plusDays(7);
@@ -672,7 +745,11 @@ public class MainPageController implements Initializable {
             dateDisplayed = dateDisplayed.minusWeeks(offsetWeeks);
         }
         WeekRange newWeek = getWeekRange(dateDisplayed);
-        populateCoursesAndAssignments(newWeek);
+        if (showAnnouncements) {
+            populateAnnouncements(newWeek);
+        } else {
+            populateCoursesAndAssignments(newWeek);
+        }
     }
 
     private String getAuthToken() {
@@ -777,7 +854,8 @@ public class MainPageController implements Initializable {
 
             // Populate GUI with Canvas data
             WeekRange currentWeek = getWeekRange(dateDisplayed);
-            populateCoursesAndAssignments(currentWeek);
+            //populateCoursesAndAssignments(currentWeek);
+            populateAnnouncements(currentWeek);
         });
     }
 }
