@@ -21,7 +21,7 @@
                                 <Font name="Arial Rounded MT Bold" size="20.0" />
                             </font>
                         </Label>
-                        <Label fx:id="viewingMenuLabelMutable" layoutX="102.0" text="Announcements" textFill="#d9def4">
+                        <Label fx:id="viewingMenuLabelMutable" layoutX="102.0" text="Assignments" textFill="#d9def4">
                             <font>
                                 <Font name="Arial Rounded MT Bold" size="20.0" />
                             </font>
@@ -354,6 +354,7 @@
                                         </VBox>
                                     </children>
                                 </AnchorPane>
+                        <AnchorPane fx:id="dayPlanner1" layoutX="20.0" layoutY="67.0" prefHeight="461.0" prefWidth="1015.0" style="-fx-background-color: #bcbec0; -fx-background-radius: 2;" visible="false" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="20.0" />
                             </children>
                         </AnchorPane>
                         <AnchorPane fx:id="viewingMenu" prefWidth="200.0" style="-fx-background-color: #0062a5;" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -368,7 +369,7 @@
                                                         <Font name="Arial Rounded MT Bold" size="15.0" />
                                                     </font>
                                                 </Label>
-                                                <Rectangle fx:id="announcementsRectangle" arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="21.0" layoutX="44.0" layoutY="38.0" stroke="BLACK" strokeType="INSIDE" width="110.0" />
+                                                <Rectangle fx:id="announcementsRectangle" arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="21.0" layoutX="44.0" layoutY="38.0" stroke="BLACK" strokeType="INSIDE" visible="false" width="110.0" />
                                                 <Label layoutX="52.0" layoutY="41.0" onMouseClicked="#toggleContentsType" onMouseEntered="#highlightFromText" onMouseExited="#highlightFromText" text="Announcements" textFill="WHITE">
                                                     <font>
                                                         <Font name="Arial Rounded MT Bold" size="12.0" />
@@ -379,7 +380,7 @@
                                                         <Font name="Arial Rounded MT Bold" size="12.0" />
                                                     </font>
                                                 </Label>
-                                                <Rectangle fx:id="assignmentsRectangle" arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="21.0" layoutX="44.0" layoutY="81.0" stroke="BLACK" strokeType="INSIDE" visible="false" width="110.0" />
+                                                <Rectangle fx:id="assignmentsRectangle" arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="21.0" layoutX="44.0" layoutY="81.0" stroke="BLACK" strokeType="INSIDE" width="110.0" />
                                                 <Label layoutX="62.0" layoutY="83.0" onMouseClicked="#toggleContentsType" onMouseEntered="#highlightFromText" onMouseExited="#highlightFromText" text="Assignments" textFill="WHITE">
                                                     <font>
                                                         <Font name="Arial Rounded MT Bold" size="12.0" />
