@@ -42,7 +42,7 @@ public class API {
      * The method searches for the "authToken" key in the properties file.
      *
      * @return the authentication token as a String, or null if the file is not found
-     *         or an error occurs during reading
+     * or an error occurs during reading
      * @throws FileNotFoundException if the .profile file cannot be located
      */
     private static String getAuthToken() {
@@ -127,16 +127,17 @@ public class API {
     }
 
     /**
-     * Performs GET request to fetch announcements JSON.
+     * Performs GET request to fetch announcements JSON for a specific course.
+     * Canvas requires 'context_codes' for the announcements endpoint.
      * Returns response body as String on 2xx status codes, null otherwise.
-     * Does not throw on non-2xx responses.
      */
-    public String getAnnouncementsJson() {
+    public String getAnnouncementsJson(int courseId) {
         if (AUTH_TOKEN == null || AUTH_TOKEN.isBlank()) {
             return null;
         }
 
-        String url = baseURI + "announcements?per_page=100";
+        // We must specify context_codes[]=course_ID to get data
+        String url = baseURI + "announcements?context_codes[]=course_" + courseId + "&per_page=100";
 
         try {
             HttpRequest req = HttpRequest.newBuilder()
