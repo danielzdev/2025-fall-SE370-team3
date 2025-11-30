@@ -2,6 +2,7 @@ package csusm.cougarplanner;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import csusm.cougarplanner.models.Announcement;
 import csusm.cougarplanner.models.Assignment;
 import csusm.cougarplanner.models.Course;
 import csusm.cougarplanner.services.CanvasService;
@@ -62,6 +63,46 @@ public class SimpleCanvasTest {
             assertFalse(course.getCourseName().trim().isEmpty(), "Course name should not be empty");
         }
     }
+
+    @Test
+    void testCurrentWeekAnnouncements() {
+        System.out.println("\nCURRENT WEEK ANNOUNCEMENTS");
+        System.out.println("============================");
+
+        LocalDate now = LocalDate.now();
+
+        // Calculate Monday → Sunday range for this week
+        LocalDate weekStart = now.minusDays(now.getDayOfWeek().getValue() - 1);
+        LocalDate weekEnd = weekStart.plusDays(7);  // exclusive end
+        WeekRange currentWeek = new WeekRange(weekStart, weekEnd);
+
+        // Fetch announcements from Canvas
+        List<Announcement> announcements = canvasService.fetchAnnouncements(currentWeek);
+
+        assertNotNull(announcements, "Announcements list should not be null");
+
+        System.out.println("Current week (" + weekStart + " to " + weekEnd.minusDays(1) + "):");
+
+        if (announcements.isEmpty()) {
+            System.out.println("  No announcements for this week");
+        } else {
+            System.out.println("  Found " + announcements.size() + " announcements:");
+            for (Announcement ann : announcements) {
+                System.out.println(
+                        "    • " +
+                                ann.getTitle() +
+                                " - Posted: " +
+                                ann.getPostedAt()
+                );
+
+                assertNotNull(ann.getTitle(), "Announcement title should not be null");
+                assertFalse(ann.getTitle().trim().isEmpty(), "Announcement title should not be empty");
+
+                assertNotNull(ann.getCourseId(), "Announcement course ID should not be null");
+            }
+        }
+    }
+
 
     @Test
     void testCurrentWeekAssignments() {

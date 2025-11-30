@@ -113,7 +113,8 @@ public class MainPageController implements Initializable {
     @FXML
     private Rectangle announcementsRectangle, assignmentsRectangle;
 
-    boolean showAnnouncements = false; //true - show announcements, false - show assignments
+    //    boolean showAnnouncements = false; //true - show announcements, false - show assignments
+    boolean showAnnouncements = true; //false - show assignments
 
     @FXML
     private void toggleContentsType(MouseEvent event) {
@@ -125,12 +126,29 @@ public class MainPageController implements Initializable {
                 announcementsRectangle.setVisible(userClickedAnnouncements);
                 assignmentsRectangle.setVisible(!userClickedAnnouncements);
 
-
-
                 showAnnouncements = userClickedAnnouncements;
+
+                WeekRange currentWeek = getWeekRange(dateDisplayed);
+
+                if (showAnnouncements) {
+                    clearAssignmentDisplay();
+                    populateAnnouncements(currentWeek);
+                } else {
+                    clearAnnouncementDisplay();
+                    populateCoursesAndAssignments(currentWeek);
+                }
             }
         }
     }
+
+    private void clearAnnouncementDisplay() {
+        //announcementContainer.clear(); // replace
+    }
+
+    private void clearAssignmentDisplay() {
+        for (VBox vbox : courseContainers) vbox.getChildren().clear();
+    }
+
 
     @FXML
     private Pane viewingButtonDecoration1, viewingButtonDecoration2, viewingButtonDecoration3, viewingButtonDecoration4, viewingButtonDecoration5;
@@ -376,6 +394,8 @@ public class MainPageController implements Initializable {
 
     private VBox[] courseContainers;
 
+    private VBox[] announcementContainer;
+
     @FXML
     private AnchorPane sundayDayHeaderPane, mondayDayHeaderPane, tuesdayDayHeaderPane, wednesdayDayHeaderPane, thursdayDayHeaderPane, fridayDayHeaderPane, saturdayDayHeaderPane;
 
@@ -613,19 +633,17 @@ public class MainPageController implements Initializable {
     private CanvasService canvasService;
     private final CoursesRepository coursesRepository = new CoursesRepository();
     private final AssignmentsRepository assignmentsRepository = new AssignmentsRepository();
-    private final AnnouncementsRepository announcementsRepository = new AnnouncementsRepository();
 
     private void populateCoursesAndAssignments(WeekRange week) {
         List<Course> courses = new ArrayList<>();
         List<Assignment> assignments = new ArrayList<>();
-        List<Announcement> announcements = new ArrayList<>();
         boolean apiSuccess = false;
 
         // Attempt API fetch
         try {
             courses = canvasService.fetchCourses();
             assignments = canvasService.fetchAssignments(week);
-            announcements = canvasService.fetchAnnouncements(week);
+
             //System.out.println("                                attempting course fetch");
             //System.out.println("                                attempting assignments fetch in week: ");
             //System.out.println("                                    (" + DateTimeUtil.formatDate(week.startIncl()) + ") to (" + DateTimeUtil.formatDate(week.endExcl()) + ")");
@@ -637,7 +655,6 @@ public class MainPageController implements Initializable {
                 try {
                     coursesRepository.upsertAll(courses);
                     assignmentsRepository.upsertAll(assignments);
-                    announcementsRepository.upsertAll(announcements);
                 } catch (IOException e) {
                     System.err.println("Error saving API data to local files: " + e.getMessage());
                 }
@@ -651,7 +668,6 @@ public class MainPageController implements Initializable {
             try {
                 courses = coursesRepository.findAll();
                 assignments = assignmentsRepository.findByWeek(week.startIncl(), week.endExcl());
-
             } catch (IOException e) {
                 courses = new ArrayList<>();
                 assignments = new ArrayList<>();
@@ -684,12 +700,65 @@ public class MainPageController implements Initializable {
         }
     }
 
+    private void populateAnnouncements(WeekRange week) {
+        List<Announcement> announcements = new ArrayList<>();
+        boolean apiSuccess = false;
+
+        // Try API first
+        try {
+            announcements = canvasService.fetchAnnouncements(week);
+
+            if (!announcements.isEmpty()) {
+                apiSuccess = true;
+
+                // Save announcements to CSV
+                try {
+                    announcementsRepository.upsertAll(announcements);
+                } catch (IOException e) {
+                    System.err.println("Error saving announcements to CSV: " + e.getMessage());
+                }
+            }
+        } catch (Exception e) {
+            apiSuccess = false;
+        }
+
+        // Fallback to CSV if API fails or returns empty
+        if (!apiSuccess) {
+            try {
+                announcements = announcementsRepository.findByWeek(
+                        week.startIncl(),
+                        week.endExcl()
+                );
+            } catch (IOException e) {
+                System.err.println("Error reading announcements from CSV: " + e.getMessage());
+            }
+        }
+
+        // Print out announcements instead of GUI
+        System.out.println("\n=== ANNOUNCEMENTS FOR WEEK ===");
+        System.out.println(week.startIncl() + " → " + week.endExcl().minusDays(1));
+        System.out.println("-----------------------------------------");
+
+        if (announcements.isEmpty()) {
+            System.out.println("No announcements for this week.");
+            return;
+        }
+
+        for (Announcement ann : announcements) {
+            System.out.println("• " + ann.getTitle());
+            System.out.println("  Posted: " + ann.getPostedAt());
+            System.out.println("  Course ID: " + ann.getCourseId());
+            System.out.println("  Message: " + (ann.getBody() != null ? ann.getBody() : "(empty)"));
+            System.out.println();
+        }
+    }
+
     private WeekRange getWeekRange(LocalDate date) {
-        /*LocalDate weekStart = date.minusDays(date.getDayOfWeek().getValue() - 1);
+        LocalDate weekStart = date.minusDays(date.getDayOfWeek().getValue() - 1);
         LocalDate weekEnd = weekStart.plusDays(7);
-        return new WeekRange(weekStart, weekEnd);*/
-        LocalDate weekStart = WeekUtil.getWeekStart(date, (this.weekStart) ? "sunday" : "monday");
-        return new WeekRange(weekStart, WeekUtil.getWeekEnd(weekStart));
+        return new WeekRange(weekStart, weekEnd);
+        /*LocalDate weekStart = WeekUtil.getWeekStart(date, (this.weekStart) ? "sunday" : "monday");
+        return new WeekRange(weekStart, WeekUtil.getWeekEnd(weekStart));*/
     }
 
     private void navigateWeek(int offsetWeeks) {
@@ -707,6 +776,11 @@ public class MainPageController implements Initializable {
         //System.out.println(DateTimeUtil.formatDate(newWeek.startIncl()));
         //System.out.println(DateTimeUtil.formatDate(newWeek.endExcl()));
         populateCoursesAndAssignments(newWeek);
+        if (showAnnouncements) {
+            populateAnnouncements(newWeek);
+        } else {
+            populateCoursesAndAssignments(newWeek);
+        }
     }
 
     private String getAuthToken() {
@@ -811,7 +885,8 @@ public class MainPageController implements Initializable {
 
             // Populate GUI with Canvas data
             WeekRange currentWeek = getWeekRange(dateDisplayed);
-            populateCoursesAndAssignments(currentWeek);
+            //populateCoursesAndAssignments(currentWeek);
+            populateAnnouncements(currentWeek);
         });
     }
 }
