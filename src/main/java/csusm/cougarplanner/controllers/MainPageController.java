@@ -681,46 +681,20 @@ public class MainPageController implements Initializable {
         // Get courses from cache (CanvasService handles fetch on first call only)
         List<Course> courses = canvasService.fetchCourses();
 
-        List<Assignment> assignments = new ArrayList<>();
-        boolean apiSuccess = false;
-
-        // Attempt API fetch for assignments only
-        try {
-            assignments = canvasService.fetchAssignments(week);
-
-            if (!assignments.isEmpty()) {
-                apiSuccess = true;
-
-                // Save assignments to local CSV
-                try {
-                    assignmentsRepository.upsertAll(assignments);
-                } catch (IOException e) {
-                    System.err.println("Error saving assignments to local files: " + e.getMessage());
-                }
-            }
-        } catch (Exception e) {
-            apiSuccess = false;
-        }
-
-        if (!apiSuccess) {
-            // Fallback to local CSV if API failed
-            try {
-                assignments = assignmentsRepository.findByWeek(week.startIncl(), week.endExcl());
-            } catch (IOException e) {
-                assignments = new ArrayList<>();
-                System.err.println("Error reading local assignment data: " + e.getMessage());
-            }
-        }
+        // Get assignments from cache
+        List<Assignment> assignments = canvasService.fetchAssignments(week);
 
         for (Course course : courses) {
-            List<Assignment> courseAssignments = assignments.stream()
-                    .filter(a -> a.getCourseId().equals(course.getCourseId()))
-                    .toList();
+            List<Assignment> courseAssignments = assignments
+                .stream()
+                .filter(a -> a.getCourseId().equals(course.getCourseId()))
+                .toList();
 
             if (!courseAssignments.isEmpty()) {
-                AssignmentDisplay[] displayAssignments = courseAssignments.stream()
-                        .map(a -> new AssignmentDisplay(a, course.getCourseName()))
-                        .toArray(AssignmentDisplay[]::new);
+                AssignmentDisplay[] displayAssignments = courseAssignments
+                    .stream()
+                    .map(a -> new AssignmentDisplay(a, course.getCourseName()))
+                    .toArray(AssignmentDisplay[]::new);
 
                 CourseManager manager = new CourseManager(displayAssignments, weekStart, weekDisplayed);
                 manager.renderHeaders(courseContainers);
