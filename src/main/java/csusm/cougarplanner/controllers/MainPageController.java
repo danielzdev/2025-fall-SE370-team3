@@ -4,6 +4,7 @@ import csusm.cougarplanner.API;
 import csusm.cougarplanner.Launcher;
 import csusm.cougarplanner.config.Profile;
 import csusm.cougarplanner.config.ProfileReader;
+import csusm.cougarplanner.config.ProfileWriter;
 import csusm.cougarplanner.io.AnnouncementsRepository;
 import csusm.cougarplanner.io.AssignmentsRepository;
 import csusm.cougarplanner.io.CoursesRepository;
@@ -13,16 +14,28 @@ import csusm.cougarplanner.transitions.ExponentialTransitionScale;
 import csusm.cougarplanner.transitions.ExponentialTransitionTranslation;
 import csusm.cougarplanner.util.*;
 
+import csusm.cougarplanner.util.DateTimeUtil;
+import csusm.cougarplanner.util.WeekRange;
+import csusm.cougarplanner.util.WeekUtil;
+import java.io.File;
+import java.io.IOException;
 import java.io.IOException;
 import java.net.URL;
+import java.net.URL;
 import java.nio.file.Path;
+import java.nio.file.Path;
+import java.time.LocalDate;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
+import java.time.Month;
 import java.time.format.TextStyle;
+import java.time.format.TextStyle;
+import java.util.*;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -646,6 +659,16 @@ public class MainPageController implements Initializable {
 
     @FXML
     private void closeApplication(MouseEvent event) {
+        if (!profile.shouldStoreToken()) {
+            profile.setAuthToken(null);
+            profile.setOrientationCompleted(false);
+            try {
+                ProfileWriter writer = new ProfileWriter(Path.of("data/profile.properties"));
+                writer.writeProfile(profile);
+            } catch (IOException e) {
+                System.err.println("Failed to save profile on application close: " + e.getMessage());
+            }
+        }
         Platform.exit();
     }
 
@@ -655,24 +678,24 @@ public class MainPageController implements Initializable {
     private final AnnouncementsRepository announcementsRepository = new AnnouncementsRepository();
 
     private void populateCoursesAndAssignments(WeekRange week) {
-        List<Course> courses = new ArrayList<>();
+        // Get courses from cache (CanvasService handles fetch on first call only)
+        List<Course> courses = canvasService.fetchCourses();
+
         List<Assignment> assignments = new ArrayList<>();
         boolean apiSuccess = false;
 
-        // Attempt API fetch
+        // Attempt API fetch for assignments only
         try {
-            courses = canvasService.fetchCourses();
             assignments = canvasService.fetchAssignments(week);
 
-            if (!courses.isEmpty() && !assignments.isEmpty()) {
+            if (!assignments.isEmpty()) {
                 apiSuccess = true;
 
-                // Save API data to local CSV
+                // Save assignments to local CSV
                 try {
-                    coursesRepository.upsertAll(courses);
                     assignmentsRepository.upsertAll(assignments);
                 } catch (IOException e) {
-                    System.err.println("Error saving API data to local files: " + e.getMessage());
+                    System.err.println("Error saving assignments to local files: " + e.getMessage());
                 }
             }
         } catch (Exception e) {
@@ -682,12 +705,10 @@ public class MainPageController implements Initializable {
         if (!apiSuccess) {
             // Fallback to local CSV if API failed
             try {
-                courses = coursesRepository.findAll();
                 assignments = assignmentsRepository.findByWeek(week.startIncl(), week.endExcl());
             } catch (IOException e) {
-                courses = new ArrayList<>();
                 assignments = new ArrayList<>();
-                System.err.println("Error reading local data: " + e.getMessage());
+                System.err.println("Error reading local assignment data: " + e.getMessage());
             }
         }
 
