@@ -150,12 +150,18 @@ Discussion Points:
 Sprint #4
 ================================================================================================================
 
-Meeting Date & Time: Monday 11/03
+Meeting Date & Time: Monday 11/03 @ 1:20 PM
 Meeting Location: Outside of Classroom
 Attendees: Kenneth Wilkins, Amanda Chaaban, Daniel Zapata, Quinten Roman
-Meeting Minutes: 10
-Meeting Type: Daily Standup
-Discussion Points: Progress on Cougar Sprint Tasks and Project Planning Proposal.
+Meeting Minutes: 15
+Meeting Type: Daily Standup / Sprint Kickoff
+User Story: N/A
+Discussion Points:
+- Confirmed Sprint 4 Task Assignments.
+- Quentin: T07 (Settings screen and profile saving).
+- Amanda: T14 (Data providers for Main View tabs).
+- Daniel: T15 (Sorting logic for assignments).
+- Kenny: T19 (Fetch future weeks on demand).
 
 ----------------------------------------------------------------------------------------------------------------
 
@@ -164,7 +170,22 @@ Meeting Location: Outside of Classroom
 Attendees: Kenneth Wilkins, Amanda Chaaban, Daniel Zapata, Quinten Roman
 Meeting Minutes: 10
 Meeting Type: Daily Standup
-Discussion Points: Progress on Cougar Sprint Tasks and Project Planning Proposal.
+Discussion Points:
+- Quentin reported progress on the Settings UI layout matching the orientation screens.
+- Daniel finalized the "Date then Time" comparator logic.
+- Amanda working on connecting CSV readers to the UI tabs.
+
+----------------------------------------------------------------------------------------------------------------
+
+Meeting Date & Time: Friday 11/07 @ 2:00 PM
+Meeting Location: Library (Reserved Private Room)
+Attendees: Kenneth Wilkins, Amanda Chaaban, Daniel Zapata, Quinten Roman
+Meeting Minutes: 30
+Meeting Type: Daily Standup & Integration Check
+Discussion Points:
+- Reviewed the data provider integration (T14).
+- Discussed handling empty dates in sorting (T15) - confirmed empty dates should go last.
+- Kenny began implementation of T19 (fetching logic for future weeks).
 
 ----------------------------------------------------------------------------------------------------------------
 
@@ -173,7 +194,10 @@ Meeting Location: Outside of Classroom
 Attendees: Kenneth Wilkins, Amanda Chaaban, Daniel Zapata, Quinten Roman
 Meeting Minutes: 10
 Meeting Type: Daily Standup
-Discussion Points: Progress on Cougar Sprint Tasks and Project Planning Proposal.
+Discussion Points:
+- Progress check on T19: Fetching new weeks is working but needs testing with bad internet connections.
+- Settings screen (T07) now correctly writes changes to .profile.
+- Discussed formatting issues with the "Current Day" display.
 
 ----------------------------------------------------------------------------------------------------------------
 
@@ -181,16 +205,44 @@ Meeting Date & Time: Wednesday 11/12 @ 1:20 PM
 Meeting Location: Library (Outside of Classroom)
 Attendees: Kenneth Wilkins, Amanda Chaaban, Daniel Zapata, Quinten Roman
 Meeting Minutes: 10
-Meeting Type: Retrospective & Planning for Sprint 4
-Discussion Points: Progress on Cougar Sprint Tasks and Project Planning Proposal.
+Meeting Type: Daily Standup
+Discussion Points:
+- Testing sorting logic (T15) with the new data providers (T14).
+- Identified a bug where announcements aren't displaying correctly in the tab.
+- Confirmed the scheduler is running every 15 minutes.
 
 ----------------------------------------------------------------------------------------------------------------
 
-Meeting Date & Time: Monday 11/17
-Meeting Location: (Not specified)
+Meeting Date & Time: Friday 11/14 @ 1:00 PM
+Meeting Location: Discord
 Attendees: Kenneth Wilkins, Amanda Chaaban, Daniel Zapata, Quinten Roman
-Meeting Minutes: (Not specified)
-Meeting Type: Retrospective Meeting
-User Story: N/A
-Discussion Points: N/A
+Meeting Minutes: 15
+Meeting Type: Daily Standup
+Discussion Points:
+- Final code merge for Sprint 4 tasks.
+- Verified that Settings changes update the app state without crashing.
+- Prepared list of UI bugs and polish items for the Product Review meeting.
+
 ----------------------------------------------------------------------------------------------------------------
+
+Meeting Date & Time: Monday 11/17 @ 4:00 PM
+Meeting Location: Library (Reserved Private Room)
+Attendees: Kenneth Wilkins, Amanda Chaaban, Daniel Zapata, Quinten Roman
+Meeting Minutes: 60
+Meeting Type: Product Review & Retrospective
+User Stories Completed:
+- As a user, I want to configure my preferences (Week start, Default view) in a Settings menu.
+- As a user, I want to view my actual assignments and announcements in the app tabs.
+- As a user, I want my assignments sorted by Date then Time so I see what is due next.
+- As a user, I want the app to automatically fetch new data when I navigate to a future week.
+
+Discussion Points:
+- Reviewed Sprint 4 deliverables. All core tasks (T07, T14, T15, T19) marked as Done.
+- Compiled a "Things to Finish/Fix" list for the next sprint (Sprint 5):
+  1. Fix current day display at the top of the page (showing incorrect day).
+  2. Fix loading speed issues.
+  3. Swap text for "Settings" and "Viewing Announcements" tab (labels are swapped).
+  4. Make announcements actually display (currently only assignments display).
+  5. Update "API Token" tab name to "Token Login".
+  6. Add instructions for getting API token in the Orientation.
+  7. Remove empty courses from the list.
