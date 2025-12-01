@@ -107,36 +107,54 @@ public final class CanvasService {
 
     /**
      * Fetches announcements from Canvas API and filters by week range.
+     * Iterates through courses to fetch context-specific announcements.
      * Only includes announcements with posted dates within the specified range.
-     * Returns empty list on API errors or parsing failures.
      */
     public List<Announcement> fetchAnnouncements(WeekRange range) {
-        String json = api.getAnnouncementsJson();
-        if (json == null) {
+        // 1. Get all courses first
+        List<Course> courses = fetchCourses();
+        if (courses.isEmpty()) {
             return Collections.emptyList();
         }
 
-        try {
-            Type listType = new TypeToken<List<AnnouncementDto>>() {}.getType();
-            List<AnnouncementDto> dtos = gson.fromJson(json, listType);
+        List<Announcement> allAnnouncements = new ArrayList<>();
 
-            if (dtos == null) {
-                return Collections.emptyList();
-            }
+        // 2. Iterate through each course
+        for (Course course : courses) {
+            try {
+                int courseId = Integer.parseInt(course.getCourseId());
 
-            List<Announcement> announcements = new ArrayList<>();
-            for (AnnouncementDto dto : dtos) {
-                if (dto.id != null && dto.course_id != null) {
-                    Optional<LocalDate> postedDate = DateTimeUtil.parseDateFromDateTime(dto.posted_at);
-                    if (postedDate.isPresent() && isDateInRange(postedDate.get(), range)) {
-                        announcements.add(mapToAnnouncement(dto));
+                String json = api.getAnnouncementsJson(courseId);
+
+                if (json == null) {
+                    continue;
+                }
+
+                Type listType = new TypeToken<List<AnnouncementDto>>() {}.getType();
+                List<AnnouncementDto> dtos = gson.fromJson(json, listType);
+
+                if (dtos == null) {
+                    continue;
+                }
+
+                for (AnnouncementDto dto : dtos) {
+                    if (dto.id != null) {
+                        // Ensure course_id is set
+                        if (dto.course_id == null) {
+                            dto.course_id = Long.valueOf(courseId);
+                        }
+
+                        Optional<LocalDate> postedDate = DateTimeUtil.parseDateFromDateTime(dto.posted_at);
+                        if (postedDate.isPresent() && isDateInRange(postedDate.get(), range)) {
+                            allAnnouncements.add(mapToAnnouncement(dto));
+                        }
                     }
                 }
+            } catch (Exception e) {
+                continue;
             }
-            return announcements;
-        } catch (Exception e) {
-            return Collections.emptyList();
         }
+        return allAnnouncements;
     }
 
     /**
