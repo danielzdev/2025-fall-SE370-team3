@@ -27,7 +27,7 @@ public class AnnouncementDisplay
         this.courseName = courseName;
         this.title = announcement.getTitle();
         this.postedAt = announcement.getPostedAt();
-        this.body = announcement.getBody();
+        this.body = announcement.getMessage();
     }
 
     public String getAnnouncementId() { return announcementId; }

@@ -9,7 +9,7 @@ public class Announcement
     private String course_id;
     private String title;
     private String posted_at;
-    private String body;
+    private String message;
 
     /**
      * Default constructor for CSV reading and object creation.
@@ -24,16 +24,16 @@ public class Announcement
      * @param course_id identifier of the associated course
      * @param title the announcement title
      * @param posted_at combined date and time in YYYY-MM-DD HH:MM format
-     * @param body optional announcement content
+     * @param message optional announcement content
      */
     public Announcement(String announcement_id, String course_id, String title,
-                        String posted_at, String body)
+                        String posted_at, String message)
     {
         this.announcement_id = announcement_id;
         this.course_id = course_id;
         this.title = title;
         this.posted_at = posted_at;
-        this.body = body;
+        this.message = message;
     }
 
     /**
@@ -117,23 +117,23 @@ public class Announcement
     }
 
     /**
-     * Gets the announcement body content.
+     * Gets the announcement message content.
      *
-     * @return the body content, which may be null or empty
+     * @return the message content, which may be null or empty
      */
-    public String getBody()
+    public String getMessage()
     {
-        return body;
+        return message;
     }
 
     /**
-     * Sets the announcement body content.
+     * Sets the announcement message content.
      *
-     * @param body the body content to set
+     * @param message the message content to set
      */
-    public void setBody(String body)
+    public void setMessage(String message)
     {
-        this.body = body;
+        this.message = message;
     }
 
     /**
@@ -149,7 +149,7 @@ public class Announcement
                 ", course_id='" + course_id + '\'' +
                 ", title='" + title + '\'' +
                 ", posted_at='" + posted_at + '\'' +
-                ", body='" + body + '\'' +
+                ", message='" + message + '\'' +
                 '}';
     }
 }

@@ -126,6 +126,7 @@ public class MainPageController implements Initializable {
 
                 showAnnouncements = userClickedAnnouncements;
 
+                dateDisplayed = LocalDate.now(); // reset to current week
                 WeekRange currentWeek = getWeekRange(dateDisplayed);
 
                 if (showAnnouncements) {
@@ -133,6 +134,12 @@ public class MainPageController implements Initializable {
                     populateAnnouncements(currentWeek);
                 } else {
                     clearAnnouncementDisplay();
+                    dateDisplayed = LocalDate.now().plusWeeks(1);
+                    currentWeek = getWeekRange(dateDisplayed);
+                    // Ensure weekStart and weekDisplayed are set correctly
+                    weekStart = true;               // or false depending on your week logic
+                    weekDisplayed = currentWeek.startIncl(); // mimic navigateWeek behavior
+
                     populateCoursesAndAssignments(currentWeek);
                 }
             }
@@ -725,7 +732,7 @@ public class MainPageController implements Initializable {
             System.out.println("• " + ann.getTitle());
             System.out.println("  Posted: " + ann.getPostedAt());
             System.out.println("  Course ID: " + ann.getCourseId());
-            System.out.println("  Message: " + (ann.getBody() != null ? ann.getBody() : "(empty)"));
+            System.out.println("  Message: " + (ann.getMessage() != null ? ann.getMessage() : "(empty)"));
             System.out.println();
         }
     }
@@ -855,7 +862,6 @@ public class MainPageController implements Initializable {
 
             // Populate GUI with Canvas data
             WeekRange currentWeek = getWeekRange(dateDisplayed);
-            //populateCoursesAndAssignments(currentWeek);
             populateAnnouncements(currentWeek);
         });
     }

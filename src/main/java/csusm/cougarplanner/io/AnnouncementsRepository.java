@@ -177,7 +177,7 @@ public class AnnouncementsRepository
         announcement.setCourseId(record.get("course_id"));
         announcement.setTitle(record.get("title"));
         announcement.setPostedAt(record.get("posted_at"));
-        announcement.setBody(record.get("body"));
+        announcement.setMessage(record.get("body"));
         return announcement;
     }
 
@@ -194,7 +194,7 @@ public class AnnouncementsRepository
         record.put("course_id", announcement.getCourseId());
         record.put("title", announcement.getTitle());
         record.put("posted_at", announcement.getPostedAt());
-        record.put("body", announcement.getBody() != null ? announcement.getBody() : "");
+        record.put("body", announcement.getMessage() != null ? announcement.getMessage() : "");
         return record;
     }
 }
