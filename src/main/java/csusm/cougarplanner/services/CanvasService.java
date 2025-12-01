@@ -3,12 +3,14 @@ package csusm.cougarplanner.services;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import csusm.cougarplanner.API;
+import csusm.cougarplanner.io.CoursesRepository;
 import csusm.cougarplanner.models.Announcement;
 import csusm.cougarplanner.models.Assignment;
 import csusm.cougarplanner.models.Course;
 import csusm.cougarplanner.util.CourseCodeUtil;
 import csusm.cougarplanner.util.DateTimeUtil;
 import csusm.cougarplanner.util.WeekRange;
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -21,10 +23,37 @@ public final class CanvasService {
 
     private final API api;
     private final Gson gson;
+    private final CoursesRepository coursesRepository;
 
     public CanvasService(API api) {
         this.api = api;
         this.gson = new Gson();
+        this.coursesRepository = new CoursesRepository();
+    }
+
+    /**
+     * Gets all active courses, using cached data if available.
+     * Fetches from API only if cache is empty, then saves to cache.
+     * Returns empty list on errors.
+     */
+    public List<Course> fetchCourses() {
+        try {
+            // Try to load from cache first
+            List<Course> cachedCourses = coursesRepository.findAll();
+            if (!cachedCourses.isEmpty()) {
+                return cachedCourses;
+            }
+
+            // If cache is empty, fetch from API and save
+            List<Course> fetchedCourses = fetchCoursesFromApi();
+            if (!fetchedCourses.isEmpty()) {
+                coursesRepository.upsertAll(fetchedCourses);
+            }
+            return fetchedCourses;
+        } catch (IOException e) {
+            // If cache read fails, try API as fallback
+            return fetchCoursesFromApi();
+        }
     }
 
     /**
@@ -32,7 +61,7 @@ public final class CanvasService {
      * Parses JSON response and converts to Course objects.
      * Returns empty list on API errors or parsing failures.
      */
-    public List<Course> fetchCourses() {
+    private List<Course> fetchCoursesFromApi() {
         String json = api.getCoursesJson();
         if (json == null) {
             return Collections.emptyList();
@@ -54,6 +83,7 @@ public final class CanvasService {
             }
             return courses;
         } catch (Exception e) {
+            System.err.println("Error parsing courses from API: " + e.getMessage());
             return Collections.emptyList();
         }
     }
@@ -64,7 +94,6 @@ public final class CanvasService {
      * Returns empty list on API errors or parsing failures.
      */
     public List<Assignment> fetchAssignments(WeekRange range) {
-        // First get all courses
         List<Course> courses = fetchCourses();
         if (courses.isEmpty()) {
             return Collections.emptyList();
@@ -111,7 +140,7 @@ public final class CanvasService {
      * Only includes announcements with posted dates within the specified range.
      */
     public List<Announcement> fetchAnnouncements(WeekRange range) {
-        // 1. Get all courses first
+        // 1. Get all courses
         List<Course> courses = fetchCourses();
         if (courses.isEmpty()) {
             return Collections.emptyList();

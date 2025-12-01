@@ -14,15 +14,24 @@ import csusm.cougarplanner.transitions.ExponentialTransitionTranslation;
 import csusm.cougarplanner.util.DateTimeUtil;
 import csusm.cougarplanner.util.WeekRange;
 import csusm.cougarplanner.util.WeekUtil;
+import java.io.File;
+import java.io.IOException;
 import java.io.IOException;
 import java.net.URL;
+import java.net.URL;
+import java.nio.file.Path;
 import java.nio.file.Path;
 import java.time.LocalDate;
+import java.time.LocalDate;
+import java.time.Month;
 import java.time.Month;
 import java.time.format.TextStyle;
+import java.time.format.TextStyle;
+import java.util.*;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -38,16 +47,6 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
-
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-import java.nio.file.Path;
-import java.time.LocalDate;
-import java.time.Month;
-import java.time.format.TextStyle;
-import java.util.*;
-import java.util.stream.Collectors;
 
 public class MainPageController implements Initializable {
 
@@ -148,7 +147,6 @@ public class MainPageController implements Initializable {
         for (VBox vbox : courseContainers) vbox.getChildren().clear();
     }
 
-
     @FXML
     private Pane viewingButtonDecoration1, viewingButtonDecoration2, viewingButtonDecoration3, viewingButtonDecoration4, viewingButtonDecoration5;
 
@@ -217,7 +215,11 @@ public class MainPageController implements Initializable {
                 weekDisplayed = WeekUtil.getWeekStart(dateDisplayed, weekStartSetting);
                 break;
             case "previousWeek":
-                dateDisplayed = weekDisplayed = WeekUtil.getNavigationWeekBounds(weekDisplayed, weekStartSetting, "previous")[0]; //display the first day of the next week
+                dateDisplayed = weekDisplayed = WeekUtil.getNavigationWeekBounds(
+                    weekDisplayed,
+                    weekStartSetting,
+                    "previous"
+                )[0]; //display the first day of the next week
                 break;
             case "previousDay":
                 dateDisplayed = dateDisplayed.minusDays(1);
@@ -227,7 +229,11 @@ public class MainPageController implements Initializable {
                 }
                 break;
             case "nextWeek":
-                dateDisplayed = weekDisplayed = WeekUtil.getNavigationWeekBounds(weekDisplayed, weekStartSetting, "next")[0]; //display the first day of the next week
+                dateDisplayed = weekDisplayed = WeekUtil.getNavigationWeekBounds(
+                    weekDisplayed,
+                    weekStartSetting,
+                    "next"
+                )[0]; //display the first day of the next week
                 break;
             case "nextDay":
                 dateDisplayed = dateDisplayed.plusDays(1);
@@ -567,8 +573,8 @@ public class MainPageController implements Initializable {
     @FXML
     private void viewPreviousBlock(MouseEvent event) {
         selectNewObject(viewingHitbox); //filler object to allow new selection
-            updateDate("previousWeek", Optional.empty());
-            navigateWeek(-1); // go to previous week
+        updateDate("previousWeek", Optional.empty());
+        navigateWeek(-1); // go to previous week
     }
 
     @FXML
@@ -623,24 +629,24 @@ public class MainPageController implements Initializable {
     private final AnnouncementsRepository announcementsRepository = new AnnouncementsRepository();
 
     private void populateCoursesAndAssignments(WeekRange week) {
-        List<Course> courses = new ArrayList<>();
+        // Get courses from cache (CanvasService handles fetch on first call only)
+        List<Course> courses = canvasService.fetchCourses();
+
         List<Assignment> assignments = new ArrayList<>();
         boolean apiSuccess = false;
 
-        // Attempt API fetch
+        // Attempt API fetch for assignments only
         try {
-            courses = canvasService.fetchCourses();
             assignments = canvasService.fetchAssignments(week);
 
-            if (!courses.isEmpty() && !assignments.isEmpty()) {
+            if (!assignments.isEmpty()) {
                 apiSuccess = true;
 
-                // Save API data to local CSV
+                // Save assignments to local CSV
                 try {
-                    coursesRepository.upsertAll(courses);
                     assignmentsRepository.upsertAll(assignments);
                 } catch (IOException e) {
-                    System.err.println("Error saving API data to local files: " + e.getMessage());
+                    System.err.println("Error saving assignments to local files: " + e.getMessage());
                 }
             }
         } catch (Exception e) {
@@ -650,12 +656,10 @@ public class MainPageController implements Initializable {
         if (!apiSuccess) {
             // Fallback to local CSV if API failed
             try {
-                courses = coursesRepository.findAll();
                 assignments = assignmentsRepository.findByWeek(week.startIncl(), week.endExcl());
             } catch (IOException e) {
-                courses = new ArrayList<>();
                 assignments = new ArrayList<>();
-                System.err.println("Error reading local data: " + e.getMessage());
+                System.err.println("Error reading local assignment data: " + e.getMessage());
             }
         }
 
@@ -701,10 +705,7 @@ public class MainPageController implements Initializable {
         // Fallback to CSV if API fails or returns empty
         if (!apiSuccess) {
             try {
-                announcements = announcementsRepository.findByWeek(
-                        week.startIncl(),
-                        week.endExcl()
-                );
+                announcements = announcementsRepository.findByWeek(week.startIncl(), week.endExcl());
             } catch (IOException e) {
                 System.err.println("Error reading announcements from CSV: " + e.getMessage());
             }

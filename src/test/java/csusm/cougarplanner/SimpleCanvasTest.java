@@ -73,7 +73,7 @@ public class SimpleCanvasTest {
 
         // Calculate Monday → Sunday range for this week
         LocalDate weekStart = now.minusDays(now.getDayOfWeek().getValue() - 1);
-        LocalDate weekEnd = weekStart.plusDays(7);  // exclusive end
+        LocalDate weekEnd = weekStart.plusDays(7); // exclusive end
         WeekRange currentWeek = new WeekRange(weekStart, weekEnd);
 
         // Fetch announcements from Canvas
@@ -88,12 +88,7 @@ public class SimpleCanvasTest {
         } else {
             System.out.println("  Found " + announcements.size() + " announcements:");
             for (Announcement ann : announcements) {
-                System.out.println(
-                        "    • " +
-                                ann.getTitle() +
-                                " - Posted: " +
-                                ann.getPostedAt()
-                );
+                System.out.println("    • " + ann.getTitle() + " - Posted: " + ann.getPostedAt());
 
                 assertNotNull(ann.getTitle(), "Announcement title should not be null");
                 assertFalse(ann.getTitle().trim().isEmpty(), "Announcement title should not be empty");
@@ -102,7 +97,6 @@ public class SimpleCanvasTest {
             }
         }
     }
-
 
     @Test
     void testCurrentWeekAssignments() {
@@ -186,7 +180,7 @@ public class SimpleCanvasTest {
 
         // Previous week ranges
         LocalDate prevWeekStart = currentWeekStart.minusDays(7);
-        LocalDate prevWeekEnd = currentWeekStart;  // end is this week's start
+        LocalDate prevWeekEnd = currentWeekStart; // end is this week's start
         WeekRange prevWeek = new WeekRange(prevWeekStart, prevWeekEnd);
 
         List<Assignment> assignments = canvasService.fetchAssignments(prevWeek);
@@ -200,12 +194,12 @@ public class SimpleCanvasTest {
             System.out.println("  Found " + assignments.size() + " assignments:");
             for (Assignment assignment : assignments) {
                 System.out.println(
-                        "    • " +
-                                assignment.getAssignmentName() +
-                                " - Due: " +
-                                assignment.getDueDate() +
-                                " at " +
-                                assignment.getDueTime()
+                    "    • " +
+                        assignment.getAssignmentName() +
+                        " - Due: " +
+                        assignment.getDueDate() +
+                        " at " +
+                        assignment.getDueTime()
                 );
 
                 assertNotNull(assignment.getAssignmentName(), "Assignment name should not be null");
@@ -213,5 +207,4 @@ public class SimpleCanvasTest {
             }
         }
     }
-
 }
