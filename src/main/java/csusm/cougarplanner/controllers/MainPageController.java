@@ -4,6 +4,7 @@ import csusm.cougarplanner.API;
 import csusm.cougarplanner.Launcher;
 import csusm.cougarplanner.config.Profile;
 import csusm.cougarplanner.config.ProfileReader;
+import csusm.cougarplanner.config.ProfileWriter;
 import csusm.cougarplanner.io.AnnouncementsRepository;
 import csusm.cougarplanner.io.AssignmentsRepository;
 import csusm.cougarplanner.io.CoursesRepository;
@@ -627,6 +628,16 @@ public class MainPageController implements Initializable {
 
     @FXML
     private void closeApplication(MouseEvent event) {
+        if (!profile.shouldStoreToken()) {
+            profile.setAuthToken(null);
+            profile.setOrientationCompleted(false);
+            try {
+                ProfileWriter writer = new ProfileWriter(Path.of("data/profile.properties"));
+                writer.writeProfile(profile);
+            } catch (IOException e) {
+                System.err.println("Failed to save profile on application close: " + e.getMessage());
+            }
+        }
         Platform.exit();
     }
 
