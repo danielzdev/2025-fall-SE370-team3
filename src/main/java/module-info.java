@@ -3,6 +3,7 @@ module CougarPlanner {
     requires javafx.fxml;
     requires com.google.gson;
     requires java.net.http;
+    requires org.jsoup;
 
     opens csusm.cougarplanner to javafx.fxml;
     exports csusm.cougarplanner;
