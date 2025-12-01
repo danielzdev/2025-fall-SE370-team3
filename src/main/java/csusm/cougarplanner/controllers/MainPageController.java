@@ -11,13 +11,13 @@ import csusm.cougarplanner.models.*;
 import csusm.cougarplanner.services.CanvasService;
 import csusm.cougarplanner.transitions.ExponentialTransitionScale;
 import csusm.cougarplanner.transitions.ExponentialTransitionTranslation;
-import csusm.cougarplanner.util.DateTimeUtil;
-import csusm.cougarplanner.util.WeekRange;
-import csusm.cougarplanner.util.WeekUtil;
+import csusm.cougarplanner.util.*;
+
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.format.TextStyle;
 import java.util.Locale;
@@ -28,7 +28,6 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.effect.BoxBlur;
 import javafx.scene.input.MouseEvent;
@@ -36,18 +35,15 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
 import javafx.util.Duration;
 
+import org.jsoup.Jsoup;
+
 import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-import java.nio.file.Path;
-import java.time.LocalDate;
-import java.time.Month;
-import java.time.format.TextStyle;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class MainPageController implements Initializable {
 
@@ -113,8 +109,12 @@ public class MainPageController implements Initializable {
     @FXML
     private Rectangle announcementsRectangle, assignmentsRectangle;
 
-    //    boolean showAnnouncements = false; //true - show announcements, false - show assignments
+    @FXML
+    private AnchorPane announcementsPlanner;
+
     boolean showAnnouncements = true; //false - show assignments
+    LocalDate lastDateAssignmentsHadOpen;
+    LocalDate lastDateAnnouncementsHadOpen;
 
     @FXML
     private void toggleContentsType(MouseEvent event) {
@@ -130,19 +130,42 @@ public class MainPageController implements Initializable {
 
                 WeekRange currentWeek = getWeekRange(dateDisplayed);
 
-                if (showAnnouncements) {
-                    clearAssignmentDisplay();
-                    populateAnnouncements(currentWeek);
+                if (showAnnouncements) { //user wishes to see announcements
+                    if (defaultView) { //the user is viewing plannerWeek
+                        weekPlanner.setVisible(false);
+                    } else { //the user is viewing plannerDay
+                        dayPlanner.setVisible(false);
+                    }
+
+                    lastDateAssignmentsHadOpen = weekDisplayed;
+
+                    if (!WeekUtil.isDateInWeek(lastDateAnnouncementsHadOpen, weekDisplayed, (weekStart) ? "sunday" : "monday")) {
+                        clearAnnouncementDisplay();
+                        populateAnnouncements(currentWeek);
+                    }
+                    announcementsPlanner.setVisible(true);
                 } else {
-                    clearAnnouncementDisplay();
-                    populateCoursesAndAssignments(currentWeek);
+                    if (defaultView) { //the user is viewing plannerWeek
+                        weekPlanner.setVisible(true);
+                    } else { //the user is viewing plannerDay
+                        dayPlanner.setVisible(true);
+                    }
+
+                    lastDateAnnouncementsHadOpen = weekDisplayed;
+
+                    if (!WeekUtil.isDateInWeek(lastDateAssignmentsHadOpen, weekDisplayed, (weekStart) ? "sunday" : "monday")) {
+                        clearAssignmentDisplay();
+                        populateCoursesAndAssignments(currentWeek);
+                    }
+                    announcementsPlanner.setVisible(false);
                 }
             }
         }
     }
 
     private void clearAnnouncementDisplay() {
-        //announcementContainer.clear(); // replace
+        announcementsLabelField.getChildren().clear();
+        announcementComponents.clear();
     }
 
     private void clearAssignmentDisplay() {
@@ -394,8 +417,6 @@ public class MainPageController implements Initializable {
 
     private VBox[] courseContainers;
 
-    private VBox[] announcementContainer;
-
     @FXML
     private AnchorPane sundayDayHeaderPane, mondayDayHeaderPane, tuesdayDayHeaderPane, wednesdayDayHeaderPane, thursdayDayHeaderPane, fridayDayHeaderPane, saturdayDayHeaderPane;
 
@@ -557,13 +578,12 @@ public class MainPageController implements Initializable {
                     }
                     changeDayViewed(weekDayViewed);
                 } else {
-                    for (int i = 0; i < courseContainers.length; i++) {
-                        courseContainers[i].getChildren().clear();
-                    }
+                    clearAssignmentDisplay();
 
-                    //add the logic to refresh the planner based on the week start
-                    /*biology.updateWeekStart(courseContainers, weekStart);
-                    physics.updateWeekStart(courseContainers, weekStart);*/
+                    if (!showAnnouncements) {
+                        WeekRange range = getWeekRange(weekDisplayed);
+                        populateCoursesAndAssignments(range);
+                    }
                 }
             }
         }
@@ -576,23 +596,22 @@ public class MainPageController implements Initializable {
     @FXML
     private void viewPreviousBlock(MouseEvent event) {
         selectNewObject(viewingHitbox); //filler object to allow new selection
-        //System.out.println(DateTimeUtil.formatDate(dateDisplayed));
-        //System.out.println(DateTimeUtil.formatDate(weekDisplayed));
             updateDate("previousWeek", Optional.empty());
-        //System.out.println(DateTimeUtil.formatDate(dateDisplayed));
-        //System.out.println(DateTimeUtil.formatDate(weekDisplayed));
-            navigateWeek(-1); // go to previous week
+            navigateWeek(); // go to previous week
     }
 
     @FXML
     private void viewNextBlock(MouseEvent event) {
         selectNewObject(viewingHitbox); //filler object to allow new selection
         updateDate("nextWeek", Optional.empty());
-        navigateWeek(1); // go to next week
+        navigateWeek(); // go to next week
     }
 
-    private void changeWeekViewed(String dateViewed) {
-        return;
+    @FXML
+    private void viewTodayBlock(MouseEvent event) {
+        selectNewObject(viewingHitbox); //filler object to allow new selection
+        updateDate("today", Optional.empty());
+        navigateWeek(); //go to 'today' week
     }
 
     private void changeDayViewed(int dayViewed) {
@@ -633,6 +652,7 @@ public class MainPageController implements Initializable {
     private CanvasService canvasService;
     private final CoursesRepository coursesRepository = new CoursesRepository();
     private final AssignmentsRepository assignmentsRepository = new AssignmentsRepository();
+    private final AnnouncementsRepository announcementsRepository = new AnnouncementsRepository();
 
     private void populateCoursesAndAssignments(WeekRange week) {
         List<Course> courses = new ArrayList<>();
@@ -643,10 +663,6 @@ public class MainPageController implements Initializable {
         try {
             courses = canvasService.fetchCourses();
             assignments = canvasService.fetchAssignments(week);
-
-            //System.out.println("                                attempting course fetch");
-            //System.out.println("                                attempting assignments fetch in week: ");
-            //System.out.println("                                    (" + DateTimeUtil.formatDate(week.startIncl()) + ") to (" + DateTimeUtil.formatDate(week.endExcl()) + ")");
 
             if (!courses.isEmpty() && !assignments.isEmpty()) {
                 apiSuccess = true;
@@ -676,15 +692,9 @@ public class MainPageController implements Initializable {
         }
 
         for (Course course : courses) {
-            //System.out.println("    Course: " + course.getCourseName());
             List<Assignment> courseAssignments = assignments.stream()
                     .filter(a -> a.getCourseId().equals(course.getCourseId()))
                     .toList();
-            //System.out.println("        Assignments");
-            for (Assignment assignment : courseAssignments) {
-                //System.out.println("        " + assignment.getAssignmentName());
-                //System.out.println("        (" + assignment.getCreatedAt() + ") / (" + assignment.getDueDate());
-            }
 
             if (!courseAssignments.isEmpty()) {
                 AssignmentDisplay[] displayAssignments = courseAssignments.stream()
@@ -694,25 +704,30 @@ public class MainPageController implements Initializable {
                 CourseManager manager = new CourseManager(displayAssignments, weekStart, weekDisplayed);
                 manager.renderHeaders(courseContainers);
                 manager.renderBars(courseContainers);
-            } /*else {
-                System.out.println("        Empty");
-            }*/
+            }
         }
     }
 
+    @FXML
+    private AnchorPane announcementsLabelField;
+    private final double announcementsLabelFieldWidth = 996 + 2.0 / 3;
+
     private void populateAnnouncements(WeekRange week) {
+        List<Course> courses = new ArrayList<>();
         List<Announcement> announcements = new ArrayList<>();
         boolean apiSuccess = false;
 
         // Try API first
         try {
+            courses = canvasService.fetchCourses();
             announcements = canvasService.fetchAnnouncements(week);
 
-            if (!announcements.isEmpty()) {
+            if (!courses.isEmpty() && !announcements.isEmpty()) {
                 apiSuccess = true;
 
                 // Save announcements to CSV
                 try {
+                    coursesRepository.upsertAll(courses);
                     announcementsRepository.upsertAll(announcements);
                 } catch (IOException e) {
                     System.err.println("Error saving announcements to CSV: " + e.getMessage());
@@ -725,6 +740,7 @@ public class MainPageController implements Initializable {
         // Fallback to CSV if API fails or returns empty
         if (!apiSuccess) {
             try {
+                courses = coursesRepository.findAll();
                 announcements = announcementsRepository.findByWeek(
                         week.startIncl(),
                         week.endExcl()
@@ -734,51 +750,104 @@ public class MainPageController implements Initializable {
             }
         }
 
-        // Print out announcements instead of GUI
-        System.out.println("\n=== ANNOUNCEMENTS FOR WEEK ===");
-        System.out.println(week.startIncl() + " → " + week.endExcl().minusDays(1));
-        System.out.println("-----------------------------------------");
+        //populate the GUI with announcement material
+        for (Course course : courses) {
+            List<Announcement> courseAnnouncements = announcements.stream()
+                    .filter(a -> a.getCourseId().equals(course.getCourseId()))
+                    .toList();
 
-        if (announcements.isEmpty()) {
-            System.out.println("No announcements for this week.");
-            return;
-        }
+            if (!courseAnnouncements.isEmpty()) {
+                AnnouncementDisplay[] displayAnnouncements = courseAnnouncements.stream()
+                        .map(a -> new AnnouncementDisplay(a, course.getCourseName()))
+                        .toArray(AnnouncementDisplay[]::new);
 
-        for (Announcement ann : announcements) {
-            System.out.println("• " + ann.getTitle());
-            System.out.println("  Posted: " + ann.getPostedAt());
-            System.out.println("  Course ID: " + ann.getCourseId());
-            System.out.println("  Message: " + (ann.getBody() != null ? ann.getBody() : "(empty)"));
-            System.out.println();
+
+                //process the announcement header
+                Label headerLabel = new AnnouncementsCourseHeaderLabelTemplate().getLabel();
+                headerLabel.setText(course.getCourseName());
+
+                double depth = getCurrentAnnouncementObjectDepth();
+
+                headerLabel.setLayoutX(AnnouncementsCourseHeaderLabelTemplate.leftConstraint);
+                headerLabel.setLayoutY(depth + AnnouncementsCourseHeaderLabelTemplate.upperConstraint);
+
+                announcementsLabelField.getChildren().add(headerLabel);
+                announcementComponents.add("header");
+
+                //process the announcements
+                for (AnnouncementDisplay announcement : displayAnnouncements) {
+                    //configure announcement title
+                    Label announcementTitle = new AnnouncementsTitleLabelTemplate().getLabel("title");
+                    announcementTitle.setText(announcement.getTitle());
+
+                    announcementsLabelField.getChildren().add(announcementTitle);
+
+                    depth = getCurrentAnnouncementObjectDepth();
+
+                    announcementTitle.setLayoutX(AnnouncementsTitleLabelTemplate.leftConstraint);
+                    announcementTitle.setLayoutY(depth + AnnouncementsTitleLabelTemplate.upperConstraint);
+                    announcementComponents.add("title");
+
+                    //configure announcement 'posted on' label
+                    Label announcementPosted = new AnnouncementsTitleLabelTemplate().getLabel("posted");
+                    String postedString = createAnnouncementPostedString(DateTimeUtil.parseDateTime(announcement.getPostedAt()));
+                    announcementPosted.setText(postedString);
+
+                    announcementsLabelField.getChildren().add(announcementPosted);
+
+                    //dont change the depth
+
+                    announcementPosted.setLayoutX(announcementsLabelFieldWidth - TextSizingUtil.findPixelWidth(postedString, 15.0, postedString.length()) - 20);
+                    announcementPosted.setLayoutY(depth + AnnouncementsTitleLabelTemplate.upperConstraint);
+
+                    //configure announcement body
+                    String bodyHTML = announcement.getBody();
+                    String body = Jsoup.parse(bodyHTML).text();
+
+                    while (!body.isEmpty()) {
+                        Label announcementBody = new AnnouncementsBodyLabelTemplate().getLabel();
+                        double bodyWidth = TextSizingUtil.findPixelWidth(body, 14.0, body.length());
+                        double rightSubstringBound = body.length() - 1;
+                        if ( bodyWidth > 850) {
+                            rightSubstringBound = 850 / bodyWidth;
+                            rightSubstringBound *= body.length();
+                            rightSubstringBound = (int) rightSubstringBound;
+
+                            for (; rightSubstringBound >= 0 && TextSizingUtil.findPixelWidth(body, 14.0, (int) rightSubstringBound) > 850; rightSubstringBound -= 5);
+                            for (; rightSubstringBound >= 0 && body.charAt((int) rightSubstringBound) != ' '; rightSubstringBound--);
+                        }
+                        announcementBody.setText(body.substring(0, (int) rightSubstringBound));
+                        body = body.substring((int) rightSubstringBound + 1);
+
+                        announcementsLabelField.getChildren().add(announcementBody);
+
+                        depth = getCurrentAnnouncementObjectDepth();
+
+                        announcementBody.setLayoutX(AnnouncementsBodyLabelTemplate.leftConstraint);
+                        announcementBody.setLayoutY(depth);
+
+                        announcementComponents.add("body");
+                    }
+                }
+
+                //place bar object
+            }
         }
     }
 
     private WeekRange getWeekRange(LocalDate date) {
-        LocalDate weekStart = date.minusDays(date.getDayOfWeek().getValue() - 1);
-        LocalDate weekEnd = weekStart.plusDays(7);
-        return new WeekRange(weekStart, weekEnd);
-        /*LocalDate weekStart = WeekUtil.getWeekStart(date, (this.weekStart) ? "sunday" : "monday");
-        return new WeekRange(weekStart, WeekUtil.getWeekEnd(weekStart));*/
+        LocalDate weekStart = WeekUtil.getWeekStart(date, (this.weekStart) ? "sunday" : "monday");
+        return new WeekRange(weekStart, WeekUtil.getWeekEnd(weekStart));
     }
 
-    private void navigateWeek(int offsetWeeks) {
-        // Clear previous content
-        for (VBox vbox : courseContainers) vbox.getChildren().clear();
-
-        /*if (offsetWeeks == 1) {
-            dateDisplayed = dateDisplayed.plusWeeks(offsetWeeks);
-        } else {
-            dateDisplayed = dateDisplayed.minusWeeks(offsetWeeks);
-        }*/
-        //System.out.println(DateTimeUtil.formatDate(dateDisplayed));
-        //System.out.println(DateTimeUtil.formatDate(weekDisplayed));
+    private void navigateWeek() {
         WeekRange newWeek = getWeekRange(dateDisplayed);
-        //System.out.println(DateTimeUtil.formatDate(newWeek.startIncl()));
-        //System.out.println(DateTimeUtil.formatDate(newWeek.endExcl()));
-        populateCoursesAndAssignments(newWeek);
+
         if (showAnnouncements) {
+            clearAnnouncementDisplay();
             populateAnnouncements(newWeek);
         } else {
+            clearAssignmentDisplay();
             populateCoursesAndAssignments(newWeek);
         }
     }
@@ -795,6 +864,115 @@ public class MainPageController implements Initializable {
             e.printStackTrace();
         }
         return null;
+    }
+
+    private String createAnnouncementPostedString(LocalDateTime date) {
+        String postedString = "Posted on ";
+
+        postedString += date.getMonth().getDisplayName(TextStyle.SHORT, Locale.ENGLISH) + " ";
+        postedString += addNumberSuffix(Integer.toString(date.getDayOfMonth())) + " at ";
+        postedString += date.getHour() + ":";
+        postedString += date.getMinute();
+
+        return postedString;
+    }
+
+    private final List<String> announcementComponents = new LinkedList<>();
+
+    private double getCurrentAnnouncementObjectDepth() {
+        double depth = 0;
+
+        for (String component : announcementComponents) {
+            if (component.equalsIgnoreCase("pane")) { continue; }
+
+            switch (component.toLowerCase()) {
+                case "header":
+                    depth += AnnouncementsCourseHeaderLabelTemplate.upperConstraint;
+                    depth += AnnouncementsCourseHeaderLabelTemplate.height;
+                    break;
+                case "title":
+                    depth += AnnouncementsTitleLabelTemplate.upperConstraint;
+                    depth += AnnouncementsTitleLabelTemplate.height;
+                    depth += AnnouncementsTitleLabelTemplate.lowerConstraint;
+                    break;
+                case "body":
+                    depth += AnnouncementsBodyLabelTemplate.height;
+                    break;
+            }
+        }
+
+        return depth;
+    }
+
+    private static class AnnouncementsCourseHeaderLabelTemplate {
+        private static final String fontType = "Arial Rounded MT Bold";
+        private static final int fontSize = 20;
+        private static final Color color = Color.web("#222222");
+
+        public static final double height = 23 + 1.0 / 3;
+        public static final int leftConstraint = 20;
+        public static final int upperConstraint = 10;
+
+        public Label getLabel() {
+            Label label = new Label();
+            label.setFont(Font.font(fontType, fontSize));
+            label.setTextFill(color);
+
+            return label;
+        }
+    }
+
+    private static class AnnouncementsTitleLabelTemplate {
+        private static final String fontType = "Arial Rounded MT Bold";
+        private static final int fontSize = 15;
+        private static final Color colorTitle = Color.web("#222222");
+        private static final Color colorPosted = Color.web("#888888");
+
+        public static final double height = 17 + 1.0 / 3;
+        public static final int leftConstraint = 40;
+        public static final int upperConstraint = 10;
+        public static final int lowerConstraint = 15;
+
+        public Label getLabel(String choice) {
+            Label label = new Label();
+            label.setFont(Font.font(fontType, fontSize));
+            label.setTextFill((choice.equalsIgnoreCase("title")) ? colorTitle: colorPosted);
+
+            return label;
+        }
+    }
+
+    private static class AnnouncementsBodyLabelTemplate {
+        private static final String fontType = "Arial Rounded MT Bold";
+        private static final int fontSize = 15;
+        private static final Color color = Color.web("#222222");
+
+        public static final double height = 17 + 1.0 / 3;
+        public static final int leftConstraint = 40;
+
+        public Label getLabel() {
+            Label label = new Label();
+            label.setFont(Font.font(fontType, fontSize));
+            label.setTextFill(color);
+
+            return label;
+        }
+    }
+
+    private static class AnnouncementsBarPaneTemplate {
+        private static final int width = 4;
+        private static final Color color = Color.web("#f8ba2b");
+
+        public static final int leftConstraint = 25;
+        public static final int upperConstraint = 6;
+
+        public Pane getPane() {
+            Pane pane = new Pane();
+            pane.setPrefWidth(width);
+            pane.setStyle("-fx-background-color: " + ColorUtil.toCssHex(color));
+
+            return pane;
+        }
     }
 
     @Override
@@ -881,11 +1059,13 @@ public class MainPageController implements Initializable {
             dateMemory = dateDisplayed;
             displayDateParentPaneCenter = displayDateParent.getWidth() / 2;
 
+            lastDateAnnouncementsHadOpen = lastDateAssignmentsHadOpen = dateDisplayed;
+
             updateDate("today", Optional.empty());
 
             // Populate GUI with Canvas data
             WeekRange currentWeek = getWeekRange(dateDisplayed);
-            //populateCoursesAndAssignments(currentWeek);
+            populateCoursesAndAssignments(currentWeek);
             populateAnnouncements(currentWeek);
         });
     }

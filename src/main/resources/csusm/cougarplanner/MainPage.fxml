@@ -2,6 +2,7 @@
 
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
@@ -21,7 +22,7 @@
                                 <Font name="Arial Rounded MT Bold" size="20.0" />
                             </font>
                         </Label>
-                        <Label fx:id="viewingMenuLabelMutable" layoutX="102.0" text="Assignments" textFill="#d9def4">
+                        <Label fx:id="viewingMenuLabelMutable" layoutX="102.0" text="Announcements" textFill="#d9def4">
                             <font>
                                 <Font name="Arial Rounded MT Bold" size="20.0" />
                             </font>
@@ -118,7 +119,7 @@
                                       </Label>
                            </children>
                         </Pane>
-                                <AnchorPane fx:id="weekPlanner" layoutX="11.0" layoutY="57.0" prefHeight="461.0" prefWidth="1015.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="20.0">
+                                <AnchorPane fx:id="weekPlanner" layoutX="11.0" layoutY="57.0" prefHeight="461.0" prefWidth="1015.0" visible="false" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="20.0">
                                     <children>
                                         <VBox prefHeight="382.0" prefWidth="1015.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="0.0">
                                             <children>
@@ -354,7 +355,21 @@
                                         </VBox>
                                     </children>
                                 </AnchorPane>
-                        <AnchorPane fx:id="dayPlanner1" layoutX="20.0" layoutY="67.0" prefHeight="461.0" prefWidth="1015.0" style="-fx-background-color: #bcbec0; -fx-background-radius: 2;" visible="false" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="20.0" />
+                        <AnchorPane fx:id="announcementsPlanner" layoutX="20.0" layoutY="67.0" prefHeight="461.0" prefWidth="1015.0" style="-fx-background-color: #ffffff; -fx-background-radius: 2;" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="20.0">
+                           <children>
+                              <AnchorPane layoutX="-3.6666666666666665" layoutY="15.333333333333334" prefHeight="38.0" prefWidth="244.0" style="-fx-background-color: linear-gradient(to right, #002E5A, #3ab5e8); -fx-background-radius: 4 0 0 4;" AnchorPane.leftAnchor="-4.0" AnchorPane.topAnchor="15.0" />
+                              <Label text="Announcements" textFill="WHITE" AnchorPane.leftAnchor="40.0" AnchorPane.topAnchor="20.0">
+                                 <font>
+                                    <Font name="Arial Rounded MT Bold" size="24.0" />
+                                 </font>
+                              </Label>
+                              <ScrollPane hbarPolicy="NEVER" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="62.0">
+                                 <content>
+                                    <AnchorPane fx:id="announcementsLabelField" prefHeight="471.0" prefWidth="1017.0" />
+                                 </content>
+                              </ScrollPane>
+                           </children>
+                        </AnchorPane>
                             </children>
                         </AnchorPane>
                         <AnchorPane fx:id="viewingMenu" prefWidth="200.0" style="-fx-background-color: #0062a5;" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -369,7 +384,7 @@
                                                         <Font name="Arial Rounded MT Bold" size="15.0" />
                                                     </font>
                                                 </Label>
-                                                <Rectangle fx:id="announcementsRectangle" arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="21.0" layoutX="44.0" layoutY="38.0" stroke="BLACK" strokeType="INSIDE" visible="false" width="110.0" />
+                                                <Rectangle fx:id="announcementsRectangle" arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="21.0" layoutX="44.0" layoutY="38.0" stroke="BLACK" strokeType="INSIDE" width="110.0" />
                                                 <Label layoutX="52.0" layoutY="41.0" onMouseClicked="#toggleContentsType" onMouseEntered="#highlightFromText" onMouseExited="#highlightFromText" text="Announcements" textFill="WHITE">
                                                     <font>
                                                         <Font name="Arial Rounded MT Bold" size="12.0" />
@@ -380,7 +395,7 @@
                                                         <Font name="Arial Rounded MT Bold" size="12.0" />
                                                     </font>
                                                 </Label>
-                                                <Rectangle fx:id="assignmentsRectangle" arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="21.0" layoutX="44.0" layoutY="81.0" stroke="BLACK" strokeType="INSIDE" width="110.0" />
+                                                <Rectangle fx:id="assignmentsRectangle" arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="21.0" layoutX="44.0" layoutY="81.0" stroke="BLACK" strokeType="INSIDE" visible="false" width="110.0" />
                                                 <Label layoutX="62.0" layoutY="83.0" onMouseClicked="#toggleContentsType" onMouseEntered="#highlightFromText" onMouseExited="#highlightFromText" text="Assignments" textFill="WHITE">
                                                     <font>
                                                         <Font name="Arial Rounded MT Bold" size="12.0" />
@@ -480,7 +495,7 @@
                         <Cursor fx:constant="HAND" />
                     </cursor>
                 </Label>
-            <Label layoutX="525.0" layoutY="19.0" onMouseClicked="#viewPreviousBlock" text="TODAY">
+            <Label layoutX="525.0" layoutY="19.0" onMouseClicked="#viewTodayBlock" text="TODAY">
                <font>
                   <Font name="Arial Rounded MT Bold" size="14.0" />
                </font>

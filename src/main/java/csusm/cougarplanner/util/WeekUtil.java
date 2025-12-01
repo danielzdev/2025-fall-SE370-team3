@@ -118,7 +118,7 @@ public class WeekUtil
         weekStart = getWeekStart(weekStart, weekStartSetting); //double check that week start is actually the start of a week
         LocalDate weekEnd = getWeekEnd(weekStart); //get the last day of the week provided
 
-        return (date != null && !date.isBefore(weekStart) && !date.isAfter(weekEnd));
+        return isDateInWeek(date, weekStart, weekEnd);
     }
 
     /**

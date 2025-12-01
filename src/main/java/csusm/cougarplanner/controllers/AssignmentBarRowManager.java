@@ -59,7 +59,7 @@ public class AssignmentBarRowManager {
 
             //The bar starts at a default color specified by its row, this is the color of the first assignment in the bar.
             //The next assignments are given the default color of subsequent rows, which staggers the colors used
-            Color assignmentColor = getAssignmentColor(3 * row + i); //The color of assignment i in the bar.
+            Color assignmentColor = getAssignmentColor(assignments.get(i).getAssignmentDisplay().getCourseName().charAt(0) + row + i); //The color of assignment i in the bar.
 
             //iterate through every day of the assignment, from assignment date (beginning) to due date (ending)
             for (int j = 0; assignmentBeginning.plusDays(j).isBefore(assignmentEnding.plusDays(1)); j++) {

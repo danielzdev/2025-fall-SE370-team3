@@ -79,7 +79,7 @@ public class AssignmentModuleManager implements Initializable {
         if (DateTimeUtil.parseDateFromDateTime(assignment.getCreatedAt()).isPresent()) {
             beginning = DateTimeUtil.parseDateFromDateTime(assignment.getCreatedAt()).get();
         }
-        LocalDate ending = DateTimeUtil.parseDate(assignment.getDueDate());
+        LocalDate ending = DateTimeUtil.parseDate(assignment.getDueDate()).plusDays(1);
         int i = 0;
         for (; beginning.plusDays(i).isBefore(ending); i++) {}
         this.assignmentDuration = i;
