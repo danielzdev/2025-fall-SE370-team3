@@ -3,31 +3,27 @@ package csusm.cougarplanner.controllers;
 import csusm.cougarplanner.Launcher;
 import csusm.cougarplanner.models.AssignmentModuleManager;
 import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 
 import java.io.IOException;
-import java.net.URL;
 import java.security.InvalidParameterException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.ResourceBundle;
 
 import static csusm.cougarplanner.util.ColorUtil.getAssignmentColor;
 
 public class AssignmentBarRowManager {
-    private final int DAYSINWEEK = 8;
+    private final int DAYS_IN_WEEK = 8;
 
-    private BarComponentController[] barComponents = new BarComponentController[DAYSINWEEK]; //an array that contains all the bars in a given row
+    private BarComponentController[] barComponents = new BarComponentController[DAYS_IN_WEEK]; //an array that contains all the bars in a given row
     private List<AssignmentModuleManager> assignments; //an array of all the assignments present in this bar
     private Integer row; //the bar that the assignment belongs to, starts at 0 and increases the lower the bar is
     private final LocalDate weekDisplayed; //the first day of the week of the displayed information, this will be changed to sunday if it isn't already
     private boolean weekStart;
 
-    private int numberOfFilledSpaces = 0;
     private int numberOfAssignments;
 
     public AssignmentBarRowManager(List<AssignmentModuleManager> assignments, LocalDate weekDisplayed, int row) {
@@ -43,14 +39,12 @@ public class AssignmentBarRowManager {
             this.weekDisplayed = weekDisplayed;
             this.weekStart = true;
         }
-        System.out.println("AssignmentBarRowManager object created");
     }
 
     /**
      * Takes an array of assignments and conveys their information to the barComponents
      */
     private void configureAssignments(List<AssignmentModuleManager> assignments) {
-        System.out.println("Entered configure assignments");
         //iterate through all the assignments included in this bar
         for (int i = 0; i < assignments.size(); i++) {
             //the assignment and due dates of the assignment specified by the above for loop (i)
@@ -95,7 +89,6 @@ public class AssignmentBarRowManager {
                         String result = temp;
                         if (temp.length() > 13) { result = temp.substring(0, 13) + "... >"; }
                         barComponents[weekDay].setText(result); //ad the assignment name to the bar
-                        System.out.println(barComponents[weekDay].getLabel().getWidth());
                         barComponents[weekDay].setVisibleLabel(true); //make the text visible
                     }
 
@@ -111,7 +104,6 @@ public class AssignmentBarRowManager {
 
                     barComponents[weekDay].setColor(assignmentColor); //set the color of the component
                     barComponents[weekDay].setVisibleParent(true); //make the bar component visible
-                    System.out.println("Temp");
                 }
             }
         }
@@ -123,8 +115,6 @@ public class AssignmentBarRowManager {
      * @param courseContainers the containers for the assignment bars
      */
     public void renderBar(VBox[] courseContainers, boolean weekStart) {
-        System.out.println("entered render bar");
-        System.out.println("length of barComponents = " + barComponents.length);
         if (courseContainers.length != 7) { throw new InvalidParameterException(); }
 
         //fill the barComponents array with default bar components
@@ -149,12 +139,11 @@ public class AssignmentBarRowManager {
             }
         }
 
-        System.out.println("before configure assignments");
         configureAssignments(assignments); //fill the barComponents array with the assignments provided
     }
 
     public BarComponentController getBarComponent(int index) {
-        if (index < 0 || index > DAYSINWEEK) { throw new InvalidParameterException(); }
+        if (index < 0 || index > DAYS_IN_WEEK) { throw new InvalidParameterException(); }
         return barComponents[index];
     }
 
@@ -174,9 +163,6 @@ public class AssignmentBarRowManager {
         return barComponents;
     }
 
-    public int getNumberOfFilledSpaces() {
-        return numberOfFilledSpaces;
-    }
 
     public int getRow() {
         return row;

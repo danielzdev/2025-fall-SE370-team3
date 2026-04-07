@@ -2,16 +2,10 @@ package csusm.cougarplanner.models;
 
 import csusm.cougarplanner.controllers.AssignmentDetailsComponentController;
 import csusm.cougarplanner.util.DateTimeUtil;
-import java.net.URL;
 import java.time.LocalDate;
-import java.util.Random;
-import java.util.ResourceBundle;
-import javafx.fxml.Initializable;
 import javafx.scene.paint.Color;
 
-import static csusm.cougarplanner.util.DateTimeUtil.formatDateTime;
-
-public class AssignmentModuleManager implements Initializable {
+public class AssignmentModuleManager {
 
     private final Assignment assignment;
     private final AssignmentDisplay assignmentDisplay;
@@ -89,34 +83,34 @@ public class AssignmentModuleManager implements Initializable {
 
     /**
      * Alternate constructor that builds an assignment
-     * @param assignment_id the identification code for the given assignment
-     * @param course_id the identification code for the course hosting the assignment
-     * @param course_name the name of the course hosting the assignment
-     * @param assignment_name the name of the assignment
-     * @param due_date the due date of the assignment
-     * @param due_time the due time of the assignment
+     * @param assignmentId the identification code for the given assignment
+     * @param courseId the identification code for the course hosting the assignment
+     * @param courseName the name of the course hosting the assignment
+     * @param assignmentName the name of the assignment
+     * @param dueDate the due date of the assignment
+     * @param dueTime the due time of the assignment
      * @param difficulty the difficulty of the assignment, a range from 1 to 5, null if empty
      */
     public AssignmentModuleManager(
-        String assignment_id,
-        String course_id,
-        String course_name,
-        String assignment_name,
-        String due_date,
-        String due_time,
+        String assignmentId,
+        String courseId,
+        String courseName,
+        String assignmentName,
+        String dueDate,
+        String dueTime,
         Integer difficulty
     ) {
         this.assignment = new Assignment(
-            assignment_id,
-            course_id,
-            assignment_name,
-            due_date,
-            due_time,
+            assignmentId,
+            courseId,
+            assignmentName,
+            dueDate,
+            dueTime,
             difficulty,
-            "" // created_at not available in this constructor
+            "" // createdAt not available in this constructor
         );
 
-        this.assignmentDisplay = new AssignmentDisplay(assignment, course_name);
+        this.assignmentDisplay = new AssignmentDisplay(assignment, courseName);
 
         empty = false;
     }
@@ -200,7 +194,4 @@ public class AssignmentModuleManager implements Initializable {
     public AssignmentDetailsComponentController getAssignmentDetailsComponent() {
         return assignmentDetailsComponent;
     }
-
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {}
 }

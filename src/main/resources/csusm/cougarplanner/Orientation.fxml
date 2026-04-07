@@ -187,12 +187,12 @@
                                                 <Font name="Arial Rounded MT Bold" size="12.0" />
                                              </font>
                                           </Label>
-                                          <CheckBox fx:id="sundayCheckBox" layoutX="86.0" layoutY="122.0" mnemonicParsing="false" onMouseClicked="#weekBeginManager" selected="true" text="Sunday">
+                                          <CheckBox fx:id="sundayCheckBox" layoutX="86.0" layoutY="122.0" mnemonicParsing="false" onMouseClicked="#handleWeekStartToggle" selected="true" text="Sunday">
                                              <font>
                                                 <Font name="Arial Rounded MT Bold" size="12.0" />
                                              </font>
                                           </CheckBox>
-                                          <CheckBox fx:id="mondayCheckBox" layoutX="178.0" layoutY="122.0" mnemonicParsing="false" onMouseClicked="#weekBeginManager" text="Monday">
+                                          <CheckBox fx:id="mondayCheckBox" layoutX="178.0" layoutY="122.0" mnemonicParsing="false" onMouseClicked="#handleWeekStartToggle" text="Monday">
                                              <font>
                                                 <Font name="Arial Rounded MT Bold" size="12.0" />
                                              </font>

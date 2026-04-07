@@ -7,8 +7,8 @@ package csusm.cougarplanner.models;
  */
 public class Course
 {
-    private String course_id;
-    private String course_name;
+    private String courseId;
+    private String courseName;
 
     /**
      * Default constructor for CSV reading and object creation.
@@ -19,55 +19,55 @@ public class Course
     /**
      * Constructs a complete Course with identifier and name.
      *
-     * @param course_id unique identifier for the course
-     * @param course_name the display name of the course
+     * @param courseId unique identifier for the course
+     * @param courseName the display name of the course
      */
-    public Course(String course_id, String course_name)
+    public Course(String courseId, String courseName)
     {
-        this.course_id = course_id;
-        this.course_name = course_name;
+        this.courseId = courseId;
+        this.courseName = courseName;
     }
 
     /**
      * Gets the unique course identifier.
      * Used as foreign key in assignments and announcements.
      *
-     * @return the course_id as a string
+     * @return the courseId as a string
      */
     public String getCourseId()
     {
-        return course_id;
+        return courseId;
     }
 
     /**
      * Sets the unique course identifier.
      *
-     * @param course_id the course_id to set
+     * @param courseId the courseId to set
      */
-    public void setCourseId(String course_id)
+    public void setCourseId(String courseId)
     {
-        this.course_id = course_id;
+        this.courseId = courseId;
     }
 
     /**
      * Gets the course display name.
      * Used for UI presentation and joining with assignment/announcement data.
      *
-     * @return the course_name as a string
+     * @return the courseName as a string
      */
     public String getCourseName()
     {
-        return course_name;
+        return courseName;
     }
 
     /**
      * Sets the course display name.
      *
-     * @param course_name the course_name to set
+     * @param courseName the courseName to set
      */
-    public void setCourseName(String course_name)
+    public void setCourseName(String courseName)
     {
-        this.course_name = course_name;
+        this.courseName = courseName;
     }
 
     /**
@@ -79,8 +79,8 @@ public class Course
     public String toString()
     {
         return "Course{" +
-                "course_id='" + course_id + '\'' +
-                ", course_name='" + course_name + '\'' +
+                "courseId='" + courseId + '\'' +
+                ", courseName='" + courseName + '\'' +
                 '}';
     }
 }

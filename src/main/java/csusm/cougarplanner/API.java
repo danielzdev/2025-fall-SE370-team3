@@ -2,8 +2,6 @@ package csusm.cougarplanner;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.net.InetSocketAddress;
-import java.net.Socket;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -13,7 +11,6 @@ import java.util.Scanner;
 
 public class API {
 
-    // Copy Paste Token - 19556~rezxwQ4UHQ6GGyfW7XVumLWkGwUDthwa3RmvCZXmnRE8GNNTRK24CvCKQzKF7LZV
     private final String AUTH_TOKEN;
     private final String baseURI = "https://csusm.instructure.com/api/v1/";
 
@@ -191,20 +188,4 @@ public class API {
         }
     }
 
-    /**
-     * Checks for an active internet connection.
-     * This method is intended to verify network connectivity before making API calls.
-     *
-     * @return true if an internet connection is available, false otherwise
-     */
-    private boolean hasInternetConnection() {
-        try (Socket socket = new Socket()) {
-            socket.connect(new InetSocketAddress("8.8.8.8", 53), 2000);
-            return true;
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-
-        return false;
-    }
 }

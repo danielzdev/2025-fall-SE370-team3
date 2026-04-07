@@ -1,14 +1,11 @@
 package csusm.cougarplanner.controllers;
 
-import csusm.cougarplanner.Launcher;
 import csusm.cougarplanner.util.ColorUtil;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.effect.DropShadow;
-import javafx.scene.effect.InnerShadow;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -17,7 +14,6 @@ import javafx.scene.text.Font;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import static csusm.cougarplanner.util.ColorUtil.getColorBurn;
 import static csusm.cougarplanner.util.ColorUtil.toCssHex;
 
 public class BarComponentController implements Initializable {
@@ -30,20 +26,19 @@ public class BarComponentController implements Initializable {
 
     //default conditions of primaryBar's styles, listed in the order they should be added to setStyle()
     private String primaryBarColorStyle = "-fx-background-color: #DFC1FF;";
-    private String primaryBarRadius = "-fx-border-color: transparent;";
-    private String primaryBarBorderColor = "-fx-background-radius: 30;";
+    private String primaryBarBackgroundRadiusStyle = "-fx-background-radius: 30;";
+    private String primaryBarBorderColorStyle = "-fx-border-color: transparent;";
     private String primaryBarBorderRadius = "-fx-border-radius: 30;";
     //any time any of these attributes are updated, the setStyle parameter needs to be constructed using these strings
 
     @FXML
     private Label barLabel;
 
-    private final Color topColor = Color.rgb(54, 54, 54); //hex color for the top value of a color effect
 
     private boolean leftBlock, rightBlock;
 
     private void buildSetStyle() {
-        primaryBar.setStyle(primaryBarColorStyle + " " + primaryBarRadius + " " + primaryBarBorderColor + " " + primaryBarBorderRadius);
+        primaryBar.setStyle(primaryBarColorStyle + " " + primaryBarBackgroundRadiusStyle + " " + primaryBarBorderColorStyle + " " + primaryBarBorderRadius);
     }
 
     public Pane getBar() {
@@ -68,7 +63,7 @@ public class BarComponentController implements Initializable {
 
         //each corner of the primaryBar has its own radius value, each value needs to be passed into setStyle
         //                                              UpLeft            UpRight            BtmRight           BtmLeft
-        primaryBarRadius = "-fx-background-radius: " + leftValue + " " + rightValue + " " + rightValue + " " + leftValue + ";";
+        primaryBarBackgroundRadiusStyle = "-fx-background-radius: " + leftValue + " " + rightValue + " " + rightValue + " " + leftValue + ";";
         primaryBarBorderRadius = "-fx-border-radius: " + leftValue + " " + rightValue + " " + rightValue + " " + leftValue + ";";
 
         buildSetStyle();
@@ -83,7 +78,7 @@ public class BarComponentController implements Initializable {
     }
 
     public void setColor(String hexColor) {
-        if (ColorUtil.validHexColor(hexColor)) { return; }
+        if (ColorUtil.isInvalidHexColor(hexColor)) { return; }
 
         changeColor(Color.web(hexColor));
     }
@@ -94,15 +89,7 @@ public class BarComponentController implements Initializable {
 
     private void changeColor(Color color) {
         primaryBarColorStyle = "-fx-background-color: " + toCssHex(color) + ";";
-
-        //change the color of the border to the same color as the label.
-        //      The label does this automatically, however, it is impossible to retrieve
-        //      the final displayed color, so here it needs to be calculated
-        //String colorBurn = toCssHex(getColorBurn(color, topColor));
-
-        //primaryBarBorderColor = "-fx-border-color: " + colorBurn + " " + ((rightBlock) ? "transparent" : colorBurn) + " " + colorBurn + " " + ((leftBlock) ? "transparent" : colorBurn) + ";";
-        primaryBarBorderColor = "-fx-border-color: transparent;";
-
+        primaryBarBorderColorStyle = "-fx-border-color: transparent;";
         buildSetStyle();
     }
 

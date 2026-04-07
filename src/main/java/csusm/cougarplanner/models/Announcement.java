@@ -5,10 +5,10 @@ package csusm.cougarplanner.models;
  */
 public class Announcement
 {
-    private String announcement_id;
-    private String course_id;
+    private String announcementId;
+    private String courseId;
     private String title;
-    private String posted_at;
+    private String postedAt;
     private String message;
 
     /**
@@ -20,60 +20,60 @@ public class Announcement
     /**
      * Constructs a complete Announcement with all fields.
      *
-     * @param announcement_id unique identifier for the announcement
-     * @param course_id identifier of the associated course
+     * @param announcementId unique identifier for the announcement
+     * @param courseId identifier of the associated course
      * @param title the announcement title
-     * @param posted_at combined date and time in YYYY-MM-DD HH:MM format
+     * @param postedAt combined date and time in YYYY-MM-DD HH:MM format
      * @param message optional announcement content
      */
-    public Announcement(String announcement_id, String course_id, String title,
-                        String posted_at, String message)
+    public Announcement(String announcementId, String courseId, String title,
+                        String postedAt, String message)
     {
-        this.announcement_id = announcement_id;
-        this.course_id = course_id;
+        this.announcementId = announcementId;
+        this.courseId = courseId;
         this.title = title;
-        this.posted_at = posted_at;
+        this.postedAt = postedAt;
         this.message = message;
     }
 
     /**
      * Gets the unique announcement identifier.
      *
-     * @return the announcement_id as a string
+     * @return the announcementId as a string
      */
     public String getAnnouncementId()
     {
-        return announcement_id;
+        return announcementId;
     }
 
     /**
      * Sets the unique announcement identifier.
      *
-     * @param announcement_id the announcement_id to set
+     * @param announcementId the announcementId to set
      */
-    public void setAnnouncementId(String announcement_id)
+    public void setAnnouncementId(String announcementId)
     {
-        this.announcement_id = announcement_id;
+        this.announcementId = announcementId;
     }
 
     /**
      * Gets the associated course identifier.
      *
-     * @return the course_id as a string
+     * @return the courseId as a string
      */
     public String getCourseId()
     {
-        return course_id;
+        return courseId;
     }
 
     /**
      * Sets the associated course identifier.
      *
-     * @param course_id the course_id to set
+     * @param courseId the courseId to set
      */
-    public void setCourseId(String course_id)
+    public void setCourseId(String courseId)
     {
-        this.course_id = course_id;
+        this.courseId = courseId;
     }
 
     /**
@@ -99,21 +99,21 @@ public class Announcement
     /**
      * Gets the posting date and time in combined format.
      *
-     * @return posted_at as YYYY-MM-DD HH:MM string
+     * @return postedAt as YYYY-MM-DD HH:MM string
      */
     public String getPostedAt()
     {
-        return posted_at;
+        return postedAt;
     }
 
     /**
      * Sets the posting date and time in combined format.
      *
-     * @param posted_at the posted_at string in YYYY-MM-DD HH:MM format
+     * @param postedAt the postedAt string in YYYY-MM-DD HH:MM format
      */
-    public void setPostedAt(String posted_at)
+    public void setPostedAt(String postedAt)
     {
-        this.posted_at = posted_at;
+        this.postedAt = postedAt;
     }
 
     /**
@@ -145,10 +145,10 @@ public class Announcement
     public String toString()
     {
         return "Announcement{" +
-                "announcement_id='" + announcement_id + '\'' +
-                ", course_id='" + course_id + '\'' +
+                "announcementId='" + announcementId + '\'' +
+                ", courseId='" + courseId + '\'' +
                 ", title='" + title + '\'' +
-                ", posted_at='" + posted_at + '\'' +
+                ", postedAt='" + postedAt + '\'' +
                 ", message='" + message + '\'' +
                 '}';
     }

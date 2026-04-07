@@ -30,9 +30,13 @@ public class AssignmentDetailsComponentController implements Initializable {
     private Pane springGreenMask, chartreuseMask, yellowMask, orangeMask, redMask;
 
     private Pane[] difficultyMasks = new Pane[5];
-    private String[] difficultyColors;
-    private final Color topColor = Color.rgb(54, 54, 54); //hex color for the top value of a color effect
+    private final String[] difficultyColors = { "springgreen", "chartreuse", "yellow", "orange", "red" };
+    private final Color topColor = Color.rgb(54, 54, 54);
 
+    /**
+     * Constructs from an AssignmentDisplay. FXML fields are not yet injected here,
+     * so all UI setup is deferred to initialize().
+     */
     public AssignmentDetailsComponentController(AssignmentDisplay assignment, Color color) {
         this.assignmentDisplay = assignment;
         this.assignment = new Assignment(
@@ -44,31 +48,20 @@ public class AssignmentDetailsComponentController implements Initializable {
             assignmentDisplay.getDifficulty(),
             assignmentDisplay.getCreatedAt()
         );
-        difficultyColors = new String[] { "springgreen", "chartreuse", "yellow", "orange", "red" };
-
         this.backgroundColor = color;
-
-        hoverAssignmentLabel.setText(assignment.getAssignmentName());
-
-        setColor(color);
     }
 
+    /** Constructs from an Assignment and course name. UI setup deferred to initialize(). */
     public AssignmentDetailsComponentController(Assignment assignment, String courseName, Color color) {
         this.assignment = assignment;
         this.assignmentDisplay = new AssignmentDisplay(assignment, courseName);
-
         this.backgroundColor = color;
-
-        hoverAssignmentLabel.setText(assignment.getAssignmentName());
-
-        setColor(color);
     }
 
     public void setColor(String hexColor) {
-        if (ColorUtil.validHexColor(hexColor)) {
+        if (ColorUtil.isInvalidHexColor(hexColor)) {
             return;
         }
-
         changeColor(Color.web(hexColor));
     }
 
@@ -115,12 +108,17 @@ public class AssignmentDetailsComponentController implements Initializable {
     }
 
     private void updateWidth() {
-        //set the new preferred width to the default (150) + average width of a size 16 arial letter (7.5) * number of letters over 10
+        // Default width (150) + avg width of size 16 Arial letter (7.5) * chars over 10
         hoverAssignmentWindow.setPrefWidth(150 + 7.5 * (hoverAssignmentLabel.getText().length() - 10));
     }
 
+    /** Called after FXML injection — safe to touch @FXML fields here. */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         difficultyMasks = new Pane[] { springGreenMask, chartreuseMask, yellowMask, orangeMask, redMask };
+
+        // Apply the data that was stored during construction
+        hoverAssignmentLabel.setText(assignmentDisplay.getAssignmentName());
+        setColor(backgroundColor);
     }
 }

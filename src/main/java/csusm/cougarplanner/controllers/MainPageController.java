@@ -14,28 +14,14 @@ import csusm.cougarplanner.transitions.ExponentialTransitionScale;
 import csusm.cougarplanner.transitions.ExponentialTransitionTranslation;
 import csusm.cougarplanner.util.*;
 
-import csusm.cougarplanner.util.DateTimeUtil;
-import csusm.cougarplanner.util.WeekRange;
-import csusm.cougarplanner.util.WeekUtil;
-import java.io.File;
-import java.io.IOException;
 import java.io.IOException;
 import java.net.URL;
-import java.net.URL;
 import java.nio.file.Path;
-import java.nio.file.Path;
-import java.time.LocalDate;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
-import java.time.Month;
-import java.time.format.TextStyle;
 import java.time.format.TextStyle;
 import java.util.*;
-import java.util.Locale;
-import java.util.Optional;
-import java.util.ResourceBundle;
-import java.util.stream.Collectors;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -54,9 +40,6 @@ import javafx.scene.text.Font;
 import javafx.util.Duration;
 
 import org.jsoup.Jsoup;
-
-import java.io.File;
-import java.util.*;
 
 public class MainPageController implements Initializable {
 
@@ -847,19 +830,6 @@ public class MainPageController implements Initializable {
         }
     }
 
-    private String getAuthToken() {
-        try (Scanner sc = new Scanner(new File("data/profile.properties"))) {
-            while (sc.hasNextLine()) {
-                String line = sc.nextLine().trim();
-                if (line.startsWith("authToken=")) {
-                    return line.substring("authToken=".length()).trim();
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
 
     private String createAnnouncementPostedString(LocalDateTime date) {
         String postedString = "Posted on ";
@@ -954,22 +924,6 @@ public class MainPageController implements Initializable {
         }
     }
 
-    private static class AnnouncementsBarPaneTemplate {
-        private static final int width = 4;
-        private static final Color color = Color.web("#f8ba2b");
-
-        public static final int leftConstraint = 25;
-        public static final int upperConstraint = 6;
-
-        public Pane getPane() {
-            Pane pane = new Pane();
-            pane.setPrefWidth(width);
-            pane.setStyle("-fx-background-color: " + ColorUtil.toCssHex(color));
-
-            return pane;
-        }
-    }
-
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         listOfDayHeaders = new AnchorPane[] {
@@ -1030,7 +984,7 @@ public class MainPageController implements Initializable {
             saturdayContentsVBox,
         };
 
-        String token = getAuthToken(); // implement this to read from profile.properties or config
+        String token = profile.getAuthToken();
         API api = new API(token);
 
         // Initialize canvasService with the API instance

@@ -2,12 +2,10 @@ package csusm.cougarplanner.util;
 
 import javafx.scene.paint.Color;
 
-import java.util.Random;
-
 public class ColorUtil {
-    public static boolean validHexColor(String hexColor) {
-        //true if hexColor is actually a hex color
-        return hexColor.matches("#[\\dA-Fa-f]{6}");
+    /** Returns true if the input is NOT a valid 6-digit hex color string (e.g. "#FF00AA"). */
+    public static boolean isInvalidHexColor(String hexColor) {
+        return !hexColor.matches("#[\\dA-Fa-f]{6}");
     }
 
     public static Color getColorBurn(Color bottomColor, Color topColor) {
@@ -56,25 +54,12 @@ public class ColorUtil {
         );
     }
 
+    /** Returns a color from a fixed 10-color palette, cycling by index. */
     public static Color getAssignmentColor(int bar) {
-        /*String[] colorCodes = new String[] {"100","110","010","011","001","101","100"};
-
-        bar = bar % 7;
-
-        //prev: (195, 255), (123, 255), (0, 143), (74, 255)
-        int red = (colorCodes[bar].charAt(0) == '0') ? 100 : 255;
-        int green = (colorCodes[bar].charAt(1) == '0') ? 100 : 255;
-        int blue = (colorCodes[bar].charAt(2) == '0') ? 100 : 255;
-
-        return Color.rgb(red, green, blue);*/
-
-        String[] colorPalate = new String[] { "#F94144", "#F3722C", "#F8961E", "#F9844A", "#F9C74F", "#90BE6D", "#43AA8B", "#4D908E", "#577590", "#277DA1"};
-
-        bar = bar % 10;
-        /*Random random = new Random();
-        bar = (random.nextInt((bar + 1) * 10)) % 10;*/
-
-
-        return Color.web(colorPalate[bar]);
+        String[] colorPalette = {
+            "#F94144", "#F3722C", "#F8961E", "#F9844A", "#F9C74F",
+            "#90BE6D", "#43AA8B", "#4D908E", "#577590", "#277DA1"
+        };
+        return Color.web(colorPalette[bar % colorPalette.length]);
     }
 }

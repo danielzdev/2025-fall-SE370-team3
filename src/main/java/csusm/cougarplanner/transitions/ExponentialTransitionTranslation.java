@@ -4,8 +4,6 @@ import javafx.animation.Transition;
 import javafx.scene.Node;
 import javafx.util.Duration;
 
-import java.util.HashMap;
-
 public class ExponentialTransitionTranslation extends Transition {
     private final Node node;
     private final double startValue;

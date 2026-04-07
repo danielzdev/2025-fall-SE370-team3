@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.util.ResourceBundle;
-import csusm.cougarplanner.services.CanvasService;
 import javafx.animation.PauseTransition;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -16,11 +15,6 @@ import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.util.Duration;
-
-import java.io.IOException;
-import java.net.URL;
-import java.nio.file.Path;
-import java.util.ResourceBundle;
 
 public class OrientationController implements Initializable {
 
@@ -55,7 +49,7 @@ public class OrientationController implements Initializable {
     }
 
     @FXML
-    private void weekBeginManager(MouseEvent event) {
+    private void handleWeekStartToggle(MouseEvent event) {
         flip(sundayStatus);
     }
 

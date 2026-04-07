@@ -10,7 +10,6 @@ import javafx.scene.Parent;
 import javafx.scene.layout.VBox;
 
 import java.io.IOException;
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -56,7 +55,7 @@ import java.util.*;
  * </pre>
  */
 public class CourseManager {
-    private final int DAYSINWEEK = 8; //this value is 8 to allow for "first day of the week" toggling
+    private final int DAYS_IN_WEEK = 8; //this value is 8 to allow for "first day of the week" toggling
     //the week includes a range of days from sunday - sunday (inclusive) and maps the behavior and location
     //of the assignments within this range as if it were a regular week. When rendering assignments, only
     //the necessary parts of the assignment mapping are used.
@@ -100,13 +99,7 @@ public class CourseManager {
 
         numberOfAssignments = assignments.length;
 
-        for (int i = 0; i < numberOfAssignments; i++) {
-            System.out.println(assignmentsInCourseThisWeek[i].getAssignment().getAssignmentName());
-        }
-
-        System.out.println("before configure");
         configure(weekStart, weekDisplayed);
-        System.out.println("after configure");
     }
 
     /**
@@ -144,19 +137,19 @@ public class CourseManager {
      * @param weekDisplayed stores the first day of the week. Changes based on weekStart
      */
     private void configure(boolean weekStart, LocalDate weekDisplayed) {
-        quickSort(assignmentsInCourseThisWeek, 0, assignmentsInCourseThisWeek.length - 1);
-
-        System.out.println(" course manager - configure - assignment durations:");
-        for (int i = 0; i < assignmentsInCourseThisWeek.length; i++) {
-            System.out.println("                          " + assignmentsInCourseThisWeek[i].getAssignment().getAssignmentName() + ": " + DateTimeUtil.formatDate(assignmentsInCourseThisWeek[i].getAssignmentBeginning()));
-            System.out.println("                          Duration: " + assignmentsInCourseThisWeek[i].getAssignmentDuration());
-        }
+        // Sort assignments chronologically by due date + time
+        Arrays.sort(assignmentsInCourseThisWeek, (a, b) -> {
+            LocalDateTime dtA = DateTimeUtil.parseDateTime(a.getAssignment().getDueDate() + " " + a.getAssignment().getDueTime());
+            LocalDateTime dtB = DateTimeUtil.parseDateTime(b.getAssignment().getDueDate() + " " + b.getAssignment().getDueTime());
+            if (dtA == null && dtB == null) return 0;
+            if (dtA == null) return 1;
+            if (dtB == null) return -1;
+            return dtA.compareTo(dtB);
+        });
 
         this.weekStart = weekStart;
         this.weekDisplayed = weekDisplayed;
 
-        System.out.println(" course manager - configure - weekStart = " + ((weekStart) ? "Sunday" : "Monday"));
-        System.out.println(" course manager - configure - weekDisplayed = " + DateTimeUtil.formatDate(weekDisplayed));
 
         //I don't know how large either of these arrays are going to be and checking for that beforehand is unnecessarily intensive (probably)
         int[] temporaryAssignmentsDueArray = new int[assignmentsInCourseThisWeek.length];
@@ -182,96 +175,13 @@ public class CourseManager {
         System.arraycopy(temporaryAssignmentsDueArray, 0, assignmentsDueThisWeek, 0, tracker1);
         System.arraycopy(temporaryAssignmentsNotDueArray, 0, assignmentsNotDueThisWeek, 0, tracker2);
 
-        System.out.println("assignmentsDueThisWeek = " + assignmentsDueThisWeek.length);
-        System.out.println("assignmentsNotDueThisWeek = " + assignmentsNotDueThisWeek.length);
 
         assignmentsEntered = new boolean[assignmentsInCourseThisWeek.length];
         Arrays.fill(assignmentsEntered, false);
 
-        System.out.println(" course manager - configure - before generatePlacementArray");
         generatePlacementArray();
-        System.out.println(" course manager - configure - after generatePlacementArray");
-
-        System.out.println("---------------------------------PLACEMENT ARRAY--------------------------------------");
-        for (List<AssignmentModuleManager> bar : placementArray) {
-            for (AssignmentModuleManager element : bar) {
-                System.out.print(element.getAssignment().getAssignmentName() + " ");
-            }
-            System.out.println(); // Move to the next line after each row
-        }
-        System.out.println("---------------------------------PLACEMENT ARRAY--------------------------------------");
     }
 
-    /**
-     * Partition function for quick sort implementation. This function will establish a pivot, then
-     *      it will search, from the left, for a value greater than the pivot. When it finds this
-     *      larger value, the function will continue to search right-ward for something smaller than
-     *      the pivot to swap with. If nothing smaller than the pivot is found, the function is
-     *      done, but otherwise, these values will swap. When the function is done, the pivot swaps
-     *      with i + 1, which splits the data in two halves (roughly), with the left-ward values
-     *      being less than the pivot, and the right-ward values being greater than the pivot.
-     * This standard partition function is adapted to compare the due dates of each of the
-     *      assignments provided.
-     * @param assignments an array of the assignments found between the low and high indices
-     * @param low lower index of the given partition
-     * @param high upper index of the given partition
-     * @return the location that the pivot changed to int the end is returned, this is the new partition
-     */
-    private static int partition(AssignmentModuleManager[] assignments, int low, int high) {
-        Assignment assignment = assignments[high].getAssignment(); //get the assignment we're using as the pivot
-
-        //convert the due date and time to a LocalDateTime that can be compared to another
-        LocalDateTime pivot = DateTimeUtil.parseDateTime(assignment.getDueDate() + " " + assignment.getDueTime());
-        int i = low - 1;
-
-        //sort items lower than pivot left
-        for (int j = low; j <= high - 1; j++) {
-            if (DateTimeUtil.parseDateTime(assignments[j].getAssignment().getDueDate() + " " + assignments[j].getAssignment().getDueTime()).isBefore(pivot)) {
-                i++;
-                swap(assignments, i, j);
-            }
-        }
-
-        //center the pivot
-        swap(assignments, i + 1, high);
-
-        return i + 1; //return the newly created partition
-    }
-
-    /**
-     * Standard swap function
-     * @param assignments the array of assignments relevant to the course
-     * @param i the left-most assignment to be swapped
-     * @param j the right-most assignment to be swapped
-     */
-    private static void swap(AssignmentModuleManager[] assignments, int i, int j) {
-        AssignmentModuleManager temp = assignments[i];
-        assignments[i] = assignments[j];
-        assignments[j] = temp;
-    }
-
-    /**
-     * The quick sort function will partition the given array recursively
-     *      until the array is sorted.
-     * This function will sort the array of assignments included in the
-     *      course manager in chronological order.
-     * @param assignments teh array of assignments relevant to the course
-     * @param low the lower index of the partition being sorted. This value
-     *            is zero for external use of the quickSort function.
-     * @param high the upper index of the partition being sorted. This value
-     *             is (arraySize - 1) for external use of the quickSort
-     *             function.
-     */
-    private static void quickSort(AssignmentModuleManager[] assignments, int low, int high) {
-        if (low < high) { //only do a quick sort if the bounds contain more than one date
-
-            int part = partition(assignments, low, high); //store the partition created by this function call
-
-            //split into smaller arrays on the left and right of partition and quick sort again
-            quickSort(assignments, low, part - 1);
-            quickSort(assignments, part + 1, high);
-        }
-    }
 
     /**
      * Generates a placement array of AssignmentModuleManagers that defines the exact locations and positions
@@ -283,10 +193,10 @@ public class CourseManager {
     private void generatePlacementArray() {
         //cycle to the next row (bar) after editing each column (day)
         for (int row = 0; numberOfUnenteredAssignments() > 0; row++) {
-            //the number of open spaces remaining in a given bar, this value should initially be equal to DAYSINWEEK, as no spaces are open at first
+            //the number of open spaces remaining in a given bar, this value should initially be equal to DAYS_IN_WEEK, as no spaces are open at first
 
             //each iteration of this do-while loop will attempt to enter an assignment into the current row of the placementArray
-            for (int iterations = DAYSINWEEK; iterations >= 0; iterations--) {
+            for (int iterations = DAYS_IN_WEEK; iterations >= 0; iterations--) {
                 //search for assignments beginning after previously entered assignment's
                 //      due date. Search specifically in assignmentsDueThisWeek first
                 AssignmentModuleManager assignment = findViableAssignment(assignmentsDueThisWeek, row); //finds an assignment less than or equal to the given size
@@ -403,7 +313,6 @@ public class CourseManager {
      *      function.
      */
     private void fillCourseHeaders() {
-        System.out.println(" course manager - enter fill course headers");
         if (assignmentsInCourseThisWeek.length < 1) { return; }
 
         //insert empty text in each course header except for the first and last ones
@@ -422,7 +331,6 @@ public class CourseManager {
         courseHeaderComponents[0].setText(courseName);
         courseHeaderComponents[6].setText(courseName);
 
-        System.out.println(" course manager - exit fill course headers");
     }
 
     /**
@@ -430,13 +338,11 @@ public class CourseManager {
      *      the information generated in the placementArray
      */
     private void fillAssignmentBars() {
-        System.out.println(" course manager - enter fill assignment bars");
         assignmentBars = new AssignmentBarRowManager[placementArray.size()];
 
         for (int i = 0; i < assignmentBars.length; i++) {
             assignmentBars[i] = new AssignmentBarRowManager(placementArray.get(i), weekDisplayed, i);
         }
-        System.out.println(" course manager - exit fill assignment bars");
     }
 
 
@@ -465,66 +371,6 @@ public class CourseManager {
         return assignmentsInCourseThisWeek;
     }
 
-    /**
-     * Returns the number of assignments that are due for this course for this week.
-     * @param weekStart weekStart parameter does not need to be the same as CourseManager's weekStart member
-     * @return a traditional array of AssignmentModuleManagers.
-     */
-    public AssignmentModuleManager[] getAssignmentsDueThisWeek(boolean weekStart) {
-        List<AssignmentModuleManager> assignmentsDueThisWeek = new LinkedList<>();
-        LocalDate referenceWeek;
-
-        //if the CourseManager's week starts on Sunday
-        if (weekDisplayed.getDayOfWeek().equals(DayOfWeek.SUNDAY)) {
-            referenceWeek = weekDisplayed.plusDays((weekStart) ? 0 : 1); //get the correct first day of the week based on weekStart parameter
-        } else {
-            referenceWeek = weekDisplayed.minusDays((weekStart) ? 1 : 0); //get the correct first day of the week based on weekStart parameter
-        }
-
-        for (int i = 0; i < assignmentsInCourseThisWeek.length; i++) {
-            if (WeekUtil.isDateInWeek(assignmentsInCourseThisWeek[i].getAssignmentEnding(), referenceWeek, (weekStart) ? "sunday" : "monday")) {
-
-            }
-        }
-        return null;
-    }
-
-    public AssignmentModuleManager[] getAssignmentsNodDueThisWeek(boolean weekStart) {
-return null;
-    }
-
-    public void addAssignment(Assignment assignment, String courseName) {
-        addAssignmentHelper(new AssignmentDisplay(assignment, courseName));
-    }
-
-    public void addAssignment(AssignmentDisplay assignment) {
-        addAssignmentHelper(assignment);
-    }
-
-    private void addAssignmentHelper(AssignmentDisplay assignment) {
-
-    }
-
-    public void addAssignments(Assignment[] assignmentsParam, String[] courseNames) {
-        if (assignmentsParam.length != courseNames.length) { throw new IllegalArgumentException(); }
-
-        AssignmentDisplay[] assignments = new AssignmentDisplay[assignmentsParam.length];
-
-        for (int i = 0; i < assignmentsParam.length; i++) {
-            assignments[i] = new AssignmentDisplay(assignmentsParam[i], courseNames[i]);
-        }
-
-        addAssignmentsHelper(assignments);
-    }
-
-    public void addAssignments(AssignmentDisplay[] assignments, String[] courseName) {
-        addAssignmentsHelper(assignments);
-    }
-
-    private void addAssignmentsHelper(AssignmentDisplay[] assignments) {
-
-    }
-
 
     public void updateWeekStart(VBox[] courseContainers, boolean weekStart) {
         this.weekStart = weekStart;
@@ -539,7 +385,6 @@ return null;
     }
 
     public void renderHeaders(VBox[] courseContainers) {
-        System.out.println(" course manager - enter render headers");
         for (int i = 0; i < courseContainers.length; i++) {
             try { //instantiate AssignmentCourseHeaderComponent objects and place their controllers into the VBox provided from MainPageController
                 FXMLLoader loader = new FXMLLoader(Launcher.class.getResource("AssignmentsCourseHeaderComponent.fxml"));
@@ -554,15 +399,12 @@ return null;
         }
 
         fillCourseHeaders();
-        System.out.println(" course manager - exit render headers");
     }
 
     public void renderBars(VBox[] courseContainers) {
-        System.out.println(" course manager - enter render bars");
         fillAssignmentBars();
         for (int i = 0; i < assignmentBars.length; i++) {
             assignmentBars[i].renderBar(courseContainers, weekStart);
         }
-        System.out.println(" course manager - exit render bars");
     }
 }
