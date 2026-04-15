@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox fx:id="taskRowRoot"
+      spacing="0.0"
+      style="-fx-background-color: #f0f0f0; -fx-background-radius: 10; -fx-padding: 10;
+             -fx-border-color: #cccccc; -fx-border-radius: 10; -fx-border-width: 1;"
+      xmlns="http://javafx.com/javafx/17"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="csusm.cougarplanner.controllers.TaskRowController">
+
+    <GridPane hgap="6.0" vgap="6.0">
+        <columnConstraints>
+            <!-- title / description -->
+            <ColumnConstraints hgrow="ALWAYS" />
+            <!-- due date -->
+            <ColumnConstraints prefWidth="85.0" maxWidth="85.0" />
+            <!-- course -->
+            <ColumnConstraints prefWidth="75.0" maxWidth="75.0" />
+            <!-- status -->
+            <ColumnConstraints prefWidth="105.0" maxWidth="105.0" />
+            <!-- priority -->
+            <ColumnConstraints prefWidth="85.0" maxWidth="85.0" />
+            <!-- completed / checkmark -->
+            <ColumnConstraints prefWidth="88.0" maxWidth="88.0" />
+            <!-- delete task / x -->
+            <ColumnConstraints prefWidth="88.0" maxWidth="88.0" />
+        </columnConstraints>
+
+        <!-- Rows -->
+
+        <TextField fx:id="titleField"
+                   promptText="Task Title"
+                   maxWidth="Infinity"
+                   GridPane.columnIndex="0" GridPane.rowIndex="0"
+                   style="-fx-background-color: white; -fx-text-fill: black;
+                          -fx-background-radius: 6; -fx-border-color: #cccccc;
+                          -fx-border-radius: 6;
+                          -fx-font-family: 'Arial Rounded MT Bold'; -fx-font-size: 12;" />
+
+        <Label fx:id="dateCreatedLabel" text="No due date"
+               maxWidth="Infinity"
+               GridPane.columnIndex="1" GridPane.rowIndex="0"
+               style="-fx-background-color: white; -fx-text-fill: black;
+                      -fx-background-radius: 6; -fx-border-color: #cccccc;
+                      -fx-border-radius: 6; -fx-padding: 4 3 4 3; -fx-alignment: center;">
+            <font><Font name="Arial Rounded MT Bold" size="10.0"/></font>
+        </Label>
+
+        <Label fx:id="courseLabel" text="No course"
+               maxWidth="Infinity"
+               GridPane.columnIndex="2" GridPane.rowIndex="0"
+               style="-fx-background-color: white; -fx-text-fill: #555555;
+                      -fx-background-radius: 6; -fx-border-color: #cccccc;
+                      -fx-border-radius: 6; -fx-padding: 4 3 4 3; -fx-alignment: center;">
+            <font><Font name="Arial Rounded MT Bold" size="10.0"/></font>
+        </Label>
+
+        <Label text="Status"
+               maxWidth="Infinity"
+               GridPane.columnIndex="3" GridPane.rowIndex="0"
+               style="-fx-background-color: white; -fx-text-fill: #333333;
+                      -fx-background-radius: 6; -fx-border-color: #cccccc;
+                      -fx-border-radius: 6; -fx-padding: 4 3 4 3; -fx-alignment: center;">
+            <font><Font name="Arial Rounded MT Bold" size="10.0"/></font>
+        </Label>
+
+        <Label text="Priority"
+               maxWidth="Infinity"
+               GridPane.columnIndex="4" GridPane.rowIndex="0"
+               style="-fx-background-color: white; -fx-text-fill: #333333;
+                      -fx-background-radius: 6; -fx-border-color: #cccccc;
+                      -fx-border-radius: 6; -fx-padding: 4 3 4 3; -fx-alignment: center;">
+            <font><Font name="Arial Rounded MT Bold" size="10.0"/></font>
+        </Label>
+
+        <Button fx:id="completedButton" text="Completed"
+                mnemonicParsing="false" onAction="#onCompletedClicked"
+                maxWidth="Infinity"
+                GridPane.columnIndex="5" GridPane.rowIndex="0"
+                style="-fx-background-color: white; -fx-text-fill: black;
+                       -fx-background-radius: 6; -fx-border-color: #cccccc;
+                       -fx-border-radius: 6;
+                       -fx-font-family: 'Arial Rounded MT Bold'; -fx-font-size: 10;" />
+
+        <Button fx:id="deleteButton" text="Delete Task"
+                mnemonicParsing="false" onAction="#onDeleteClicked"
+                maxWidth="Infinity"
+                GridPane.columnIndex="6" GridPane.rowIndex="0"
+                style="-fx-background-color: white; -fx-text-fill: black;
+                       -fx-background-radius: 6; -fx-border-color: #cccccc;
+                       -fx-border-radius: 6;
+                       -fx-font-family: 'Arial Rounded MT Bold'; -fx-font-size: 10;" />
+
+
+        <TextArea fx:id="descriptionArea"
+                  prefHeight="65.0" maxHeight="65.0"
+                  promptText="Task description"
+                  wrapText="true" maxWidth="Infinity"
+                  GridPane.columnIndex="0" GridPane.rowIndex="1"
+                  GridPane.columnSpan="3"
+                  style="-fx-background-color: white; -fx-text-fill: black;
+                         -fx-background-radius: 6; -fx-border-color: #cccccc;
+                         -fx-border-radius: 6;
+                         -fx-font-family: 'Arial Rounded MT Bold'; -fx-font-size: 12;" />
+
+        <!-- Status dropdown  -->
+        <ComboBox fx:id="statusComboBox"
+                  maxWidth="Infinity" prefHeight="29.0"
+                  GridPane.columnIndex="3" GridPane.rowIndex="1"
+                  GridPane.valignment="TOP"
+                  style="-fx-background-color: white;
+                         -fx-border-color: #cccccc; -fx-border-radius: 8;
+                         -fx-background-radius: 8;
+                         -fx-font-family: 'Arial Rounded MT Bold'; -fx-font-size: 15;" />
+
+        <!-- Priority dropdown -->
+        <ComboBox fx:id="priorityComboBox"
+                  maxWidth="Infinity" prefHeight="29.0"
+                  GridPane.columnIndex="4" GridPane.rowIndex="1"
+                  GridPane.valignment="TOP"
+                  style="-fx-background-color: white;
+                         -fx-border-color: #cccccc; -fx-border-radius: 8;
+                         -fx-background-radius: 8;
+                         -fx-font-family: 'Arial Rounded MT Bold'; -fx-font-size: 15;" />
+
+        <!-- Checkmark -->
+        <Button fx:id="checkIconButton" text="✓"
+                mnemonicParsing="false" onAction="#onCompletedClicked"
+                maxWidth="Infinity" prefHeight="26.0"
+                GridPane.columnIndex="5" GridPane.rowIndex="1"
+                GridPane.valignment="TOP"
+                style="-fx-background-color: #222222; -fx-text-fill: white;
+                       -fx-background-radius: 6; -fx-font-size: 10;" />
+
+        <!-- X -->
+        <Button fx:id="deleteIconButton" text="✗"
+                mnemonicParsing="false" onAction="#onDeleteClicked"
+                maxWidth="Infinity" prefHeight="26.0"
+                GridPane.columnIndex="6" GridPane.rowIndex="1"
+                GridPane.valignment="TOP"
+                style="-fx-background-color: #222222; -fx-text-fill: white;
+                       -fx-background-radius: 6; -fx-font-size: 10;" />
+
+    </GridPane>
+
+</VBox>

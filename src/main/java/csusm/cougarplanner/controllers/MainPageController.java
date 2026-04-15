@@ -73,22 +73,14 @@ public class MainPageController implements Initializable {
 
         viewingMenuIsOpen = !viewingMenuIsOpen;
 
-        plannerBody.setEffect(viewingMenuIsOpen ? new BoxBlur() : null);
+        plannerBody.setEffect(null);
         viewingMenu.setOpacity(1.0);
 
         selectNewObject(viewingHitbox);
     }
 
     @FXML
-    private void fuzzPlannerBody(MouseEvent event) {
-        if (viewingMenuIsOpen) {
-            plannerBody.setEffect((event.getEventType() == MouseEvent.MOUSE_ENTERED) ? null : new BoxBlur());
-            viewingMenu.setOpacity((event.getEventType() == MouseEvent.MOUSE_ENTERED) ? 0.25 : 1.0);
-        } else {
-            plannerBody.setEffect(null);
-            viewingMenu.setOpacity(1.0);
-        }
-    }
+    private void fuzzPlannerBody(MouseEvent event) {}
 
     @FXML
     private void highlightFromText(MouseEvent event) {
@@ -113,48 +105,75 @@ public class MainPageController implements Initializable {
     LocalDate lastDateAnnouncementsHadOpen;
 
     @FXML
-    private void toggleContentsType(MouseEvent event) {
-        if (event.getSource() instanceof Label label) {
-            boolean userClickedAnnouncements = label.getText().equals("Announcements");
+    private AnchorPane tasksPlanner;
 
-            if (showAnnouncements != userClickedAnnouncements) {
-                viewingMenuLabelMutable.setText(userClickedAnnouncements ? "Announcements" : "Assignments");
-                announcementsRectangle.setVisible(userClickedAnnouncements);
-                assignmentsRectangle.setVisible(!userClickedAnnouncements);
+    @FXML
+    private TaskPanelController tasksPlannerController;
 
-                showAnnouncements = userClickedAnnouncements;
+    @FXML
+    private Rectangle tasksRectangle;
 
-                WeekRange currentWeek = getWeekRange(dateDisplayed);
+    @FXML
+    private Label tasksLabel;
 
-                if (showAnnouncements) { //user wishes to see announcements
-                    if (defaultView) { //the user is viewing plannerWeek
-                        weekPlanner.setVisible(false);
-                    } else { //the user is viewing plannerDay
-                        dayPlanner.setVisible(false);
-                    }
+    @FXML
+    private void toggleContentsType(MouseEvent event)
+    {
+        if (event.getSource() instanceof Label label)
+        {
+            String clicked = label.getText();
 
-                    lastDateAssignmentsHadOpen = weekDisplayed;
+            // Hide everything first
+            weekPlanner.setVisible(false);
+            dayPlanner.setVisible(false);
+            announcementsPlanner.setVisible(false);
+            tasksPlanner.setVisible(false);
+            announcementsRectangle.setVisible(false);
+            assignmentsRectangle.setVisible(false);
+            tasksRectangle.setVisible(false);
 
-                    if (!WeekUtil.isDateInWeek(lastDateAnnouncementsHadOpen, weekDisplayed, (weekStart) ? "sunday" : "monday")) {
-                        clearAnnouncementDisplay();
-                        populateAnnouncements(currentWeek);
-                    }
-                    announcementsPlanner.setVisible(true);
-                } else {
-                    if (defaultView) { //the user is viewing plannerWeek
-                        weekPlanner.setVisible(true);
-                    } else { //the user is viewing plannerDay
-                        dayPlanner.setVisible(true);
-                    }
+            WeekRange currentWeek = getWeekRange(dateDisplayed);
 
-                    lastDateAnnouncementsHadOpen = weekDisplayed;
-
-                    if (!WeekUtil.isDateInWeek(lastDateAssignmentsHadOpen, weekDisplayed, (weekStart) ? "sunday" : "monday")) {
-                        clearAssignmentDisplay();
-                        populateCoursesAndAssignments(currentWeek);
-                    }
-                    announcementsPlanner.setVisible(false);
+            if (clicked.equals("Announcements"))
+            {
+                viewingMenuLabelMutable.setText("Announcements");
+                announcementsRectangle.setVisible(true);
+                showAnnouncements = true;
+                lastDateAssignmentsHadOpen = weekDisplayed;
+                if (!WeekUtil.isDateInWeek(lastDateAnnouncementsHadOpen, weekDisplayed, (weekStart) ? "sunday" : "monday"))
+                {
+                    clearAnnouncementDisplay();
+                    populateAnnouncements(currentWeek);
                 }
+                announcementsPlanner.setVisible(true);
+
+            }
+            else if (clicked.equals("Assignments"))
+            {
+                viewingMenuLabelMutable.setText("Assignments");
+                assignmentsRectangle.setVisible(true);
+                showAnnouncements = false;
+                lastDateAnnouncementsHadOpen = weekDisplayed;
+                if (!WeekUtil.isDateInWeek(lastDateAssignmentsHadOpen, weekDisplayed, (weekStart) ? "sunday" : "monday"))
+                {
+                    clearAssignmentDisplay();
+                    populateCoursesAndAssignments(currentWeek);
+                }
+                if (defaultView)
+                {
+                    weekPlanner.setVisible(true);
+                }
+                else
+                {
+                    dayPlanner.setVisible(true);
+                }
+
+            }
+            else if (clicked.equals("Tasks"))
+            {
+                viewingMenuLabelMutable.setText("Tasks");
+                tasksRectangle.setVisible(true);
+                tasksPlanner.setVisible(true);
             }
         }
     }
