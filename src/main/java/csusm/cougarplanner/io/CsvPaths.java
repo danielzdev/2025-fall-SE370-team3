@@ -46,6 +46,16 @@ public class CsvPaths
     }
 
     /**
+     * Gets the file system path for the announcements.csv file.
+     *
+     * @return Path to announcements.csv in the data directory
+     */
+    public static Path getTasksPath()
+    {
+        return Paths.get(DATA_DIR, "tasks.csv");
+    }
+
+    /**
      * Gets the file system path for the snapshots.json file.
      *
      * @return Path to snapshots.json in the data directory
