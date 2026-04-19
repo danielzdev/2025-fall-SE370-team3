@@ -106,7 +106,8 @@ public class ProfileWriter
                         "defaultSort.difficultyOrder",  // Difficulty sort direction
                         "showRefreshCountdown",         // Countdown display preference
                         "lastViewedWeekStart",          // Last viewed week context
-                        "lastViewedDay"                 // Last viewed day context
+                        "lastViewedDay",                // Last viewed day context
+                        "theme"                         // UI theme (cougar/dark/sunset)
                 };
 
         for (String key : keyOrder)

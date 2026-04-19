@@ -21,6 +21,7 @@ public class SettingsValidator
     private static final boolean DEFAULT_SHOW_REFRESH_COUNTDOWN = false;
     private static final String DEFAULT_SORT_MODE = "date_time";
     private static final String DEFAULT_SORT_DIFFICULTY_ORDER = "ascending";
+    private static final String DEFAULT_THEME = "cougar";
 
     /**
      * Validates all Profile config values and replaces invalid values with defaults,
@@ -72,6 +73,12 @@ public class SettingsValidator
         {
             profile.setDefaultSortDifficultyOrder(DEFAULT_SORT_DIFFICULTY_ORDER);
             validationWarnings.add("Invalid value for defaultSort.difficultyOrder: '" + difficultyOrder + "'. Replacing with default value: " + DEFAULT_SORT_DIFFICULTY_ORDER + ".");
+        }
+
+        String theme = profile.getTheme();
+        if (!isValidTheme(theme)) {
+            profile.setTheme(DEFAULT_THEME);
+            validationWarnings.add("Invalid value for theme: '" + theme + "'. Replacing with default value: " + DEFAULT_THEME + ".");
         }
 
         // Combines existing errors with new validation warnings
@@ -194,6 +201,10 @@ public class SettingsValidator
     private boolean isValidDifficultyOrder(String difficultyOrder)
     {
         return difficultyOrder != null && ("ascending".equalsIgnoreCase(difficultyOrder) || "descending".equalsIgnoreCase(difficultyOrder));
+    }
+
+    private boolean isValidTheme(String theme) {
+        return theme != null && ("cougar".equalsIgnoreCase(theme) || "dark".equalsIgnoreCase(theme) || "sunset".equalsIgnoreCase(theme));
     }
 
     /**

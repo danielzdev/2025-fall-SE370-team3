@@ -37,6 +37,7 @@ public class Profile
         defaults.put("showRefreshCountdown", "false");
         defaults.put("lastViewedWeekStart", "");
         defaults.put("lastViewedDay", "");
+        defaults.put("theme", "cougar");
         return defaults;
     }
 
@@ -178,6 +179,15 @@ public class Profile
     public String getLastViewedDay()
     {
         return properties.get("lastViewedDay");
+    }
+
+    /**
+     * Gets the selected UI theme.
+     *
+     * @return theme name (cougar, dark, or sunset)
+     */
+    public String getTheme() {
+        return properties.get("theme");
     }
 
     /**
@@ -360,6 +370,15 @@ public class Profile
     public void setLastViewedDay(String day)
     {
         properties.put("lastViewedDay", day);
+    }
+
+    /**
+     * Sets the UI theme.
+     *
+     * @param theme theme name (cougar, dark, or sunset)
+     */
+    public void setTheme(String theme) {
+        properties.put("theme", theme);
     }
 
     /**

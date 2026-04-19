@@ -10,6 +10,7 @@ import csusm.cougarplanner.io.AssignmentsRepository;
 import csusm.cougarplanner.io.CoursesRepository;
 import csusm.cougarplanner.models.*;
 import csusm.cougarplanner.services.CanvasService;
+import csusm.cougarplanner.theme.ThemeManager;
 import csusm.cougarplanner.transitions.ExponentialTransitionScale;
 import csusm.cougarplanner.util.*;
 
@@ -86,8 +87,16 @@ public class MainPageController implements Initializable {
     @FXML
     private TaskPanelController tasksPlannerController;
 
-    public void showView(String viewName)
-    {
+    private void saveProfile() {
+        try {
+            ProfileWriter writer = new ProfileWriter(Path.of("data/profile.properties"));
+            writer.writeProfile(profile);
+        } catch (IOException e) {
+            System.err.println("Failed to save profile: " + e.getMessage());
+        }
+    }
+
+    public void showView(String viewName) {
         // Hide everything first
         weekPlanner.setVisible(false);
         dayPlanner.setVisible(false);
@@ -97,54 +106,42 @@ public class MainPageController implements Initializable {
 
         WeekRange currentWeek = getWeekRange(dateDisplayed);
 
-        if (viewName.equals("Announcements"))
-        {
+        if (viewName.equals("Announcements")) {
             viewingMenuLabelMutable.setText("Announcements");
             showAnnouncements = true;
             lastDateAssignmentsHadOpen = weekDisplayed;
-            if (!WeekUtil.isDateInWeek(lastDateAnnouncementsHadOpen, weekDisplayed, (weekStart) ? "sunday" : "monday"))
-            {
+            if (!WeekUtil.isDateInWeek(lastDateAnnouncementsHadOpen, weekDisplayed, (weekStart) ? "sunday" : "monday")) {
                 clearAnnouncementDisplay();
                 populateAnnouncements(currentWeek);
             }
             announcementsPlanner.setVisible(true);
 
-        }
-        else if (viewName.equals("Assignments"))
-        {
+        } else if (viewName.equals("Assignments")) {
             viewingMenuLabelMutable.setText("Assignments");
             showAnnouncements = false;
             lastDateAnnouncementsHadOpen = weekDisplayed;
-            if (!WeekUtil.isDateInWeek(lastDateAssignmentsHadOpen, weekDisplayed, (weekStart) ? "sunday" : "monday"))
-            {
+            if (!WeekUtil.isDateInWeek(lastDateAssignmentsHadOpen, weekDisplayed, (weekStart) ? "sunday" : "monday")) {
                 clearAssignmentDisplay();
                 populateCoursesAndAssignments(currentWeek);
             }
-            if (defaultView)
-            {
+            if (defaultView) {
                 weekPlanner.setVisible(true);
-            }
-            else
-            {
+            } else {
                 dayPlanner.setVisible(true);
             }
 
-        }
-        else if (viewName.equals("Tasks"))
-        {
+        } else if (viewName.equals("Tasks")) {
             viewingMenuLabelMutable.setText("Tasks");
             tasksPlanner.setVisible(true);
         }
 
-        if (settingsPlannerController != null)
-        {
+        if (settingsPlannerController != null) {
             settingsPlannerController.markSortSelection(viewName);
         }
     }
 
     @FXML
-    private void openSettingsPanel(MouseEvent event)
-    {
+    private void openSettingsPanel(MouseEvent event) {
         weekPlanner.setVisible(false);
         dayPlanner.setVisible(false);
         announcementsPlanner.setVisible(false);
@@ -153,41 +150,45 @@ public class MainPageController implements Initializable {
         viewingMenuLabelMutable.setText("Settings");
     }
 
-    public void hideSettingsPanel()
-    {
+    public void hideSettingsPanel() {
         settingsPlanner.setVisible(false);
     }
 
-    public void closeSettingsPanel()
-    {
+    public void closeSettingsPanel() {
         String target = settingsPlannerController != null
                 ? settingsPlannerController.getSelectedSortView()
                 : "Announcements";
         showView(target);
     }
 
-    public boolean isWeekView()
-    {
+    public boolean isWeekView() {
         return defaultView;
     }
 
-    public boolean isWeekStartSunday()
-    {
+    public boolean isWeekStartSunday() {
         return weekStart;
     }
 
-    public void setDisplayView(boolean weekView)
-    {
+    public void setDisplayView(boolean weekView) {
         weekDayViewed = dateDisplayed.getDayOfWeek().getValue();
         weekDayViewed += (weekDayViewed == 7) ? -7 : 0;
-        if (defaultView != weekView)
-        {
+        if (defaultView != weekView) {
             performToggleViewByWeek(weekView);
         }
     }
 
-    public void setWeekStart(boolean sunday)
-    {
+    public String getTheme() {
+        return profile.getTheme();
+    }
+
+    public void setTheme(String themeName) {
+        String resolved = ThemeManager.resolve(themeName);
+        profile.setTheme(resolved);
+        saveProfile();
+        ThemeManager.applyToAllOpenWindows(resolved);
+    }
+
+    public void setWeekStart(boolean sunday) {
         if (weekStart == sunday) return;
 
         weekStart = sunday;

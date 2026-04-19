@@ -8,19 +8,21 @@
 <?import javafx.scene.text.Font?>
 
 <AnchorPane fx:id="settingsPanelRoot"
+            styleClass="app-panel-body"
             prefHeight="461.0"
             prefWidth="1015.0"
-            style="-fx-background-color: #ffffff; -fx-background-radius: 2;"
+            style="-fx-background-radius: 2;"
             xmlns="http://javafx.com/javafx/17"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="csusm.cougarplanner.controllers.SettingsPanelController">
 
-    <AnchorPane prefHeight="40.0"
-                style="-fx-background-color: #002E5A; -fx-background-radius: 6 6 0 0;"
+    <AnchorPane styleClass="app-panel-header"
+                prefHeight="40.0"
+                style="-fx-background-radius: 6 6 0 0;"
                 AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <children>
             <Label text="Settings"
-                   style="-fx-background-color: white; -fx-background-radius: 4; -fx-padding: 4 12 4 12;"
+                   styleClass="app-pill-light"
                    AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="8.0">
                 <font><Font name="Arial Rounded MT Bold" size="14.0"/></font>
             </Label>
@@ -28,7 +30,8 @@
                    onMouseClicked="#onCloseClicked"
                    onMouseEntered="#onCloseHoverEnter"
                    onMouseExited="#onCloseHoverExit"
-                   style="-fx-text-fill: white; -fx-background-color: transparent;
+                   styleClass="app-title-text"
+                   style="-fx-background-color: transparent;
                           -fx-background-radius: 4; -fx-padding: 4 10 4 10; -fx-cursor: hand;"
                    AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="6.0">
                 <font><Font name="Arial Rounded MT Bold" size="16.0"/></font>
@@ -45,12 +48,9 @@
                   style="-fx-padding: 16 20 16 20; -fx-background-color: transparent;">
                 <children>
 
-                    <VBox spacing="10.0"
-                          style="-fx-background-color: #f0f0f0; -fx-background-radius: 10; -fx-padding: 14;
-                                 -fx-border-color: #cccccc; -fx-border-radius: 10; -fx-border-width: 1;">
+                    <VBox spacing="10.0" styleClass="app-section-card">
                         <children>
-                            <Label text="Show"
-                                   style="-fx-text-fill: #222222;">
+                            <Label text="Show" styleClass="app-section-heading">
                                 <font><Font name="Arial Rounded MT Bold" size="16.0"/></font>
                             </Label>
                             <HBox spacing="10.0">
@@ -59,27 +59,21 @@
                                            onMouseClicked="#onSortByClicked"
                                            onMouseEntered="#onOptionHoverEnter"
                                            onMouseExited="#onOptionHoverExit"
-                                           style="-fx-background-color: white; -fx-text-fill: #222222;
-                                                  -fx-background-radius: 8; -fx-border-color: #cccccc;
-                                                  -fx-border-radius: 8; -fx-padding: 6 14 6 14; -fx-cursor: hand;">
+                                           styleClass="option-unselected">
                                         <font><Font name="Arial Rounded MT Bold" size="13.0"/></font>
                                     </Label>
                                     <Label fx:id="sortAssignmentsLabel" text="Assignments"
                                            onMouseClicked="#onSortByClicked"
                                            onMouseEntered="#onOptionHoverEnter"
                                            onMouseExited="#onOptionHoverExit"
-                                           style="-fx-background-color: white; -fx-text-fill: #222222;
-                                                  -fx-background-radius: 8; -fx-border-color: #cccccc;
-                                                  -fx-border-radius: 8; -fx-padding: 6 14 6 14; -fx-cursor: hand;">
+                                           styleClass="option-unselected">
                                         <font><Font name="Arial Rounded MT Bold" size="13.0"/></font>
                                     </Label>
                                     <Label fx:id="sortTasksLabel" text="Tasks"
                                            onMouseClicked="#onSortByClicked"
                                            onMouseEntered="#onOptionHoverEnter"
                                            onMouseExited="#onOptionHoverExit"
-                                           style="-fx-background-color: white; -fx-text-fill: #222222;
-                                                  -fx-background-radius: 8; -fx-border-color: #cccccc;
-                                                  -fx-border-radius: 8; -fx-padding: 6 14 6 14; -fx-cursor: hand;">
+                                           styleClass="option-unselected">
                                         <font><Font name="Arial Rounded MT Bold" size="13.0"/></font>
                                     </Label>
                                 </children>
@@ -87,12 +81,9 @@
                         </children>
                     </VBox>
 
-                    <VBox spacing="10.0"
-                          style="-fx-background-color: #f0f0f0; -fx-background-radius: 10; -fx-padding: 14;
-                                 -fx-border-color: #cccccc; -fx-border-radius: 10; -fx-border-width: 1;">
+                    <VBox spacing="10.0" styleClass="app-section-card">
                         <children>
-                            <Label text="Layout"
-                                   style="-fx-text-fill: #222222;">
+                            <Label text="Layout" styleClass="app-section-heading">
                                 <font><Font name="Arial Rounded MT Bold" size="16.0"/></font>
                             </Label>
                             <HBox spacing="10.0">
@@ -101,18 +92,14 @@
                                            onMouseClicked="#onDisplayClicked"
                                            onMouseEntered="#onOptionHoverEnter"
                                            onMouseExited="#onOptionHoverExit"
-                                           style="-fx-background-color: white; -fx-text-fill: #222222;
-                                                  -fx-background-radius: 8; -fx-border-color: #cccccc;
-                                                  -fx-border-radius: 8; -fx-padding: 6 14 6 14; -fx-cursor: hand;">
+                                           styleClass="option-unselected">
                                         <font><Font name="Arial Rounded MT Bold" size="13.0"/></font>
                                     </Label>
                                     <Label fx:id="displayDayLabel" text="Day"
                                            onMouseClicked="#onDisplayClicked"
                                            onMouseEntered="#onOptionHoverEnter"
                                            onMouseExited="#onOptionHoverExit"
-                                           style="-fx-background-color: white; -fx-text-fill: #222222;
-                                                  -fx-background-radius: 8; -fx-border-color: #cccccc;
-                                                  -fx-border-radius: 8; -fx-padding: 6 14 6 14; -fx-cursor: hand;">
+                                           styleClass="option-unselected">
                                         <font><Font name="Arial Rounded MT Bold" size="13.0"/></font>
                                     </Label>
                                 </children>
@@ -120,12 +107,9 @@
                         </children>
                     </VBox>
 
-                    <VBox spacing="10.0"
-                          style="-fx-background-color: #f0f0f0; -fx-background-radius: 10; -fx-padding: 14;
-                                 -fx-border-color: #cccccc; -fx-border-radius: 10; -fx-border-width: 1;">
+                    <VBox spacing="10.0" styleClass="app-section-card">
                         <children>
-                            <Label text="Week Start"
-                                   style="-fx-text-fill: #222222;">
+                            <Label text="Week Start" styleClass="app-section-heading">
                                 <font><Font name="Arial Rounded MT Bold" size="16.0"/></font>
                             </Label>
                             <HBox spacing="10.0">
@@ -134,18 +118,47 @@
                                            onMouseClicked="#onWeekStartClicked"
                                            onMouseEntered="#onOptionHoverEnter"
                                            onMouseExited="#onOptionHoverExit"
-                                           style="-fx-background-color: white; -fx-text-fill: #222222;
-                                                  -fx-background-radius: 8; -fx-border-color: #cccccc;
-                                                  -fx-border-radius: 8; -fx-padding: 6 14 6 14; -fx-cursor: hand;">
+                                           styleClass="option-unselected">
                                         <font><Font name="Arial Rounded MT Bold" size="13.0"/></font>
                                     </Label>
                                     <Label fx:id="weekStartMondayLabel" text="Monday"
                                            onMouseClicked="#onWeekStartClicked"
                                            onMouseEntered="#onOptionHoverEnter"
                                            onMouseExited="#onOptionHoverExit"
-                                           style="-fx-background-color: white; -fx-text-fill: #222222;
-                                                  -fx-background-radius: 8; -fx-border-color: #cccccc;
-                                                  -fx-border-radius: 8; -fx-padding: 6 14 6 14; -fx-cursor: hand;">
+                                           styleClass="option-unselected">
+                                        <font><Font name="Arial Rounded MT Bold" size="13.0"/></font>
+                                    </Label>
+                                </children>
+                            </HBox>
+                        </children>
+                    </VBox>
+
+                    <VBox spacing="10.0" styleClass="app-section-card">
+                        <children>
+                            <Label text="Theme" styleClass="app-section-heading">
+                                <font><Font name="Arial Rounded MT Bold" size="16.0"/></font>
+                            </Label>
+                            <HBox spacing="10.0">
+                                <children>
+                                    <Label fx:id="themeCougarLabel" text="Cougar"
+                                           onMouseClicked="#onThemeClicked"
+                                           onMouseEntered="#onOptionHoverEnter"
+                                           onMouseExited="#onOptionHoverExit"
+                                           styleClass="option-unselected">
+                                        <font><Font name="Arial Rounded MT Bold" size="13.0"/></font>
+                                    </Label>
+                                    <Label fx:id="themeDarkLabel" text="Dark"
+                                           onMouseClicked="#onThemeClicked"
+                                           onMouseEntered="#onOptionHoverEnter"
+                                           onMouseExited="#onOptionHoverExit"
+                                           styleClass="option-unselected">
+                                        <font><Font name="Arial Rounded MT Bold" size="13.0"/></font>
+                                    </Label>
+                                    <Label fx:id="themeSunsetLabel" text="Sunset"
+                                           onMouseClicked="#onThemeClicked"
+                                           onMouseEntered="#onOptionHoverEnter"
+                                           onMouseExited="#onOptionHoverExit"
+                                           styleClass="option-unselected">
                                         <font><Font name="Arial Rounded MT Bold" size="13.0"/></font>
                                     </Label>
                                 </children>
@@ -159,11 +172,11 @@
     </ScrollPane>
 
     <HBox alignment="CENTER" spacing="20.0"
-          style="-fx-background-color: #d1d3d4; -fx-padding: 8;"
+          styleClass="app-panel-footer"
+          style="-fx-padding: 8;"
           AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
         <children>
-            <Label text="Changes save automatically"
-                   style="-fx-text-fill: #333333;">
+            <Label text="Changes save automatically" styleClass="app-auto-note">
                 <font><Font name="Arial Rounded MT Bold" size="12.0"/></font>
             </Label>
         </children>

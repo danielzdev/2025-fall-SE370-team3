@@ -1,0 +1,80 @@
+/* Cougar (default) — navy + white + gold */
+
+.app-titlebar,
+.app-panel-header {
+    -fx-background-color: #002E5A;
+}
+
+.app-tabsbar,
+.app-panel-footer {
+    -fx-background-color: #d1d3d4;
+}
+
+.app-surface,
+.app-panel-body {
+    -fx-background-color: #ffffff;
+}
+
+.app-section-card {
+    -fx-background-color: #f0f0f0;
+    -fx-border-color: #cccccc;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-border-width: 1;
+    -fx-padding: 14;
+}
+
+.app-title-text {
+    -fx-text-fill: #ffffff;
+}
+
+.app-body-text {
+    -fx-text-fill: #222222;
+}
+
+.app-section-heading {
+    -fx-text-fill: #222222;
+}
+
+.option-unselected {
+    -fx-background-color: #ffffff;
+    -fx-text-fill: #222222;
+    -fx-background-radius: 8;
+    -fx-border-color: #cccccc;
+    -fx-border-radius: 8;
+    -fx-padding: 6 14 6 14;
+    -fx-cursor: hand;
+}
+
+.option-hover {
+    -fx-background-color: #e8eef5;
+    -fx-text-fill: #222222;
+    -fx-background-radius: 8;
+    -fx-border-color: #002E5A;
+    -fx-border-radius: 8;
+    -fx-padding: 6 14 6 14;
+    -fx-cursor: hand;
+}
+
+.option-selected {
+    -fx-background-color: #ffffff;
+    -fx-text-fill: #002E5A;
+    -fx-background-radius: 8;
+    -fx-background-insets: 0;
+    -fx-border-color: #F8BA2B;
+    -fx-border-radius: 8;
+    -fx-border-width: 2;
+    -fx-border-insets: 0;
+    -fx-padding: 6 14 6 14;
+    -fx-cursor: hand;
+}
+
+.app-pill-light {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 4;
+    -fx-padding: 4 12 4 12;
+}
+
+.app-auto-note {
+    -fx-text-fill: #333333;
+}

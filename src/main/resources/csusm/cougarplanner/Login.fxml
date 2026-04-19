@@ -23,7 +23,7 @@
    <children>
       <HBox prefHeight="319.0" prefWidth="555.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <AnchorPane prefHeight="350.0" prefWidth="129.0" style="-fx-background-color: #002E5A;">
+            <AnchorPane prefHeight="350.0" prefWidth="129.0" styleClass="app-titlebar">
                <children>
                   <AnchorPane layoutY="108.0" prefHeight="32.0" prefWidth="114.0" style="-fx-background-color: linear-gradient(to right, #002E5A, #3ab5e8);;">
                      <children>
@@ -106,7 +106,7 @@
                   </AnchorPane>
                   <ScrollPane fx:id="scrollPaneField" hbarPolicy="NEVER" prefHeight="260.0" prefWidth="432.0">
                      <content>
-                        <AnchorPane prefHeight="1385.0" prefWidth="457.0" style="-fx-background-color: #ffffff;">
+                        <AnchorPane prefHeight="1385.0" prefWidth="457.0" styleClass="app-surface">
                            <cursor>
                               <Cursor fx:constant="DEFAULT" />
                            </cursor>
@@ -120,7 +120,7 @@
                                  <children>
                                     <AnchorPane prefHeight="291.0" prefWidth="457.0">
                                        <children>
-                                          <Label alignment="TOP_CENTER" layoutX="31.0" layoutY="26.0" prefHeight="36.0" prefWidth="382.0" text="Welcome to the Cougar Planner!!!" textFill="#222222">
+                                          <Label alignment="TOP_CENTER" layoutX="31.0" layoutY="26.0" prefHeight="36.0" prefWidth="382.0" text="Welcome to the Cougar Planner!!!" styleClass="app-body-text">
                                              <font>
                                                 <Font size="23.0" />
                                              </font>
@@ -132,7 +132,7 @@
                                     </AnchorPane>
                                     <AnchorPane prefHeight="443.0" prefWidth="426.0">
                                        <children>
-                                          <Label alignment="TOP_LEFT" layoutX="52.0" layoutY="4.0" prefHeight="36.0" prefWidth="197.0" text="Introduction" textFill="#222222">
+                                          <Label alignment="TOP_LEFT" layoutX="52.0" layoutY="4.0" prefHeight="36.0" prefWidth="197.0" text="Introduction" styleClass="app-body-text">
                                              <font>
                                                 <Font size="23.0" />
                                              </font>
@@ -144,7 +144,7 @@
                                     </AnchorPane>
                                     <AnchorPane prefHeight="300.0" prefWidth="426.0">
                                        <children>
-                                          <Label alignment="TOP_LEFT" layoutX="53.0" layoutY="4.0" prefHeight="36.0" prefWidth="197.0" text="Login" textFill="#222222">
+                                          <Label alignment="TOP_LEFT" layoutX="53.0" layoutY="4.0" prefHeight="36.0" prefWidth="197.0" text="Login" styleClass="app-body-text">
                                              <font>
                                                 <Font size="23.0" />
                                              </font>
@@ -174,7 +174,7 @@
                                     </AnchorPane>
                                     <AnchorPane prefHeight="363.0" prefWidth="457.0">
                                        <children>
-                                          <Label alignment="TOP_LEFT" layoutX="53.0" layoutY="31.0" prefHeight="36.0" prefWidth="291.0" text="API token entry and settings" textFill="#222222">
+                                          <Label alignment="TOP_LEFT" layoutX="53.0" layoutY="31.0" prefHeight="36.0" prefWidth="291.0" text="API token entry and settings" styleClass="app-body-text">
                                              <font>
                                                 <Font size="23.0" />
                                              </font>

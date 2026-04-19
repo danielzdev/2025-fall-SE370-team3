@@ -2,6 +2,7 @@ package csusm.cougarplanner;
 
 import csusm.cougarplanner.config.Profile;
 import csusm.cougarplanner.config.ProfileReader;
+import csusm.cougarplanner.theme.ThemeManager;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -38,6 +39,9 @@ public class Launcher extends Application {
         FXMLLoader loader = new FXMLLoader(Launcher.class.getResource(fxmlPath));
         Scene scene = new Scene(loader.load());
 
+        String themeName = profileConfig != null ? profileConfig.getTheme() : ThemeManager.COUGAR;
+        ThemeManager.apply(scene, themeName);
+
         Stage newStage = new Stage();
 
         if (transparent) {
@@ -61,6 +65,10 @@ public class Launcher extends Application {
 
     public static Stage getPrimaryStage() {
         return primaryStage;
+    }
+
+    public static Profile getProfileConfig() {
+        return profileConfig;
     }
 
     public static void main(String[] args) {
