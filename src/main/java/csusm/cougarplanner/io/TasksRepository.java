@@ -102,6 +102,31 @@ public class TasksRepository {
     }
 
     /**
+     * update task as completed
+     */
+    public void toggleCompleted(String taskId) throws IOException {
+        // list of all tasks
+        List<Task> allTasks = findAll();
+        // look through all tasks
+        for (Task t : allTasks) {
+            // find tasks with taskId from parameter
+            if (t.getTaskId().equals(taskId)) {
+                // flip the boolean from false to true
+                t.setCompleted(!t.isCompleted());
+                // stop
+                break;
+            }
+        }
+        // write back to csv
+        List<Map<String, String>> records = allTasks.stream()
+                .map(this::taskToMap)
+                .collect(Collectors.toList());
+
+        csvWriter.writeAll(CsvPaths.getTasksPath(), records, HEADERS);
+    }
+
+
+    /**
      * Delete task by id
      */
     public void deleteById(String taskId) throws IOException {
