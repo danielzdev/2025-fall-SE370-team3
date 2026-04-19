@@ -38,6 +38,7 @@ public class Profile
         defaults.put("lastViewedWeekStart", "");
         defaults.put("lastViewedDay", "");
         defaults.put("theme", "cougar");
+        defaults.put("selectedView", "Announcements");
         return defaults;
     }
 
@@ -188,6 +189,15 @@ public class Profile
      */
     public String getTheme() {
         return properties.get("theme");
+    }
+
+    /**
+     * Gets the last selected main view.
+     *
+     * @return view name (Announcements, Assignments, or Tasks)
+     */
+    public String getSelectedView() {
+        return properties.get("selectedView");
     }
 
     /**
@@ -379,6 +389,15 @@ public class Profile
      */
     public void setTheme(String theme) {
         properties.put("theme", theme);
+    }
+
+    /**
+     * Sets the last selected main view.
+     *
+     * @param view view name (Announcements, Assignments, or Tasks)
+     */
+    public void setSelectedView(String view) {
+        properties.put("selectedView", view);
     }
 
     /**

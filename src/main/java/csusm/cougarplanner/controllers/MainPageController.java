@@ -97,6 +97,11 @@ public class MainPageController implements Initializable {
     }
 
     public void showView(String viewName) {
+        if (viewName.equals("Announcements") || viewName.equals("Assignments") || viewName.equals("Tasks")) {
+            profile.setSelectedView(viewName);
+            saveProfile();
+        }
+
         // Hide everything first
         weekPlanner.setVisible(false);
         dayPlanner.setVisible(false);
@@ -193,6 +198,7 @@ public class MainPageController implements Initializable {
 
         weekStart = sunday;
         profile.setWeekStart(weekStart ? "sunday" : "monday");
+        saveProfile();
 
         organizePlannerByWeekStart();
         updateDate("changeWeekStart", Optional.empty());
@@ -380,6 +386,7 @@ public class MainPageController implements Initializable {
 
         defaultView = userClickedViewByWeek;
         profile.setDefaultView(defaultView ? "week" : "day");
+        saveProfile();
 
         organizePlannerByWeekStart(); //the first day of the week isn't changed on the day-week view that's hidden, so it needs to be updated
         if (!defaultView) {
@@ -591,13 +598,8 @@ public class MainPageController implements Initializable {
         if (!profile.shouldStoreToken()) {
             profile.setAuthToken(null);
             profile.setLoginCompleted(false);
-            try {
-                ProfileWriter writer = new ProfileWriter(Path.of("data/profile.properties"));
-                writer.writeProfile(profile);
-            } catch (IOException e) {
-                System.err.println("Failed to save profile on application close: " + e.getMessage());
-            }
         }
+        saveProfile();
         Platform.exit();
     }
 
@@ -948,6 +950,15 @@ public class MainPageController implements Initializable {
             WeekRange currentWeek = getWeekRange(dateDisplayed);
             populateCoursesAndAssignments(currentWeek);
             populateAnnouncements(currentWeek);
+
+            // Restore the last selected main view
+            String restoredView = profile.getSelectedView();
+            if (restoredView != null
+                    && (restoredView.equals("Announcements")
+                        || restoredView.equals("Assignments")
+                        || restoredView.equals("Tasks"))) {
+                showView(restoredView);
+            }
         });
     }
 }

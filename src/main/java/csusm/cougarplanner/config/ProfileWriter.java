@@ -107,7 +107,8 @@ public class ProfileWriter
                         "showRefreshCountdown",         // Countdown display preference
                         "lastViewedWeekStart",          // Last viewed week context
                         "lastViewedDay",                // Last viewed day context
-                        "theme"                         // UI theme (cougar/dark/sunset)
+                        "theme",                        // UI theme (cougar/dark/sunset)
+                        "selectedView"                  // Last selected main view
                 };
 
         for (String key : keyOrder)
