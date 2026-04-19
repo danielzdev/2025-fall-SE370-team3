@@ -26,11 +26,11 @@ public class Launcher extends Application {
         ProfileReader.ReadResult result = reader.readProfile();
         profileConfig = result.getProfile();
 
-        // Decide which scene to load based on whether orientation is complete
-        if (profileConfig.isOrientationCompleted() && !profileConfig.getAuthToken().isEmpty()) {
+        // Decide which scene to load based on whether login is complete
+        if (profileConfig.isLoginCompleted() && !profileConfig.getAuthToken().isEmpty()) {
             loadScene("MainPage.fxml", "Cougar Planner - Weekly View", true);
         } else {
-            loadScene("Orientation.fxml", "Cougar Planner - Orientation", false);
+            loadScene("Login.fxml", "Cougar Planner - Login", false);
         }
     }
 

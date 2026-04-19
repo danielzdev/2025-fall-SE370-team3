@@ -26,7 +26,7 @@ public class Profile
     {
         Map<String, String> defaults = new HashMap<>();
         defaults.put("authToken", "");
-        defaults.put("orientationCompleted", "false");
+        defaults.put("loginCompleted", "false");
         defaults.put("storeData", "true");
         defaults.put("storeToken", "true");
         defaults.put("weekStart", "monday");
@@ -71,13 +71,13 @@ public class Profile
     }
 
     /**
-     * Gets the orientation completion status as a string.
+     * Gets the login completion status as a string.
      *
-     * @return true if orientation completed, false otherwise
+     * @return true if login completed, false otherwise
      */
-    public String getOrientationCompleted()
+    public String getLoginCompleted()
     {
-        return properties.get("orientationCompleted");
+        return properties.get("loginCompleted");
     }
 
     /**
@@ -181,13 +181,13 @@ public class Profile
     }
 
     /**
-     * Checks if the user has completed the initial orientation.
+     * Checks if the user has completed the initial login.
      *
-     * @return true if orientation is completed, false otherwise
+     * @return true if login is completed, false otherwise
      */
-    public boolean isOrientationCompleted()
+    public boolean isLoginCompleted()
     {
-        return "true".equals(getOrientationCompleted());
+        return "true".equals(getLoginCompleted());
     }
 
     /**
@@ -253,13 +253,13 @@ public class Profile
     }
 
     /**
-     * Sets the orientation completion status.
+     * Sets the login completion status.
      *
-     * @param completed true if orientation is completed, false otherwise
+     * @param completed true if login is completed, false otherwise
      */
-    public void setOrientationCompleted(boolean completed)
+    public void setLoginCompleted(boolean completed)
     {
-        properties.put("orientationCompleted", String.valueOf(completed));
+        properties.put("loginCompleted", String.valueOf(completed));
     }
 
     /**

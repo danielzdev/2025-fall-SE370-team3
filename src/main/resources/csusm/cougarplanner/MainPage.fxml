@@ -8,7 +8,6 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Circle?>
-<?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
 <VBox fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1100.0" style="-fx-background-color: transparent;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="csusm.cougarplanner.controllers.MainPageController">
@@ -28,20 +27,11 @@
                             </font>
                         </Label>
                         <Pane layoutX="4.0" layoutY="23.0" prefHeight="6.0" prefWidth="152.0" style="-fx-background-color: F8BA2BFF; -fx-background-radius: 10;" AnchorPane.leftAnchor="10.0" />
-                        <Pane fx:id="viewingButtonDecoration1" layoutX="165.0" layoutY="23.0" prefHeight="6.0" prefWidth="23.0" style="-fx-background-color: F8BA2BFF; -fx-background-radius: 10;" />
-                        <Pane fx:id="viewingButtonDecoration2" layoutX="191.0" layoutY="23.0" prefHeight="6.0" prefWidth="10.0" style="-fx-background-color: F8BA2BFF; -fx-background-radius: 10;" />
-                        <Pane fx:id="viewingButtonDecoration3" layoutX="204.0" layoutY="23.0" prefHeight="6.0" prefWidth="6.0" style="-fx-background-color: F8BA2BFF; -fx-background-radius: 10;" />
-                        <Pane fx:id="viewingButtonDecoration4" layoutX="213.0" layoutY="23.0" prefHeight="6.0" prefWidth="6.0" style="-fx-background-color: F8BA2BFF; -fx-background-radius: 10;" />
-                        <Pane fx:id="viewingButtonDecoration5" layoutX="222.0" layoutY="23.0" prefHeight="6.0" prefWidth="6.0" style="-fx-background-color: F8BA2BFF; -fx-background-radius: 10;" />
-                        <Pane onMouseClicked="#toggleViewingMenu" onMouseEntered="#highlightViewingLabelFromPane" onMouseExited="#highlightViewingLabelFromPane" prefHeight="30.0" prefWidth="242.0" AnchorPane.bottomAnchor="6.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                            <cursor>
-                                <Cursor fx:constant="HAND" />
-                            </cursor></Pane>
                     </children>
                 </AnchorPane>
                 <Pane layoutX="280.0" layoutY="84.66666666666667" prefHeight="10.0" prefWidth="170.0" style="-fx-background-color: #d1d3d4; -fx-background-radius: 8;" AnchorPane.bottomAnchor="-4.666666666666671" />
                 <Pane layoutX="653.6666666666667" layoutY="88.0" prefHeight="10.0" prefWidth="170.0" style="-fx-background-color: #d1d3d4; -fx-background-radius: 8;" AnchorPane.bottomAnchor="-4.666666666666671" AnchorPane.rightAnchor="276.5" />
-                <AnchorPane layoutX="847.9999999999999" layoutY="51.0" prefHeight="29.0" prefWidth="251.0" AnchorPane.rightAnchor="0.0">
+                <AnchorPane onMouseClicked="#openSettingsPanel" layoutX="847.9999999999999" layoutY="51.0" prefHeight="29.0" prefWidth="251.0" AnchorPane.rightAnchor="0.0">
                     <children>
                         <Label text="Settings" textFill="#d9def4" AnchorPane.rightAnchor="20.0">
                             <font>
@@ -373,109 +363,9 @@
                                 <fx:include fx:id="tasksPlanner" source="TaskPanel.fxml" visible="false"
                                             AnchorPane.topAnchor="20.0" AnchorPane.bottomAnchor="10.0"
                                             AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" />
-                                <AnchorPane fx:id="viewingMenu" prefWidth="200.0" style="-fx-background-color: #0062a5;" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                    <children>
-                                        <VBox prefHeight="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                            <children>
-                                                <AnchorPane prefHeight="10.0" prefWidth="200.0" style="-fx-background-color: #222222;" />
-                                                <AnchorPane prefHeight="145.0" prefWidth="200.0" style="-fx-background-color: linear-gradient(to left, #002E5A,  #0062a5);">
-                                                    <children>
-                                                        <Label layoutX="14.0" layoutY="11.0" text="Sort By:" textFill="WHITE" AnchorPane.leftAnchor="14.0">
-                                                            <font>
-                                                                <Font name="Arial Rounded MT Bold" size="15.0" />
-                                                            </font>
-                                                        </Label>
-                                                        <Rectangle fx:id="announcementsRectangle" arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="21.0" layoutX="44.0" layoutY="38.0" stroke="BLACK" strokeType="INSIDE" width="110.0" />
-                                                        <Label fx:id="announcementsLabel" layoutX="52.0" layoutY="41.0" onMouseClicked="#toggleContentsType" onMouseEntered="#highlightFromText" onMouseExited="#highlightFromText" text="Announcements" textFill="WHITE">
-                                                            <font>
-                                                                <Font name="Arial Rounded MT Bold" size="12.0" />
-                                                            </font>
-                                                        </Label>
-                                                        <Label layoutX="93.0" layoutY="62.0" text="or" textFill="WHITE">
-                                                            <font>
-                                                                <Font name="Arial Rounded MT Bold" size="12.0" />
-                                                            </font>
-                                                        </Label>
-                                                        <Rectangle fx:id="assignmentsRectangle" arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="21.0" layoutX="44.0" layoutY="81.0" stroke="BLACK" strokeType="INSIDE" visible="false" width="110.0" />
-                                                        <Label fx:id="assignmentsLabel" layoutX="62.0" layoutY="83.0" onMouseClicked="#toggleContentsType" onMouseEntered="#highlightFromText" onMouseExited="#highlightFromText" text="Assignments" textFill="WHITE">
-                                                            <font>
-                                                                <Font name="Arial Rounded MT Bold" size="12.0" />
-                                                            </font>
-                                                        </Label>
-                                                        <Label layoutX="93.0" layoutY="104.0" text="or" textFill="WHITE">
-                                                            <font>
-                                                                <Font name="Arial Rounded MT Bold" size="12.0" />
-                                                            </font>
-                                                        </Label>
-                                                        <Rectangle fx:id="tasksRectangle" arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="21.0" layoutX="44.0" layoutY="120.0" stroke="BLACK" strokeType="INSIDE" visible="false" width="110.0" />
-                                                        <Label fx:id="tasksLabel" layoutX="82.0" layoutY="123.0" onMouseClicked="#toggleContentsType" onMouseEntered="#highlightFromText" onMouseExited="#highlightFromText" text="Tasks" textFill="WHITE">
-                                                            <font>
-                                                                <Font name="Arial Rounded MT Bold" size="12.0" />
-                                                            </font>
-                                                        </Label>
-                                                    </children>
-                                                </AnchorPane>
-                                                <AnchorPane prefHeight="10.0" prefWidth="200.0" style="-fx-background-color: #222222;" />
-                                                <AnchorPane prefHeight="119.0" prefWidth="200.0" style="-fx-background-color: linear-gradient(to left, #002E5A,  #0062a5);">
-                                                    <children>
-                                                        <Label layoutX="14.0" layoutY="14.0" text="Show:" textFill="WHITE">
-                                                            <font>
-                                                                <Font name="Arial Rounded MT Bold" size="15.0" />
-                                                            </font>
-                                                        </Label>
-                                                        <Rectangle fx:id="weekRectangle" arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="21.0" layoutX="70.0" layoutY="33.0" stroke="BLACK" strokeType="INSIDE" width="59.0" />
-                                                        <Label layoutX="83.0" layoutY="36.0" onMouseClicked="#toggleViewByWeek" onMouseEntered="#highlightFromText" onMouseExited="#highlightFromText" text="Week" textFill="WHITE">
-                                                            <font>
-                                                                <Font name="Arial Rounded MT Bold" size="12.0" />
-                                                            </font>
-                                                        </Label>
-                                                        <Label layoutX="94.0" layoutY="58.0" text="or" textFill="WHITE">
-                                                            <font>
-                                                                <Font name="Arial Rounded MT Bold" size="12.0" />
-                                                            </font>
-                                                        </Label>
-                                                        <Rectangle fx:id="dayRectangle" arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="21.0" layoutX="71.0" layoutY="82.0" stroke="BLACK" strokeType="INSIDE" visible="false" width="59.0" />
-                                                        <Label layoutX="89.0" layoutY="84.0" onMouseClicked="#toggleViewByWeek" onMouseEntered="#highlightFromText" onMouseExited="#highlightFromText" text="Day" textFill="WHITE">
-                                                            <font>
-                                                                <Font name="Arial Rounded MT Bold" size="12.0" />
-                                                            </font>
-                                                        </Label>
-                                                    </children>
-                                                </AnchorPane>
-                                                <AnchorPane prefHeight="10.0" prefWidth="200.0" style="-fx-background-color: #222222;" />
-                                                <AnchorPane prefHeight="119.0" prefWidth="200.0" style="-fx-background-color: linear-gradient(to left, #002E5A,  #0062a5);">
-                                                    <children>
-                                                        <Label layoutX="14.0" layoutY="14.0" text="Week Start:" textFill="WHITE">
-                                                            <font>
-                                                                <Font name="Arial Rounded MT Bold" size="15.0" />
-                                                            </font>
-                                                        </Label>
-                                                        <Rectangle fx:id="sundayRectangle" arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="21.0" layoutX="65.0" layoutY="37.0" stroke="BLACK" strokeType="INSIDE" width="68.0" />
-                                                        <Label layoutX="77.0" layoutY="40.0" onMouseClicked="#toggleWeekStart" onMouseEntered="#highlightFromText" onMouseExited="#highlightFromText" text="Sunday" textFill="WHITE">
-                                                            <font>
-                                                                <Font name="Arial Rounded MT Bold" size="12.0" />
-                                                            </font>
-                                                        </Label>
-                                                        <Label layoutX="94.0" layoutY="62.0" text="or" textFill="WHITE">
-                                                            <font>
-                                                                <Font name="Arial Rounded MT Bold" size="12.0" />
-                                                            </font>
-                                                        </Label>
-                                                        <Rectangle fx:id="mondayRectangle" arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="21.0" layoutX="65.0" layoutY="87.0" stroke="BLACK" strokeType="INSIDE" visible="false" width="68.0" />
-                                                        <Label layoutX="78.0" layoutY="89.0" onMouseClicked="#toggleWeekStart" onMouseEntered="#highlightFromText" onMouseExited="#highlightFromText" text="Monday" textFill="WHITE">
-                                                            <font>
-                                                                <Font name="Arial Rounded MT Bold" size="12.0" />
-                                                            </font>
-                                                        </Label>
-                                                    </children>
-                                                </AnchorPane>
-                                                <AnchorPane prefHeight="10.0" prefWidth="200.0" style="-fx-background-color: #222222;" />
-                                                <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #bcbec0;" VBox.vgrow="ALWAYS" />
-                                            </children>
-                                        </VBox>
-                                    </children>
-                                </AnchorPane>
-                                <Pane fx:id="viewingHitbox" onMouseClicked="#toggleViewingMenu" onMouseEntered="#fuzzPlannerBody" onMouseExited="#fuzzPlannerBody" prefHeight="563.0" prefWidth="827.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                <fx:include fx:id="settingsPlanner" source="SettingsPanel.fxml" visible="false"
+                                            AnchorPane.topAnchor="20.0" AnchorPane.bottomAnchor="10.0"
+                                            AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" />
                             </children>
                         </AnchorPane>
                     </children>

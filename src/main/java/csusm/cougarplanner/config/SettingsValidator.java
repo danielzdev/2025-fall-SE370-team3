@@ -17,7 +17,7 @@ public class SettingsValidator
     private static final String DEFAULT_OPEN_TO = "current_week";
     private static final boolean DEFAULT_STORE_DATA = true;
     private static final boolean DEFAULT_STORE_TOKEN = true;
-    private static final boolean DEFAULT_ORIENTATION_COMPLETED = false;
+    private static final boolean DEFAULT_LOGIN_COMPLETED = false;
     private static final boolean DEFAULT_SHOW_REFRESH_COUNTDOWN = false;
     private static final String DEFAULT_SORT_MODE = "date_time";
     private static final String DEFAULT_SORT_DIFFICULTY_ORDER = "ascending";
@@ -57,7 +57,7 @@ public class SettingsValidator
 
         validateBooleanSetting(profile, "storeData", profile.getStoreData(), DEFAULT_STORE_DATA, validationWarnings);
         validateBooleanSetting(profile, "storeToken", profile.getStoreToken(), DEFAULT_STORE_TOKEN, validationWarnings);
-        validateBooleanSetting(profile, "orientationCompleted", profile.getOrientationCompleted(), DEFAULT_ORIENTATION_COMPLETED, validationWarnings);
+        validateBooleanSetting(profile, "loginCompleted", profile.getLoginCompleted(), DEFAULT_LOGIN_COMPLETED, validationWarnings);
         validateBooleanSetting(profile, "showRefreshCountdown", profile.getShowRefreshCountdown(), DEFAULT_SHOW_REFRESH_COUNTDOWN, validationWarnings);
 
         String sortMode = profile.getDefaultSortMode();
@@ -121,8 +121,8 @@ public class SettingsValidator
             case "storeToken":
                 profile.setStoreToken(value);
                 break;
-            case "orientationCompleted":
-                profile.setOrientationCompleted(value);
+            case "loginCompleted":
+                profile.setLoginCompleted(value);
                 break;
             case "showRefreshCountdown":
                 profile.setShowRefreshCountdown(value);

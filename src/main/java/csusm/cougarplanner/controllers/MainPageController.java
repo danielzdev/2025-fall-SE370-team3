@@ -11,7 +11,6 @@ import csusm.cougarplanner.io.CoursesRepository;
 import csusm.cougarplanner.models.*;
 import csusm.cougarplanner.services.CanvasService;
 import csusm.cougarplanner.transitions.ExponentialTransitionScale;
-import csusm.cougarplanner.transitions.ExponentialTransitionTranslation;
 import csusm.cougarplanner.util.*;
 
 import java.io.IOException;
@@ -28,14 +27,12 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.effect.BoxBlur;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.util.Duration;
 
@@ -56,31 +53,13 @@ public class MainPageController implements Initializable {
     }
 
     @FXML
-    private AnchorPane viewingMenu;
-
-    @FXML
-    private Pane viewingHitbox;
-
-    @FXML
     private AnchorPane plannerBody;
 
-    boolean viewingMenuIsOpen = false;
+    @FXML
+    private AnchorPane settingsPlanner;
 
     @FXML
-    private void toggleViewingMenu(MouseEvent event) {
-        viewingMenu.setVisible(!viewingMenuIsOpen);
-        viewingHitbox.setVisible(!viewingMenuIsOpen);
-
-        viewingMenuIsOpen = !viewingMenuIsOpen;
-
-        plannerBody.setEffect(null);
-        viewingMenu.setOpacity(1.0);
-
-        selectNewObject(viewingHitbox);
-    }
-
-    @FXML
-    private void fuzzPlannerBody(MouseEvent event) {}
+    private SettingsPanelController settingsPlannerController;
 
     @FXML
     private void highlightFromText(MouseEvent event) {
@@ -95,9 +74,6 @@ public class MainPageController implements Initializable {
     private Label viewingMenuLabel, viewingMenuLabelMutable;
 
     @FXML
-    private Rectangle announcementsRectangle, assignmentsRectangle;
-
-    @FXML
     private AnchorPane announcementsPlanner;
 
     boolean showAnnouncements = true; //false - show assignments
@@ -110,70 +86,129 @@ public class MainPageController implements Initializable {
     @FXML
     private TaskPanelController tasksPlannerController;
 
-    @FXML
-    private Rectangle tasksRectangle;
-
-    @FXML
-    private Label tasksLabel;
-
-    @FXML
-    private void toggleContentsType(MouseEvent event)
+    public void showView(String viewName)
     {
-        if (event.getSource() instanceof Label label)
+        // Hide everything first
+        weekPlanner.setVisible(false);
+        dayPlanner.setVisible(false);
+        announcementsPlanner.setVisible(false);
+        tasksPlanner.setVisible(false);
+        settingsPlanner.setVisible(false);
+
+        WeekRange currentWeek = getWeekRange(dateDisplayed);
+
+        if (viewName.equals("Announcements"))
         {
-            String clicked = label.getText();
-
-            // Hide everything first
-            weekPlanner.setVisible(false);
-            dayPlanner.setVisible(false);
-            announcementsPlanner.setVisible(false);
-            tasksPlanner.setVisible(false);
-            announcementsRectangle.setVisible(false);
-            assignmentsRectangle.setVisible(false);
-            tasksRectangle.setVisible(false);
-
-            WeekRange currentWeek = getWeekRange(dateDisplayed);
-
-            if (clicked.equals("Announcements"))
+            viewingMenuLabelMutable.setText("Announcements");
+            showAnnouncements = true;
+            lastDateAssignmentsHadOpen = weekDisplayed;
+            if (!WeekUtil.isDateInWeek(lastDateAnnouncementsHadOpen, weekDisplayed, (weekStart) ? "sunday" : "monday"))
             {
-                viewingMenuLabelMutable.setText("Announcements");
-                announcementsRectangle.setVisible(true);
-                showAnnouncements = true;
-                lastDateAssignmentsHadOpen = weekDisplayed;
-                if (!WeekUtil.isDateInWeek(lastDateAnnouncementsHadOpen, weekDisplayed, (weekStart) ? "sunday" : "monday"))
-                {
-                    clearAnnouncementDisplay();
-                    populateAnnouncements(currentWeek);
-                }
-                announcementsPlanner.setVisible(true);
-
+                clearAnnouncementDisplay();
+                populateAnnouncements(currentWeek);
             }
-            else if (clicked.equals("Assignments"))
-            {
-                viewingMenuLabelMutable.setText("Assignments");
-                assignmentsRectangle.setVisible(true);
-                showAnnouncements = false;
-                lastDateAnnouncementsHadOpen = weekDisplayed;
-                if (!WeekUtil.isDateInWeek(lastDateAssignmentsHadOpen, weekDisplayed, (weekStart) ? "sunday" : "monday"))
-                {
-                    clearAssignmentDisplay();
-                    populateCoursesAndAssignments(currentWeek);
-                }
-                if (defaultView)
-                {
-                    weekPlanner.setVisible(true);
-                }
-                else
-                {
-                    dayPlanner.setVisible(true);
-                }
+            announcementsPlanner.setVisible(true);
 
-            }
-            else if (clicked.equals("Tasks"))
+        }
+        else if (viewName.equals("Assignments"))
+        {
+            viewingMenuLabelMutable.setText("Assignments");
+            showAnnouncements = false;
+            lastDateAnnouncementsHadOpen = weekDisplayed;
+            if (!WeekUtil.isDateInWeek(lastDateAssignmentsHadOpen, weekDisplayed, (weekStart) ? "sunday" : "monday"))
             {
-                viewingMenuLabelMutable.setText("Tasks");
-                tasksRectangle.setVisible(true);
-                tasksPlanner.setVisible(true);
+                clearAssignmentDisplay();
+                populateCoursesAndAssignments(currentWeek);
+            }
+            if (defaultView)
+            {
+                weekPlanner.setVisible(true);
+            }
+            else
+            {
+                dayPlanner.setVisible(true);
+            }
+
+        }
+        else if (viewName.equals("Tasks"))
+        {
+            viewingMenuLabelMutable.setText("Tasks");
+            tasksPlanner.setVisible(true);
+        }
+
+        if (settingsPlannerController != null)
+        {
+            settingsPlannerController.markSortSelection(viewName);
+        }
+    }
+
+    @FXML
+    private void openSettingsPanel(MouseEvent event)
+    {
+        weekPlanner.setVisible(false);
+        dayPlanner.setVisible(false);
+        announcementsPlanner.setVisible(false);
+        tasksPlanner.setVisible(false);
+        settingsPlanner.setVisible(true);
+        viewingMenuLabelMutable.setText("Settings");
+    }
+
+    public void hideSettingsPanel()
+    {
+        settingsPlanner.setVisible(false);
+    }
+
+    public void closeSettingsPanel()
+    {
+        String target = settingsPlannerController != null
+                ? settingsPlannerController.getSelectedSortView()
+                : "Announcements";
+        showView(target);
+    }
+
+    public boolean isWeekView()
+    {
+        return defaultView;
+    }
+
+    public boolean isWeekStartSunday()
+    {
+        return weekStart;
+    }
+
+    public void setDisplayView(boolean weekView)
+    {
+        weekDayViewed = dateDisplayed.getDayOfWeek().getValue();
+        weekDayViewed += (weekDayViewed == 7) ? -7 : 0;
+        if (defaultView != weekView)
+        {
+            performToggleViewByWeek(weekView);
+        }
+    }
+
+    public void setWeekStart(boolean sunday)
+    {
+        if (weekStart == sunday) return;
+
+        weekStart = sunday;
+        profile.setWeekStart(weekStart ? "sunday" : "monday");
+
+        organizePlannerByWeekStart();
+        updateDate("changeWeekStart", Optional.empty());
+        if (!defaultView) {
+            weekDayViewed = dateDisplayed.getDayOfWeek().getValue();
+            if (weekStart) {
+                weekDayViewed += (weekDayViewed == 7) ? -7 : 0;
+            } else {
+                weekDayViewed--;
+            }
+            changeDayViewed(weekDayViewed);
+        } else {
+            clearAssignmentDisplay();
+
+            if (!showAnnouncements) {
+                WeekRange range = getWeekRange(weekDisplayed);
+                populateCoursesAndAssignments(range);
             }
         }
     }
@@ -187,55 +222,6 @@ public class MainPageController implements Initializable {
         for (VBox vbox : courseContainers) vbox.getChildren().clear();
     }
 
-
-    @FXML
-    private Pane viewingButtonDecoration1, viewingButtonDecoration2, viewingButtonDecoration3, viewingButtonDecoration4, viewingButtonDecoration5;
-
-    private Pane[] viewingButtonDecorations;
-    private final Double[] viewingButtonDecorationInitLocations = new Double[5];
-
-    @FXML
-    private void highlightViewingLabelFromPane(MouseEvent event) {
-        if (event.getSource() instanceof Pane pane) {
-            ExponentialTransitionTranslation[] transition = new ExponentialTransitionTranslation[5];
-
-            if (event.getEventType() == MouseEvent.MOUSE_ENTERED) {
-                viewingMenuLabel.setStyle("-fx-text-fill: #ffffff");
-                viewingMenuLabelMutable.setStyle("-fx-text-fill: #ffffff");
-
-                for (int i = 0; i < viewingButtonDecorations.length; i++) {
-                    transition[i] = new ExponentialTransitionTranslation(
-                        viewingButtonDecorations[i],
-                        true,
-                        viewingButtonDecorations[i].getTranslateX(),
-                        viewingButtonDecorationInitLocations[i] + 5 * (i + 1),
-                        Duration.millis(500)
-                    );
-                }
-
-                for (int i = 0; i < viewingButtonDecorations.length; i++) {
-                    transition[i].play();
-                }
-            } else {
-                viewingMenuLabel.setStyle("-fx-text-fill: #D5D5D5");
-                viewingMenuLabelMutable.setStyle("-fx-text-fill: #D5D5D5");
-
-                for (int i = 0; i < viewingButtonDecorations.length; i++) {
-                    transition[i] = new ExponentialTransitionTranslation(
-                        viewingButtonDecorations[i],
-                        true,
-                        viewingButtonDecorations[i].getTranslateX(),
-                        viewingButtonDecorationInitLocations[i],
-                        Duration.millis(400)
-                    );
-                }
-
-                for (int i = 0; i < viewingButtonDecorations.length; i++) {
-                    transition[i].play();
-                }
-            }
-        }
-    }
 
     @FXML
     private Label dateLabel;
@@ -363,26 +349,9 @@ public class MainPageController implements Initializable {
     }
 
     @FXML
-    private Rectangle weekRectangle, dayRectangle;
-
-    @FXML
     private AnchorPane weekPlanner, dayPlanner;
 
     boolean defaultView = profile.getDefaultView().equals("week"); //true - week ; false - day
-
-    @FXML
-    private void toggleViewByWeek(MouseEvent event) {
-        if (event.getSource() instanceof Label label) {
-            boolean userClickedViewByWeek = label.getText().equals("Week");
-
-            weekDayViewed = dateDisplayed.getDayOfWeek().getValue();
-            weekDayViewed += (weekDayViewed == 7) ? -7 : 0;
-
-            if (defaultView != userClickedViewByWeek) {
-                performToggleViewByWeek(userClickedViewByWeek);
-            }
-        }
-    }
 
     @FXML
     private void toggleViewByWeek() {
@@ -405,9 +374,6 @@ public class MainPageController implements Initializable {
      *                              instead of day view.
      */
     private void performToggleViewByWeek(boolean userClickedViewByWeek) {
-        weekRectangle.setVisible(userClickedViewByWeek);
-        dayRectangle.setVisible(!userClickedViewByWeek);
-
         weekPlanner.setVisible(userClickedViewByWeek);
         dayPlanner.setVisible(!userClickedViewByWeek);
 
@@ -562,47 +528,7 @@ public class MainPageController implements Initializable {
         }
     }
 
-    @FXML
-    private Rectangle sundayRectangle, mondayRectangle;
-
     boolean weekStart = profile.getWeekStart().equalsIgnoreCase("sunday"); //true - sunday ; false - monday
-
-    @FXML
-    private void toggleWeekStart(MouseEvent event) {
-        if (event.getSource() instanceof Label label) {
-            boolean userClickedSunday = label.getText().equals("Sunday");
-
-            if (weekStart != userClickedSunday) {
-                //if the user clicks the other unselected option
-                sundayRectangle.setVisible(userClickedSunday);
-                mondayRectangle.setVisible(!userClickedSunday);
-
-                weekStart = userClickedSunday;
-                profile.setWeekStart(weekStart ? "sunday" : "monday");
-
-                organizePlannerByWeekStart();
-                updateDate("changeWeekStart", Optional.empty());
-                if (!defaultView) {
-                    //if the user is currently seeing the day view
-                    weekDayViewed = dateDisplayed.getDayOfWeek().getValue();
-                    if (weekStart) {
-                        //if the user changed the start of the week to be sunday
-                        weekDayViewed += (weekDayViewed == 7) ? -7 : 0;
-                    } else {
-                        weekDayViewed--;
-                    }
-                    changeDayViewed(weekDayViewed);
-                } else {
-                    clearAssignmentDisplay();
-
-                    if (!showAnnouncements) {
-                        WeekRange range = getWeekRange(weekDisplayed);
-                        populateCoursesAndAssignments(range);
-                    }
-                }
-            }
-        }
-    }
 
     private AnchorPane[] listOfDayHeaders;
 
@@ -610,21 +536,21 @@ public class MainPageController implements Initializable {
 
     @FXML
     private void viewPreviousBlock(MouseEvent event) {
-        selectNewObject(viewingHitbox); //filler object to allow new selection
+        selectNewObject(null); //clear previous selection
             updateDate("previousWeek", Optional.empty());
             navigateWeek(); // go to previous week
     }
 
     @FXML
     private void viewNextBlock(MouseEvent event) {
-        selectNewObject(viewingHitbox); //filler object to allow new selection
+        selectNewObject(null); //clear previous selection
         updateDate("nextWeek", Optional.empty());
         navigateWeek(); // go to next week
     }
 
     @FXML
     private void viewTodayBlock(MouseEvent event) {
-        selectNewObject(viewingHitbox); //filler object to allow new selection
+        selectNewObject(null); //clear previous selection
         updateDate("today", Optional.empty());
         navigateWeek(); //go to 'today' week
     }
@@ -663,7 +589,7 @@ public class MainPageController implements Initializable {
     private void closeApplication(MouseEvent event) {
         if (!profile.shouldStoreToken()) {
             profile.setAuthToken(null);
-            profile.setOrientationCompleted(false);
+            profile.setLoginCompleted(false);
             try {
                 ProfileWriter writer = new ProfileWriter(Path.of("data/profile.properties"));
                 writer.writeProfile(profile);
@@ -975,14 +901,6 @@ public class MainPageController implements Initializable {
             daySaturdayHeaderLabel,
         };
 
-        viewingButtonDecorations = new Pane[] {
-            viewingButtonDecoration1,
-            viewingButtonDecoration2,
-            viewingButtonDecoration3,
-            viewingButtonDecoration4,
-            viewingButtonDecoration5,
-        };
-
         headerPaneDecorations = new Pane[] {
             headerPaneDecoration1,
             headerPaneDecoration2,
@@ -1009,18 +927,12 @@ public class MainPageController implements Initializable {
         // Initialize canvasService with the API instance
         canvasService = new CanvasService(api);
 
-        for (int i = 0; i < viewingButtonDecorations.length; i++) {
-            viewingButtonDecorationInitLocations[i] = viewingButtonDecorations[i].getTranslateX();
+        settingsPlanner.setVisible(false);
+
+        if (settingsPlannerController != null)
+        {
+            settingsPlannerController.bindMainController(this);
         }
-
-        viewingMenu.setVisible(false);
-        viewingHitbox.setVisible(false);
-
-        weekRectangle.setVisible(defaultView);
-        dayRectangle.setVisible(!defaultView);
-
-        sundayRectangle.setVisible(weekStart);
-        mondayRectangle.setVisible(!weekStart);
 
         Platform.runLater(() -> {
             dateDisplayed = (dateDisplayed == null) ? LocalDate.now() : dateDisplayed;

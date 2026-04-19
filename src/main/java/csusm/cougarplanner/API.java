@@ -26,7 +26,7 @@ public class API {
 
     /**
      * Constructor that accepts a token directly for validation purposes.
-     * This is useful during orientation when the token hasn't been saved to file yet.
+     * This is useful during login when the token hasn't been saved to file yet.
      *
      * @param token the authentication token to use
      */

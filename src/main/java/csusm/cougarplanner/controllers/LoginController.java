@@ -16,7 +16,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.util.Duration;
 
-public class OrientationController implements Initializable {
+public class LoginController implements Initializable {
 
     @FXML
     private TextField tokenField;
@@ -57,7 +57,7 @@ public class OrientationController implements Initializable {
     private ScrollPane scrollPaneField; //field that controls the scroll feature; Vvalue will be changed
 
     @FXML
-    private Label introductionLabel, orientationLabel, APITokenLabel;
+    private Label introductionLabel, loginLabel, APITokenLabel;
 
     Label[] paneHitboxToLabelIndex;
     Double[] paneHitboxToScrollPercentageIndex = {0.26, 0.65, 0.93};
@@ -118,7 +118,7 @@ public class OrientationController implements Initializable {
                     // Create new profile for the user
                     Profile profile = new Profile();
                     profile.setAuthToken(token);
-                    profile.setOrientationCompleted(true);
+                    profile.setLoginCompleted(true);
                     profile.setWeekStart(sundayStatus ? "sunday" : "monday");
 
                     // Remember token if checkbox selected
@@ -187,7 +187,7 @@ public class OrientationController implements Initializable {
 
         paneHitboxToLabelIndex = new Label[]{
                 introductionLabel,
-                orientationLabel,
+                loginLabel,
                 APITokenLabel
         };
     }

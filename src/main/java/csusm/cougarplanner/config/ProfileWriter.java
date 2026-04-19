@@ -96,7 +96,7 @@ public class ProfileWriter
         String[] keyOrder =
                 {
                         "authToken",                    // Always first line for security
-                        "orientationCompleted",         // Orientation status
+                        "loginCompleted",               // Login status
                         "storeData",                    // CSV storage preference
                         "storeToken",                   // Token persistence preference
                         "weekStart",                    // Week start day (monday/sunday)

@@ -19,7 +19,7 @@
 <?import javafx.scene.shape.CubicCurve?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="350.0" prefWidth="555.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="csusm.cougarplanner.controllers.OrientationController">
+<AnchorPane prefHeight="350.0" prefWidth="555.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="csusm.cougarplanner.controllers.LoginController">
    <children>
       <HBox prefHeight="319.0" prefWidth="555.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -44,7 +44,7 @@
                      <children>
                         <AnchorPane layoutX="112.0" prefHeight="32.0" prefWidth="6.0" style="-fx-background-color: #0062a5;" />
                         <AnchorPane layoutY="5.0" prefHeight="22.0" prefWidth="112.0" style="-fx-background-color: #002E5A;" />
-                        <Label fx:id="orientationLabel" layoutX="25.0" layoutY="7.0" text="Orientation" textFill="WHITE">
+                        <Label fx:id="loginLabel" layoutX="25.0" layoutY="7.0" text="Login" textFill="WHITE">
                            <font>
                               <Font name="Arial Rounded MT Bold" size="15.0" />
                            </font>
@@ -89,7 +89,7 @@
                         <Pane layoutX="-15.0" layoutY="76.0" prefHeight="6.0" prefWidth="43.0" style="-fx-background-color: #F8BA2B; -fx-background-radius: 10;" />
                         <AnchorPane layoutY="14.0" prefHeight="36.0" prefWidth="335.0" style="-fx-background-color: #002E5A;">
                            <children>
-                              <Label layoutX="10.0" layoutY="4.0" text="Cougar Planner Orientation" textFill="WHITE">
+                              <Label layoutX="10.0" layoutY="4.0" text="Cougar Planner Login" textFill="WHITE">
                                  <font>
                                     <Font name="Arial Rounded MT Bold" size="23.0" />
                                  </font>
@@ -127,7 +127,7 @@
                                           </Label>
                                           <Pane layoutX="14.0" layoutY="59.0" prefHeight="6.0" prefWidth="310.0" style="-fx-background-color: #F8BA2B; -fx-background-radius: 10; -fx-blend-mode: multiply;" />
                                           <Pane layoutX="254.0" layoutY="68.0" prefHeight="6.0" prefWidth="105.0" style="-fx-background-color: #bcbec0; -fx-background-radius: 10; -fx-blend-mode: multiply;" />
-                                          <TextArea editable="false" layoutX="60.0" layoutY="80.0" prefHeight="200.0" prefWidth="300.0" text="Hello user!, and welcome to the Cougar Planner!!!!&#10;&#10;This page will provide you with a quick and easy&#10;introduction and orientation to the software.&#10;&#10;Here you will learn the following about the Cougar Planner:&#10;     - What it does,&#10;     - How to use it,&#10;     - Its included features, and&#10;     - How to set it up for continuous usage" wrapText="true" />
+                                          <TextArea editable="false" layoutX="60.0" layoutY="80.0" prefHeight="200.0" prefWidth="300.0" text="Hello user!, and welcome to the Cougar Planner!!!!&#10;&#10;This page will provide you with a quick and easy&#10;introduction to the software.&#10;&#10;Here you will learn the following about the Cougar Planner:&#10;     - What it does,&#10;     - How to use it,&#10;     - Its included features, and&#10;     - How to set it up for continuous usage" wrapText="true" />
                                        </children>
                                     </AnchorPane>
                                     <AnchorPane prefHeight="443.0" prefWidth="426.0">
@@ -144,14 +144,14 @@
                                     </AnchorPane>
                                     <AnchorPane prefHeight="300.0" prefWidth="426.0">
                                        <children>
-                                          <Label alignment="TOP_LEFT" layoutX="53.0" layoutY="4.0" prefHeight="36.0" prefWidth="197.0" text="Orientation" textFill="#222222">
+                                          <Label alignment="TOP_LEFT" layoutX="53.0" layoutY="4.0" prefHeight="36.0" prefWidth="197.0" text="Login" textFill="#222222">
                                              <font>
                                                 <Font size="23.0" />
                                              </font>
                                           </Label>
                                           <Pane layoutX="14.0" layoutY="37.0" prefHeight="6.0" prefWidth="310.0" style="-fx-background-color: #F8BA2B; -fx-background-radius: 10; -fx-blend-mode: multiply;" />
                                           <Pane layoutX="254.0" layoutY="46.0" prefHeight="6.0" prefWidth="105.0" style="-fx-background-color: #bcbec0; -fx-background-radius: 10; -fx-blend-mode: multiply;" />
-                                          <TextArea editable="false" layoutX="60.0" layoutY="58.0" prefHeight="182.0" prefWidth="300.0" text="This information will be organized inside of week-size containers that display the itinerary for each day of the current week. And you are given the choice to start the week on Sunday or Monday.&#10;You have the ability to view the next and previous weeks with buttons on the bottom of the week view menu.&#10;&#10;1. Begin by visiting Canvas and clicking on the Account button in the top left.&#10;2. Click on settings.&#10;3. Scroll down and click on the blue button that says 'New Access Token'&#10;4. There will be a popup window, fill out the information as instructed.&#10;5. The next window has your token, copy it and scroll down to finish Orientation." wrapText="true" />
+                                          <TextArea editable="false" layoutX="60.0" layoutY="58.0" prefHeight="182.0" prefWidth="300.0" text="This information will be organized inside of week-size containers that display the itinerary for each day of the current week. And you are given the choice to start the week on Sunday or Monday.&#10;You have the ability to view the next and previous weeks with buttons on the bottom of the week view menu.&#10;&#10;1. Begin by visiting Canvas and clicking on the Account button in the top left.&#10;2. Click on settings.&#10;3. Scroll down and click on the blue button that says 'New Access Token'&#10;4. There will be a popup window, fill out the information as instructed.&#10;5. The next window has your token, copy it and scroll down to finish logging in." wrapText="true" />
                                           <CubicCurve controlX1="-41.015438079833984" controlX2="94.5592269897461" controlY1="64.34172821044922" controlY2="-82.7718734741211" endX="142.4967803955078" endY="71.33328247070312" layoutX="312.0" layoutY="159.0" rotate="93.2" startX="-64.58984375" startY="0.028017627075314522" stroke="#222222">
                                              <fill>
                                                 <RadialGradient centerX="0.3763837770342387" centerY="0.5709779300148179" focusAngle="33.37" focusDistance="-1.0" radius="1.0">
