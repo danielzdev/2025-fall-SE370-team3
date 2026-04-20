@@ -5,10 +5,7 @@ target/
 .kotlin
 
 ### Project specific files ###
-data/profile.properties
-data/courses.csv
-data/assignments.csv
-data/announcements.csv
+data/
 
 ### IntelliJ IDEA ###
 .idea/
