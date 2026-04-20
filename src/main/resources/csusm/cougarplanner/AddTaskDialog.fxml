@@ -24,7 +24,7 @@
 
     <!-- Title -->
     <VBox spacing="4.0">
-        <Label text="Title" textFill="#d9def4">
+        <Label text="Title" textFill="white">
             <font><Font name="Arial Rounded MT Bold" size="12.0"/></font>
         </Label>
         <TextField fx:id="titleField"
@@ -34,7 +34,7 @@
 
     <!-- Due Date -->
     <VBox spacing="4.0">
-        <Label text="Due Date" textFill="#d9def4">
+        <Label text="Due Date" textFill="white">
             <font><Font name="Arial Rounded MT Bold" size="12.0"/></font>
         </Label>
         <DatePicker fx:id="dueDatePicker" maxWidth="Infinity"
@@ -43,7 +43,7 @@
 
     <!-- Description -->
     <VBox spacing="4.0">
-        <Label text="Description" textFill="#d9def4">
+        <Label text="Description" textFill="white">
             <font><Font name="Arial Rounded MT Bold" size="12.0"/></font>
         </Label>
         <TextArea fx:id="descriptionArea"
@@ -57,7 +57,7 @@
     <HBox spacing="12.0">
 
         <VBox spacing="4.0" HBox.hgrow="ALWAYS">
-            <Label text="Course" textFill="#d9def4">
+            <Label text="Course" textFill="white">
                 <font><Font name="Arial Rounded MT Bold" size="12.0"/></font>
             </Label>
             <ComboBox fx:id="courseComboBox" maxWidth="Infinity" promptText="choose course"
@@ -65,7 +65,7 @@
         </VBox>
 
         <VBox spacing="4.0" HBox.hgrow="ALWAYS">
-            <Label text="Status" textFill="#d9def4">
+            <Label text="Status" textFill="white">
                 <font><Font name="Arial Rounded MT Bold" size="12.0"/></font>
             </Label>
             <ComboBox fx:id="statusComboBox" maxWidth="Infinity"
@@ -73,7 +73,7 @@
         </VBox>
 
         <VBox spacing="4.0" HBox.hgrow="ALWAYS">
-            <Label text="Priority" textFill="#d9def4">
+            <Label text="Priority" textFill="white">
                 <font><Font name="Arial Rounded MT Bold" size="12.0"/></font>
             </Label>
             <ComboBox fx:id="priorityComboBox" maxWidth="Infinity"

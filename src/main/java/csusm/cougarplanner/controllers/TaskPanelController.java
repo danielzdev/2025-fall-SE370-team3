@@ -4,6 +4,7 @@ import csusm.cougarplanner.commandPattern.*;
 import csusm.cougarplanner.io.TasksRepository;
 import csusm.cougarplanner.models.Task;
 import csusm.cougarplanner.services.TaskCache;
+import csusm.cougarplanner.theme.ThemeManager;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -91,7 +92,9 @@ public class TaskPanelController implements Initializable
             Stage stage = new Stage();
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.initStyle(StageStyle.UNDECORATED);
-            stage.setScene(new Scene(dialogRoot));
+            Scene dialogScene = new Scene(dialogRoot);
+            ThemeManager.apply(dialogScene, ThemeManager.getCurrentTheme());
+            stage.setScene(dialogScene);
             stage.showAndWait();
 
         }
