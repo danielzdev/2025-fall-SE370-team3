@@ -165,8 +165,15 @@ public class TasksRepository {
      */
     private Task mapToTask(Map<String, String> record)
     {
+        String taskId = record.get("taskID");
+
+        // FIX: ensure every task has a valid ID
+        if (taskId == null || taskId.isBlank()) {
+            taskId = java.util.UUID.randomUUID().toString();
+        }
+
         Task task = new Task();
-        task.setTaskId(record.get("taskID"));
+        task.setTaskId(taskId);
         task.setTitle(record.get("title"));
         task.setDescription(record.get("description"));
         task.setCreatedDate(record.get("createdDate"));
