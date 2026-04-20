@@ -38,7 +38,7 @@ public class Profile
         defaults.put("lastViewedWeekStart", "");
         defaults.put("lastViewedDay", "");
         defaults.put("theme", "cougar");
-        defaults.put("selectedView", "Announcements");
+        defaults.put("selectedView", "Assignments");
         return defaults;
     }
 
