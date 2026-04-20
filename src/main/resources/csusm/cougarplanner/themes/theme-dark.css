@@ -79,3 +79,19 @@
 .app-auto-note {
     -fx-text-fill: #d0d0d0;
 }
+
+.app-navbar-text {
+    -fx-text-fill: #e0e0e0;
+}
+
+.app-accent-shape {
+    -fx-fill: #2a2a2a;
+    -fx-stroke: #2a2a2a;
+    -fx-background-color: #2a2a2a;
+    -fx-background-radius: 8;
+}
+
+.app-accent-gradient {
+    -fx-background-color: linear-gradient(to right, #0a1929, #F8BA2B);
+    -fx-background-radius: 4 0 0 4;
+}

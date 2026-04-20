@@ -16,12 +16,12 @@
             <children>
                 <AnchorPane layoutY="51.0" prefWidth="200.0" AnchorPane.leftAnchor="0.0">
                     <children>
-                        <Label fx:id="viewingMenuLabel" text="Viewing" textFill="#d9def4" AnchorPane.leftAnchor="20.0">
+                        <Label fx:id="viewingMenuLabel" text="Viewing" styleClass="app-navbar-text" AnchorPane.leftAnchor="20.0">
                             <font>
                                 <Font name="Arial Rounded MT Bold" size="20.0" />
                             </font>
                         </Label>
-                        <Label fx:id="viewingMenuLabelMutable" layoutX="102.0" text="Announcements" textFill="#d9def4">
+                        <Label fx:id="viewingMenuLabelMutable" layoutX="102.0" text="Announcements" styleClass="app-navbar-text">
                             <font>
                                 <Font name="Arial Rounded MT Bold" size="20.0" />
                             </font>
@@ -33,7 +33,7 @@
                 <Pane layoutX="653.6666666666667" layoutY="88.0" prefHeight="10.0" prefWidth="170.0" style="-fx-background-color: #d1d3d4; -fx-background-radius: 8;" AnchorPane.bottomAnchor="-4.666666666666671" AnchorPane.rightAnchor="276.5" />
                 <AnchorPane onMouseClicked="#openSettingsPanel" layoutX="847.9999999999999" layoutY="51.0" prefHeight="29.0" prefWidth="251.0" AnchorPane.rightAnchor="0.0">
                     <children>
-                        <Label text="Settings" textFill="#d9def4" AnchorPane.rightAnchor="20.0">
+                        <Label text="Settings" styleClass="app-navbar-text" AnchorPane.rightAnchor="20.0">
                             <font>
                                 <Font name="Arial Rounded MT Bold" size="20.0" />
                             </font>
@@ -89,18 +89,18 @@
             <children>
                 <AnchorPane mouseTransparent="true" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: transparent;" HBox.hgrow="ALWAYS">
                     <children>
-                        <Circle fill="#002e5a" layoutX="21.0" layoutY="1.0" radius="14.0" stroke="#002e5a" strokeType="INSIDE" />
-                        <Circle fill="#002e5a" layoutX="25.0" layoutY="28.0" radius="9.0" stroke="#002e5a" strokeType="INSIDE" />
-                        <Circle fill="#002e5a" layoutX="28.0" layoutY="51.0" radius="6.0" stroke="#002e5a" strokeType="INSIDE" />
+                        <Circle styleClass="app-accent-shape" layoutX="21.0" layoutY="1.0" radius="14.0" strokeType="INSIDE" />
+                        <Circle styleClass="app-accent-shape" layoutX="25.0" layoutY="28.0" radius="9.0" strokeType="INSIDE" />
+                        <Circle styleClass="app-accent-shape" layoutX="28.0" layoutY="51.0" radius="6.0" strokeType="INSIDE" />
                     </children>
                 </AnchorPane>
                 <AnchorPane prefWidth="998.0" styleClass="app-tabsbar">
                     <children>
                         <AnchorPane fx:id="plannerBody" prefHeight="564.0" prefWidth="1100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                             <children>
-                                <Pane layoutX="30.0" layoutY="-5.333333333333333" prefHeight="10.0" prefWidth="150.0" style="-fx-background-color: #002E5A; -fx-background-radius: 8;" AnchorPane.topAnchor="-5.333333333333333" />
-                                <Pane layoutX="910.0" layoutY="-5.333333333333333" prefHeight="10.0" prefWidth="150.0" style="-fx-background-color: #002E5A; -fx-background-radius: 8;" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="-5.333333333333333" />
-                                <Pane fx:id="displayDateParent" layoutX="412.0" layoutY="-6.0" prefHeight="15.0" prefWidth="203.0" style="-fx-background-color: #002E5A; -fx-background-radius: 8;" AnchorPane.leftAnchor="413.6" AnchorPane.rightAnchor="410.66666666666663">
+                                <Pane layoutX="30.0" layoutY="-5.333333333333333" prefHeight="10.0" prefWidth="150.0" styleClass="app-accent-shape" AnchorPane.topAnchor="-5.333333333333333" />
+                                <Pane layoutX="910.0" layoutY="-5.333333333333333" prefHeight="10.0" prefWidth="150.0" styleClass="app-accent-shape" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="-5.333333333333333" />
+                                <Pane fx:id="displayDateParent" layoutX="412.0" layoutY="-6.0" prefHeight="15.0" prefWidth="203.0" styleClass="app-accent-shape" AnchorPane.leftAnchor="413.6" AnchorPane.rightAnchor="410.66666666666663">
                                     <children>
                                         <Label fx:id="dateLabel" layoutX="72.0" layoutY="-11.0" text="DATE" textFill="WHITE">
                                             <font>
@@ -347,7 +347,7 @@
                                 </AnchorPane>
                                 <AnchorPane fx:id="announcementsPlanner" layoutX="20.0" layoutY="67.0" prefHeight="461.0" prefWidth="1015.0" styleClass="app-surface" style="-fx-background-radius: 2;" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="20.0">
                                     <children>
-                                        <AnchorPane layoutX="-3.6666666666666665" layoutY="15.333333333333334" prefHeight="38.0" prefWidth="244.0" style="-fx-background-color: linear-gradient(to right, #002E5A, #3ab5e8); -fx-background-radius: 4 0 0 4;" AnchorPane.leftAnchor="-4.0" AnchorPane.topAnchor="15.0" />
+                                        <AnchorPane layoutX="-3.6666666666666665" layoutY="15.333333333333334" prefHeight="38.0" prefWidth="244.0" styleClass="app-accent-gradient" AnchorPane.leftAnchor="-4.0" AnchorPane.topAnchor="15.0" />
                                         <Label text="Announcements" textFill="WHITE" AnchorPane.leftAnchor="40.0" AnchorPane.topAnchor="20.0">
                                             <font>
                                                 <Font name="Arial Rounded MT Bold" size="24.0" />
@@ -372,9 +372,9 @@
                 </AnchorPane>
                 <AnchorPane mouseTransparent="true" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: transparent;" HBox.hgrow="ALWAYS">
                     <children>
-                        <Circle fill="#002e5a" layoutX="16.0" layoutY="1.0" radius="14.0" stroke="#002e5a" strokeType="INSIDE" />
-                        <Circle fill="#002e5a" layoutX="11.0" layoutY="28.0" radius="9.0" stroke="#002e5a" strokeType="INSIDE" />
-                        <Circle fill="#002e5a" layoutX="9.0" layoutY="51.0" radius="6.0" stroke="#002e5a" strokeType="INSIDE" />
+                        <Circle styleClass="app-accent-shape" layoutX="16.0" layoutY="1.0" radius="14.0" strokeType="INSIDE" />
+                        <Circle styleClass="app-accent-shape" layoutX="11.0" layoutY="28.0" radius="9.0" strokeType="INSIDE" />
+                        <Circle styleClass="app-accent-shape" layoutX="9.0" layoutY="51.0" radius="6.0" strokeType="INSIDE" />
                     </children>
                 </AnchorPane>
             </children>
