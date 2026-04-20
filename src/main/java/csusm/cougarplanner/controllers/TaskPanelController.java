@@ -1,5 +1,7 @@
 package csusm.cougarplanner.controllers;
 
+import csusm.cougarplanner.commandPattern.*;
+import csusm.cougarplanner.io.TasksRepository;
 import csusm.cougarplanner.models.Task;
 import csusm.cougarplanner.services.TaskCache;
 import javafx.fxml.FXML;
@@ -20,6 +22,9 @@ import java.util.ResourceBundle;
 // Controller for TaskPanel.fxml — the Tasks tab.
 public class TaskPanelController implements Initializable
 {
+    // attributes linking to command manager and task repository
+    private final CommandManager cmdManager = new CommandManager();
+    private final TasksRepository tasksRepo = new TasksRepository();
 
     @FXML private HBox filterBar;         // Manal's filter controller adds ComboBoxes here
     @FXML private VBox taskListContainer;
@@ -75,6 +80,10 @@ public class TaskPanelController implements Initializable
 
             dialogCtrl.setOnTaskCreated(newTask ->
             {
+                // CreateTaskCommand
+                Command cmd = new CreateTaskCommand(tasksRepo, newTask);
+                cmdManager.execute(cmd);
+
                 TaskCache.getInstance().add(newTask); // connect to Maria's AddTaskCommand
                 refreshTaskList();
             });
@@ -95,18 +104,30 @@ public class TaskPanelController implements Initializable
     @FXML
     private void onDeleteAllClicked()
     {
+        // DeleteAllTasksCommand
+        Command cmd = new DeleteAllTasksCommand(tasksRepo);
+        cmdManager.execute(cmd);
+
         TaskCache.getInstance().removeAll(); // connect to Maria's DeleteAllTasksCommand
         refreshTaskList();
     }
 
     private void handleDelete(String taskId)
     {
+        // DeleteTaskCommand
+        Command cmd = new DeleteTaskCommand(tasksRepo, taskId);
+        cmdManager.execute(cmd);
+
         TaskCache.getInstance().remove(taskId); // connect to Maria's DeleteTaskCommand
         refreshTaskList();
     }
 
     private void handleToggle(String taskId)
     {
+        // CompletedTaskCommand
+        Command cmd = new CompletedTaskCommand(tasksRepo, taskId);
+        cmdManager.execute(cmd);
+
         TaskCache.getInstance().toggleCompleted(taskId); // connect to Maria's ToggleCompletedCommand
         refreshTaskList();
     }
