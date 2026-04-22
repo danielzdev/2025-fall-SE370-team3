@@ -165,15 +165,15 @@ public class TasksRepository {
      */
     private Task mapToTask(Map<String, String> record)
     {
-        String taskId = record.get("taskID");
-
-        // FIX: ensure every task has a valid ID
+        // CsvReader lowercases all header names, so lookup keys must be lowercase too.
+        // Mismatched case (e.g. "taskID") silently returns null and triggers the UUID
+        // fallback below on every load — which rotates IDs and breaks deleteById.
+        String taskId = record.get("taskid");
         if (taskId == null || taskId.isBlank()) {
             taskId = java.util.UUID.randomUUID().toString();
         }
 
-        // FIX: ensure createdDate is never blank
-        String created = record.get("createdDate");
+        String created = record.get("createddate");
         if (created == null || created.isBlank()) {
             created = java.time.LocalDate.now().toString();
         }
@@ -183,8 +183,8 @@ public class TasksRepository {
         task.setTitle(record.get("title"));
         task.setDescription(record.get("description"));
         task.setCreatedDate(created);
-        task.setDueDate(record.get("dueDate"));
-        task.setCourseId(record.get("courseId"));
+        task.setDueDate(record.get("duedate"));
+        task.setCourseId(record.get("courseid"));
         task.setStatus(record.get("status"));
         task.setPriority(record.get("priority"));
         task.setCompleted(Boolean.parseBoolean(record.get("completed")));
