@@ -128,10 +128,34 @@ public class TaskPanelController implements Initializable
     private void handleToggle(String taskId)
     {
         // CompletedTaskCommand
-        Command cmd = new CompletedTaskCommand(tasksRepo, taskId);
-        cmdManager.execute(cmd);
+//        Command cmd = new CompletedTaskCommand(tasksRepo, taskId);
+//        cmdManager.execute(cmd);
 
         TaskCache.getInstance().toggleCompleted(taskId); // connect to Maria's ToggleCompletedCommand
+
+//        // get task from cache
+//        Task t = TaskCache.getInstance().get(taskId);
+//        if (t == null) return;
+//        // modify completed status
+//        t.setCompleted(!t.isCompleted());
+//        // update csv through the command pattern
+//        Command cmd = new UpdateTaskCommand(tasksRepo, t);
+//        cmdManager.execute(cmd);
+//        // update cache
+//        TaskCache.getInstance().update(t); // kenny needs an update for cache
+
         refreshTaskList();
     }
+
+    // handleStatusChange - update status
+    // handlePriorityChange - update priority
+    // handleDueDateChange - update due date
+    // handleCourseChange - update course
+    // handleEditTask - universal update task
+        // this could be for a single button similar
+        // to the delete button but just to save/update
+        // a task. EX: you just change the status and then click a
+        // button that will take the whole state of the task and
+        // save what is there
+
 }

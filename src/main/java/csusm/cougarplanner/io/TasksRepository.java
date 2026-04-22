@@ -172,11 +172,17 @@ public class TasksRepository {
             taskId = java.util.UUID.randomUUID().toString();
         }
 
+        // FIX: ensure createdDate is never blank
+        String created = record.get("createdDate");
+        if (created == null || created.isBlank()) {
+            created = java.time.LocalDate.now().toString();
+        }
+
         Task task = new Task();
         task.setTaskId(taskId);
         task.setTitle(record.get("title"));
         task.setDescription(record.get("description"));
-        task.setCreatedDate(record.get("createdDate"));
+        task.setCreatedDate(created);
         task.setDueDate(record.get("dueDate"));
         task.setCourseId(record.get("courseId"));
         task.setStatus(record.get("status"));
