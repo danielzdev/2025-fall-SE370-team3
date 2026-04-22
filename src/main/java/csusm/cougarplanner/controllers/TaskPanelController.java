@@ -75,7 +75,7 @@ public class TaskPanelController implements Initializable
                         getClass().getResource("/csusm/cougarplanner/TaskRow.fxml"));
                 VBox row = loader.load();
                 TaskRowController rowCtrl = loader.getController();
-                rowCtrl.init(task, this::handleDelete, this::handleToggle);
+                rowCtrl.init(task, this::handleDelete, this::handleToggle, this::handleUpdate);
                 taskListContainer.getChildren().add(row);
             }
             catch (IOException e)
@@ -153,6 +153,15 @@ public class TaskPanelController implements Initializable
 
         TaskCache.getInstance().toggleCompleted(taskId);
         refreshTaskList();
+    }
+
+    // Persists in-row edits (title, description, status, priority) to CSV.
+    // Cache is already updated by the row controller; we only write through here.
+    // No refreshTaskList() — rebuilding the list would steal focus mid-edit.
+    private void handleUpdate(Task updated)
+    {
+        Command cmd = new UpdateTaskCommand(tasksRepo, updated);
+        cmdManager.execute(cmd);
     }
 
     // handleStatusChange - update status

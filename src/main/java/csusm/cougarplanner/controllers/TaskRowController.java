@@ -36,6 +36,7 @@ public class TaskRowController
     private Task task;
     private Consumer<String> onDelete;
     private Consumer<String> onToggle;
+    private Consumer<Task> onUpdate;
     private final Map<String, String> courseIdToName = new LinkedHashMap<>();
 
     // Same border style used by both dropdowns
@@ -45,12 +46,61 @@ public class TaskRowController
 
     public void init(Task task, Consumer<String> onDelete, Consumer<String> onToggle)
     {
+        init(task, onDelete, onToggle, null);
+    }
+
+    public void init(Task task, Consumer<String> onDelete, Consumer<String> onToggle, Consumer<Task> onUpdate)
+    {
         this.task     = task;
         this.onDelete = onDelete;
         this.onToggle = onToggle;
+        this.onUpdate = onUpdate;
         loadCourseNames();
         setupDropdowns();
+        setupEditListeners();
         populate();
+    }
+
+    // Commit title/description edits when the field loses focus.
+    // Without this, typing in the row is cache-only and lost on restart.
+    private void setupEditListeners()
+    {
+        titleField.focusedProperty().addListener((obs, wasFocused, isFocused) -> {
+            if (!isFocused) commitTitleIfChanged();
+        });
+        descriptionArea.focusedProperty().addListener((obs, wasFocused, isFocused) -> {
+            if (!isFocused) commitDescriptionIfChanged();
+        });
+    }
+
+    private void commitTitleIfChanged()
+    {
+        String newTitle = titleField.getText();
+        String current = task.getTitle() == null ? "" : task.getTitle();
+        String next = newTitle == null ? "" : newTitle;
+        if (!next.equals(current))
+        {
+            task.setTitle(next);
+            fireUpdate();
+        }
+    }
+
+    private void commitDescriptionIfChanged()
+    {
+        String newDesc = descriptionArea.getText();
+        String current = task.getDescription() == null ? "" : task.getDescription();
+        String next = newDesc == null ? "" : newDesc;
+        if (!next.equals(current))
+        {
+            task.setDescription(next);
+            fireUpdate();
+        }
+    }
+
+    private void fireUpdate()
+    {
+        TaskCache.getInstance().update(task);
+        if (onUpdate != null) onUpdate.accept(task);
     }
 
     public VBox getRoot() { return taskRowRoot; }
@@ -88,7 +138,7 @@ public class TaskRowController
             if (selected != null && !selected.equals(task.getStatus()))
             {
                 task.setStatus(selected);
-                TaskCache.getInstance().update(task);
+                fireUpdate();
             }
         });
 
@@ -98,7 +148,7 @@ public class TaskRowController
             if (selected != null && !selected.equals(task.getPriority()))
             {
                 task.setPriority(selected);
-                TaskCache.getInstance().update(task);
+                fireUpdate();
                 applyPriorityStyle(selected);
             }
         });
