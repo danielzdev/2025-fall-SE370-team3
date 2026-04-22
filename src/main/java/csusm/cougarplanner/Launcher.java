@@ -44,6 +44,11 @@ public class Launcher extends Application {
 
         Stage newStage = new Stage();
 
+        // app logo :)
+        newStage.getIcons().add(
+                new javafx.scene.image.Image(Launcher.class.getResourceAsStream("/csusm/cougarplanner/images/logo1.png"))
+        );
+
         if (transparent) {
             newStage.initStyle(StageStyle.TRANSPARENT);
             scene.setFill(Color.TRANSPARENT);
