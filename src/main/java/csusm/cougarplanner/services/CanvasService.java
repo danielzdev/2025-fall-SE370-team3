@@ -3,6 +3,7 @@ package csusm.cougarplanner.services;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import csusm.cougarplanner.API;
+import csusm.cougarplanner.cache.CacheManager;
 import csusm.cougarplanner.io.AnnouncementsRepository;
 import csusm.cougarplanner.io.AssignmentsRepository;
 import csusm.cougarplanner.io.CoursesRepository;
@@ -12,6 +13,7 @@ import csusm.cougarplanner.models.Course;
 import csusm.cougarplanner.util.CourseCodeUtil;
 import csusm.cougarplanner.util.DateTimeUtil;
 import csusm.cougarplanner.util.WeekRange;
+
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.time.LocalDate;
@@ -27,12 +29,17 @@ import java.util.stream.Collectors;
 
 public final class CanvasService {
 
+    private static final String CACHE_COURSES = "courses";
+    private static final String CACHE_ASSIGNMENTS_PREFIX = "assignments:";
+    private static final String CACHE_ANNOUNCEMENTS_PREFIX = "announcements:";
+
     private final API api;
     private final Gson gson;
     private final CoursesRepository coursesRepository;
     private final AssignmentsRepository assignmentsRepository;
     private final AnnouncementsRepository announcementsRepository;
     private final ExecutorService executor;
+    private final CacheManager cacheManager;
 
     public CanvasService(API api) {
         this.api = api;
@@ -40,35 +47,101 @@ public final class CanvasService {
         this.coursesRepository = new CoursesRepository();
         this.assignmentsRepository = new AssignmentsRepository();
         this.announcementsRepository = new AnnouncementsRepository();
-        // Thread pool for async API calls - one thread per course for parallel fetching
         this.executor = Executors.newFixedThreadPool(10);
+        this.cacheManager = CacheManager.getInstance();
     }
 
     /**
-     * Gets all active courses, using cached data if available.
-     * Fetches from API only if cache is empty, then saves to cache.
-     * Returns empty list on errors.
+     * Gets all active courses using a three difference lookup
+     * LRU memory cache
+     * repository
+     * Canvas API
+     * Populates every layer on a cache miss so the next call is cheaper.
+     *
+     * @return list of active courses, or an empty list on unrecoverable error
      */
     public List<Course> fetchCourses() {
-        try {
-            // Try to load from cache first
-            List<Course> cachedCourses = coursesRepository.findAll();
-            if (!cachedCourses.isEmpty()) {
-                return cachedCourses;
-            }
-
-            // If cache is empty, fetch from API and save
-            List<Course> fetchedCourses = fetchCoursesFromApi();
-            if (!fetchedCourses.isEmpty()) {
-                coursesRepository.upsertAll(fetchedCourses);
-            }
-            return fetchedCourses;
-        } catch (IOException e) {
-            // If cache read fails, try API as fallback
-            return fetchCoursesFromApi();
+        // 1. LRU memory cache
+        List<Course> cached = cacheManager.get(CACHE_COURSES, CACHE_COURSES);
+        if (cached != null) {
+            return cached;
         }
+        // 2. CSV repository
+        try {
+            List<Course> fromDisk = coursesRepository.findAll();
+            if (!fromDisk.isEmpty()) {
+                cacheManager.put(CACHE_COURSES, CACHE_COURSES, fromDisk);
+                return fromDisk;
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading courses from repository: " + e.getMessage());
+        }
+        // 3. Canvas API
+        List<Course> fromApi = fetchCoursesFromApi();
+        if (!fromApi.isEmpty()) {
+            try {
+                coursesRepository.upsertAll(fromApi);
+            } catch (IOException e) {
+                System.err.println("Error persisting courses to repository: " + e.getMessage());
+            }
+            cacheManager.put(CACHE_COURSES, CACHE_COURSES, fromApi);
+        }
+        return fromApi;
     }
 
+    public List<Assignment> fetchAssignments(WeekRange range) {
+        String cacheKey = buildWeekCacheKey(CACHE_ASSIGNMENTS_PREFIX, range);
+        List<Assignment> cached = cacheManager.get("assignments", cacheKey);
+        if (cached != null) {
+            return cached;
+        }
+        try {
+            List<Assignment> fromDisk = assignmentsRepository.findByWeek(range.startIncl(), range.endExcl());
+            if (!fromDisk.isEmpty()) {
+                cacheManager.put("assignments", cacheKey, fromDisk);
+                return fromDisk;
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading assignments from repository: " + e.getMessage());
+        }
+        List<Assignment> fromApi = fetchAssignmentsFromApiAsync(range);
+        if (!fromApi.isEmpty()) {
+            try {
+                assignmentsRepository.upsertAll(fromApi);
+            } catch (IOException e) {
+                System.err.println("Error persisting assignments to repository: " + e.getMessage());
+            }
+            cacheManager.put("assignments", cacheKey, fromApi);
+        }
+        return fromApi;
+    }
+
+    public List<Announcement> fetchAnnouncements(WeekRange range) {
+        String cacheKey = buildWeekCacheKey(CACHE_ANNOUNCEMENTS_PREFIX, range);
+        List<Announcement> cached = cacheManager.get("announcements", cacheKey);
+        if (cached != null) {
+            return cached;
+        }
+        try {
+            List<Announcement> fromDisk = announcementsRepository.findByWeek(range.startIncl(), range.endExcl());
+            if (!fromDisk.isEmpty()) {
+                cacheManager.put("announcements", cacheKey, fromDisk);
+                return fromDisk;
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading announcements from repository: " + e.getMessage());
+        }
+        List<Announcement> fromApi = fetchAnnouncementsFromApiAsync(range);
+        if (!fromApi.isEmpty()) {
+            try {
+                announcementsRepository.upsertAll(fromApi);
+            } catch (IOException e) {
+                System.err.println("Error persisting announcements to repository: " + e.getMessage());
+            }
+            cacheManager.put("announcements", cacheKey, fromApi);
+        }
+        return fromApi;
+    }
     /**
      * Fetches all active courses from Canvas API.
      * Parses JSON response and converts to Course objects.
@@ -107,39 +180,12 @@ public final class CanvasService {
      * Uses async/parallel fetching for all courses simultaneously.
      * Returns empty list on errors.
      */
-    public List<Assignment> fetchAssignments(WeekRange range) {
-        try {
-            // Try to load from cache first
-            List<Assignment> cachedAssignments = assignmentsRepository.findByWeek(range.startIncl(), range.endExcl());
-            if (!cachedAssignments.isEmpty()) {
-                return cachedAssignments;
-            }
-
-            // If cache is empty, fetch from API async and save
-            List<Assignment> fetchedAssignments = fetchAssignmentsFromApiAsync(range);
-            if (!fetchedAssignments.isEmpty()) {
-                assignmentsRepository.upsertAll(fetchedAssignments);
-            }
-            return fetchedAssignments;
-        } catch (IOException e) {
-            // If cache read fails, try API as fallback
-            return fetchAssignmentsFromApiAsync(range);
-        }
-    }
-
-    /**
-     * Fetches assignments from Canvas API asynchronously for all courses in parallel.
-     * Dramatically improves performance when there are many courses.
-     * Only includes assignments with due dates within the specified range.
-     * Returns empty list on API errors or parsing failures.
-     */
     private List<Assignment> fetchAssignmentsFromApiAsync(WeekRange range) {
         List<Course> courses = fetchCourses();
         if (courses.isEmpty()) {
             return Collections.emptyList();
         }
 
-        // Create async tasks for each course
         List<CompletableFuture<List<Assignment>>> futures = courses
             .stream()
             .map(course -> CompletableFuture.supplyAsync(() -> fetchAssignmentsForCourse(course, range), executor))
@@ -189,42 +235,12 @@ public final class CanvasService {
      * Uses async/parallel fetching for all courses simultaneously.
      * Returns empty list on errors.
      */
-    public List<Announcement> fetchAnnouncements(WeekRange range) {
-        try {
-            // Try to load from cache first
-            List<Announcement> cachedAnnouncements = announcementsRepository.findByWeek(
-                range.startIncl(),
-                range.endExcl()
-            );
-            if (!cachedAnnouncements.isEmpty()) {
-                return cachedAnnouncements;
-            }
-
-            // If cache is empty, fetch from API async and save
-            List<Announcement> fetchedAnnouncements = fetchAnnouncementsFromApiAsync(range);
-            if (!fetchedAnnouncements.isEmpty()) {
-                announcementsRepository.upsertAll(fetchedAnnouncements);
-            }
-            return fetchedAnnouncements;
-        } catch (IOException e) {
-            // If cache read fails, try API as fallback
-            return fetchAnnouncementsFromApiAsync(range);
-        }
-    }
-
-    /**
-     * Fetches announcements from Canvas API asynchronously for all courses in parallel.
-     * Dramatically improves performance when there are many courses.
-     * Only includes announcements with posted dates within the specified range.
-     * Returns empty list on API errors or parsing failures.
-     */
     private List<Announcement> fetchAnnouncementsFromApiAsync(WeekRange range) {
         List<Course> courses = fetchCourses();
         if (courses.isEmpty()) {
             return Collections.emptyList();
         }
 
-        // Create async tasks for each course
         List<CompletableFuture<List<Announcement>>> futures = courses
             .stream()
             .map(course -> CompletableFuture.supplyAsync(() -> fetchAnnouncementsForCourse(course, range), executor))
@@ -257,7 +273,6 @@ public final class CanvasService {
 
             for (AnnouncementDto dto : dtos) {
                 if (dto.id != null) {
-                    // Ensure course_id is set
                     if (dto.course_id == null) {
                         dto.course_id = Long.valueOf(courseId);
                     }
@@ -275,79 +290,41 @@ public final class CanvasService {
         }
         return announcements;
     }
-
     /**
-     * Forces a refresh of all assignments from the API and updates the cache.
-     * This will be used by the 15-minute auto-refresh mechanism.
-     * Uses async fetching for performance.
+     * Builds a stable, human-readable cache key for a week range.
      */
-    public List<Assignment> refreshAssignments(WeekRange range) {
-        List<Assignment> assignments = fetchAssignmentsFromApiAsync(range);
-        if (!assignments.isEmpty()) {
-            try {
-                assignmentsRepository.upsertAll(assignments);
-            } catch (IOException e) {
-                System.err.println("Error saving refreshed assignments: " + e.getMessage());
-            }
-        }
-        return assignments;
+    private String buildWeekCacheKey(String prefix, WeekRange range) {
+        return prefix + range.startIncl() + "/" + range.endExcl();
     }
 
     /**
-     * Forces a refresh of all announcements from the API and updates the cache.
-     * Uses async fetching for performance.
-     */
-    public List<Announcement> refreshAnnouncements(WeekRange range) {
-        List<Announcement> announcements = fetchAnnouncementsFromApiAsync(range);
-        if (!announcements.isEmpty()) {
-            try {
-                announcementsRepository.upsertAll(announcements);
-            } catch (IOException e) {
-                System.err.println("Error saving refreshed announcements: " + e.getMessage());
-            }
-        }
-        return announcements;
-    }
-
-    /**
-     * Checks if a date falls within the week range using half-open semantics.
-     * A date D is included if startIncl <= D < endExcl.
+     * Returns true if the given date falls within the week range [startIncl, endExcl).
      */
     private boolean isDateInRange(LocalDate date, WeekRange range) {
         return !date.isBefore(range.startIncl()) && date.isBefore(range.endExcl());
     }
 
-    /**
-     * Maps CourseDto to Course domain object.
-     */
     private Course mapToCourse(CourseDto dto) {
         String courseId = String.valueOf(dto.id);
         String courseName = CourseCodeUtil.extract(dto.name != null ? dto.name.trim() : "");
         return new Course(courseId, courseName);
     }
 
-    /**
-     * Maps AssignmentDto to Assignment domain object.
-     */
     private Assignment mapToAssignment(AssignmentDto dto) {
         String assignmentId = String.valueOf(dto.id);
         String courseId = String.valueOf(dto.course_id);
-        String assignmentName = dto.name != null ? dto.name.trim() : "";
+        String name = dto.name != null ? dto.name.trim() : "";
 
         Optional<LocalDate> dueDateOpt = DateTimeUtil.parseDateFromDateTime(dto.due_at);
         Optional<LocalTime> dueTimeOpt = DateTimeUtil.parseTimeFromDateTime(dto.due_at);
 
         String dueDate = dueDateOpt.map(DateTimeUtil::formatYMD).orElse("");
         String dueTime = dueTimeOpt.map(DateTimeUtil::formatHM).orElse("");
-
         String createdAt = dto.created_at != null ? dto.created_at.trim() : "";
 
-        return new Assignment(assignmentId, courseId, assignmentName, dueDate, dueTime, null, createdAt);
+        return new Assignment(assignmentId, courseId, name, dueDate, dueTime, null, createdAt);
     }
 
-    /**
-     * Maps AnnouncementDto to Announcement domain object.
-     */
     private Announcement mapToAnnouncement(AnnouncementDto dto) {
         String announcementId = String.valueOf(dto.id);
         String courseId = String.valueOf(dto.course_id);
@@ -356,12 +333,9 @@ public final class CanvasService {
         Optional<LocalDate> postedDateOpt = DateTimeUtil.parseDateFromDateTime(dto.posted_at);
         Optional<LocalTime> postedTimeOpt = DateTimeUtil.parseTimeFromDateTime(dto.posted_at);
 
-        String postedAt;
-        if (postedDateOpt.isPresent() && postedTimeOpt.isPresent()) {
-            postedAt = DateTimeUtil.formatYMD(postedDateOpt.get()) + " " + DateTimeUtil.formatHM(postedTimeOpt.get());
-        } else {
-            postedAt = "";
-        }
+        String postedAt = (postedDateOpt.isPresent() && postedTimeOpt.isPresent())
+                ? DateTimeUtil.formatYMD(postedDateOpt.get()) + " " + DateTimeUtil.formatHM(postedTimeOpt.get())
+                : "";
 
         String body = "";
         if (dto.message != null && !dto.message.trim().isEmpty()) {
@@ -372,23 +346,12 @@ public final class CanvasService {
 
         return new Announcement(announcementId, courseId, title, postedAt, body);
     }
-
-    /**
-     * Shuts down the executor service.
-     * Should be called when the application is closing.
-     */
-    public void shutdown() {
-        executor.shutdown();
-    }
-
     private static class CourseDto {
-
         public Long id;
         public String name;
     }
 
     private static class AssignmentDto {
-
         public Long id;
         public Long course_id;
         public String name;
@@ -397,7 +360,6 @@ public final class CanvasService {
     }
 
     private static class AnnouncementDto {
-
         public Long id;
         public Long course_id;
         public String title;
