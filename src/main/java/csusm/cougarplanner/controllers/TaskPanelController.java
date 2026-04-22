@@ -33,7 +33,28 @@ public class TaskPanelController implements Initializable
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle)
     {
+        hydrateCacheFromCsv();
         refreshTaskList();
+    }
+
+    // Loads tasks.csv into the in-memory cache so tasks persist across app restarts.
+    // Cache starts empty on each launch; without this, saved tasks would never appear.
+    private void hydrateCacheFromCsv()
+    {
+        TaskCache cache = TaskCache.getInstance();
+        cache.removeAll();
+        try
+        {
+            List<Task> fromDisk = tasksRepo.findAll();
+            for (Task t : fromDisk)
+            {
+                cache.add(t);
+            }
+        }
+        catch (IOException e)
+        {
+            System.err.println("Could not load tasks from CSV: " + e.getMessage());
+        }
     }
 
     /**
@@ -127,23 +148,10 @@ public class TaskPanelController implements Initializable
 
     private void handleToggle(String taskId)
     {
-        // CompletedTaskCommand
-//        Command cmd = new CompletedTaskCommand(tasksRepo, taskId);
-//        cmdManager.execute(cmd);
+        Command cmd = new CompletedTaskCommand(tasksRepo, taskId);
+        cmdManager.execute(cmd);
 
-        TaskCache.getInstance().toggleCompleted(taskId); // connect to Maria's ToggleCompletedCommand
-
-//        // get task from cache
-//        Task t = TaskCache.getInstance().get(taskId);
-//        if (t == null) return;
-//        // modify completed status
-//        t.setCompleted(!t.isCompleted());
-//        // update csv through the command pattern
-//        Command cmd = new UpdateTaskCommand(tasksRepo, t);
-//        cmdManager.execute(cmd);
-//        // update cache
-//        TaskCache.getInstance().update(t); // kenny needs an update for cache
-
+        TaskCache.getInstance().toggleCompleted(taskId);
         refreshTaskList();
     }
 

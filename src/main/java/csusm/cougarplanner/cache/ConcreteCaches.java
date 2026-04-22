@@ -26,12 +26,3 @@ class AnnouncementCache extends LinkedListLRUCache<Object> {
         super(DEFAULT_CAPACITY);
     }
 }
-
-class TaskCache extends LinkedListLRUCache<Object> {
-
-    private static final int DEFAULT_CAPACITY = 12;
-
-    public TaskCache() {
-        super(DEFAULT_CAPACITY);
-    }
-}

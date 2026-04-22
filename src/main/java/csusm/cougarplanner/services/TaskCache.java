@@ -7,8 +7,10 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Temporary for testing — Kenny replaces this with the real cache implementation.
- * Method signatures must stay the same so TaskPanelController keeps compiling.
+ * Session-scoped in-memory mirror of tasks.csv that the UI binds to.
+ * Hydrated from CSV in TaskPanelController.initialize(); kept in sync on each command.
+ * Not part of the LRU cache family used for remote data (assignments/announcements/courses) —
+ * tasks are local user data with no API tier, so the three-tier pattern doesn't apply.
  */
 public final class TaskCache
 {

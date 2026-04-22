@@ -18,7 +18,6 @@ public class CacheManager {
         caches.put("courses",       new CourseCache());
         caches.put("assignments",   new AssignmentCache());
         caches.put("announcements", new AnnouncementCache());
-        caches.put("tasks",         new TaskCache());
     }
 
     @SuppressWarnings("unchecked")
