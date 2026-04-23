@@ -1,0 +1,39 @@
+/* Filter bar styles */
+
+.filter-bar {
+    -fx-spacing: 8px;
+    -fx-padding: 5px 10px;
+}
+
+.filter-label {
+    -fx-font-family: 'Arial Rounded MT Bold';
+    -fx-font-size: 11px;
+    -fx-text-fill: #333333;
+    -fx-padding: 0 2px 0 5px;
+}
+
+.filter-combobox {
+    -fx-background-color: white;
+    -fx-background-radius: 6px;
+    -fx-font-family: 'Arial Rounded MT Bold';
+    -fx-font-size: 11px;
+    -fx-pref-width: 110px;
+    -fx-min-width: 110px;
+    -fx-max-width: 110px;
+}
+
+.clear-filters-button {
+    -fx-background-color: #FF6B6B;
+    -fx-text-fill: white;
+    -fx-background-radius: 6px;
+    -fx-font-family: 'Arial Rounded MT Bold';
+    -fx-font-size: 11px;
+    -fx-padding: 5px 12px 5px 12px;
+    -fx-pref-width: 95px;
+    -fx-min-width: 95px
+    -fx-cursor: hand;
+}
+
+.clear-filters-button:hover {
+    -fx-background-color: #ff5252;
+}
