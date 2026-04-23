@@ -68,6 +68,14 @@ public class Launcher extends Application {
         primaryStage = newStage;
     }
 
+    // JavaFX calls this when the last window closes. Force-exit so any
+    // background threads (HTTP clients, executors used by Canvas API calls, etc.)
+    // don't keep the JVM alive and leave IntelliJ's Run tab "running."
+    @Override
+    public void stop() {
+        System.exit(0);
+    }
+
     public static Stage getPrimaryStage() {
         return primaryStage;
     }
