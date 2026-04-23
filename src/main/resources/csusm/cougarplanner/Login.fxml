@@ -59,7 +59,7 @@
                      <children>
                         <AnchorPane layoutX="112.0" prefHeight="32.0" prefWidth="6.0" style="-fx-background-color: #0062a5;" />
                         <AnchorPane layoutY="5.0" prefHeight="22.0" prefWidth="112.0" style="-fx-background-color: #002E5A;" />
-                        <Label fx:id="APITokenLabel" layoutX="36.0" layoutY="7.0" text="Instructions" textFill="WHITE">
+                        <Label fx:id="APITokenLabel" layoutX="36.0" layoutY="7.0" text="Login" textFill="WHITE">
                            <font>
                               <Font name="Arial Rounded MT Bold" size="15.0" />
                            </font>
@@ -127,7 +127,7 @@
                                           </Label>
                                           <Pane layoutX="14.0" layoutY="59.0" prefHeight="6.0" prefWidth="310.0" style="-fx-background-color: #F8BA2B; -fx-background-radius: 10; -fx-blend-mode: multiply;" />
                                           <Pane layoutX="254.0" layoutY="68.0" prefHeight="6.0" prefWidth="105.0" style="-fx-background-color: #bcbec0; -fx-background-radius: 10; -fx-blend-mode: multiply;" />
-                                          <TextArea editable="false" layoutX="60.0" layoutY="80.0" prefHeight="200.0" prefWidth="300.0" text="Hello user! Welcome to the Cougar Planner!!!!&#10;&#10;This page will provide you with a quick and easy&#10;introduction to the software.&#10;&#10;Here you will learn the following about the Cougar Planner:&#10;     - What it does,&#10;     - How to use it,&#10;     - Its included features, and&#10;     - How to set it up for continuous usage" wrapText="true" />
+                                          <TextArea editable="false" layoutX="60.0" layoutY="80.0" prefHeight="200.0" prefWidth="300.0" text="Hello user! Welcome to the Cougar Planner!!!!&#10;&#10;This page will provide you with a quick and easy&#10;introduction to the software.&#10;&#10;Here you will learn the following about the Cougar Planner:&#10;     - What it does&#10;     - How to use it&#10;     - Its included features&#10;     - How to set it up for continuous usage" wrapText="true" />
                                        </children>
                                     </AnchorPane>
                                     <AnchorPane prefHeight="443.0" prefWidth="426.0">
@@ -144,7 +144,7 @@
                                     </AnchorPane>
                                     <AnchorPane prefHeight="300.0" prefWidth="426.0">
                                        <children>
-                                          <Label alignment="TOP_LEFT" layoutX="53.0" layoutY="4.0" prefHeight="36.0" prefWidth="197.0" text="Login" styleClass="app-body-text">
+                                          <Label alignment="TOP_LEFT" layoutX="53.0" layoutY="4.0" prefHeight="36.0" prefWidth="197.0" text="Instructions" styleClass="app-body-text">
                                              <font>
                                                 <Font size="23.0" />
                                              </font>
@@ -197,7 +197,7 @@
                                                 <Font name="Arial Rounded MT Bold" size="12.0" />
                                              </font>
                                           </CheckBox>
-                                          <Label layoutX="86.0" layoutY="159.0" text="Login" />
+                                          <Label layoutX="86.0" layoutY="159.0" text="Instructions" />
                                           <Label fx:id="statusLabel" layoutX="151.0" layoutY="159.0" text="|    Error Status" textFill="#ff3030" />
                                           <TextField fx:id="tokenField" layoutX="86.0" layoutY="181.0" promptText="Enter token here" />
                                           <Button fx:id="validateButton" layoutX="253.0" layoutY="181.0" mnemonicParsing="false" onMousePressed="#onValidateClicked" text="Confirm" />
