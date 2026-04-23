@@ -1,5 +1,6 @@
 package csusm.cougarplanner.controllers;
 
+import csusm.cougarplanner.FilterPattern.TaskFilter;
 import csusm.cougarplanner.commandPattern.*;
 import csusm.cougarplanner.io.TasksRepository;
 import csusm.cougarplanner.models.Task;
@@ -20,6 +21,12 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.time.format.DateTimeFormatter;
+
+import csusm.cougarplanner.FilterPattern.AndFilter;
+
 
 // Controller for TaskPanel.fxml — the Tasks tab.
 public class TaskPanelController implements Initializable
@@ -31,11 +38,28 @@ public class TaskPanelController implements Initializable
     @FXML private VBox   taskListContainer;
     @FXML private Button undoButton;
     @FXML private Button redoButton;
+    private FilterBarController filterBarController;
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("MM-dd-yyyy");
+
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle)
     {
         hydrateCacheFromCsv();
+        filterBarController = new FilterBarController(
+                filterBar,
+                this::refreshTaskList
+        );
+
+        // Add "Clear Filters" button
+        Button clearFiltersBtn = new Button("Clear Filters");
+        clearFiltersBtn.getStyleClass().add("clear-filters-button");
+        clearFiltersBtn.setOnAction(e -> {
+            filterBarController.resetFilters();
+            refreshTaskList();
+        });
+        filterBar.getChildren().add(clearFiltersBtn);
+
         refreshTaskList();
         updateUndoRedoButtons();
     }
@@ -67,9 +91,23 @@ public class TaskPanelController implements Initializable
     {
         taskListContainer.getChildren().clear();
 
-        List<Task> tasks = TaskCache.getInstance().getAll();
+        List<Task> allTasks = TaskCache.getInstance().getAll();// Kenny's cache
+// Apply filter if active
+        List<Task> tasksToDisplay;
+        TaskFilter activeFilter = filterBarController.getCurrentFilter();
 
-        for (Task task : tasks)
+
+        if (activeFilter != null) {
+            tasksToDisplay = activeFilter.filter(allTasks);
+        } else {
+            tasksToDisplay = allTasks;
+        }
+
+        // Apply sorting
+        String sortOption = filterBarController.getCurrentSortOption();
+        tasksToDisplay = sortTasksByDueDate(tasksToDisplay, sortOption);
+
+        for (Task task : tasksToDisplay)
         {
             try
             {
@@ -86,11 +124,64 @@ public class TaskPanelController implements Initializable
             }
         }
     }
+    /**
+     * Sorts tasks by due date based on the selected option
+     */
+    private List<Task> sortTasksByDueDate(List<Task> tasks, String sortOption) {
+        if (sortOption == null || "Sort: Default".equals(sortOption)) {
+            return tasks;
+        }
 
+        List<Task> sorted = new ArrayList<>(tasks);
+
+        if ("Sort: Due Date (Earliest First)".equals(sortOption)) {
+            sorted.sort((t1, t2) -> {
+                LocalDate date1 = parseDate(t1.getDueDate());
+                LocalDate date2 = parseDate(t2.getDueDate());
+
+                // Tasks with no due date go to the bottom
+                if (date1 == null && date2 == null) return 0;
+                if (date1 == null) return 1;
+                if (date2 == null) return -1;
+
+                return date1.compareTo(date2); // Earliest first
+            });
+        } else if ("Sort: Due Date (Latest First)".equals(sortOption)) {
+            sorted.sort((t1, t2) -> {
+                LocalDate date1 = parseDate(t1.getDueDate());
+                LocalDate date2 = parseDate(t2.getDueDate());
+
+                // Tasks with no due date go to the bottom
+                if (date1 == null && date2 == null) return 0;
+                if (date1 == null) return 1;
+                if (date2 == null) return -1;
+
+                return date2.compareTo(date1); // Latest first
+            });
+        }
+
+        return sorted;
+    }
+
+    /**
+     * Parses a date string to LocalDate
+     */
+    private LocalDate parseDate(String dateStr) {
+        if (dateStr == null || dateStr.isBlank()) return null;
+        try {
+            return LocalDate.parse(dateStr, DATE_FORMATTER);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+
+    // Manal's filter controller calls this to get the HBox to add ComboBoxes into.
     public HBox getFilterBar()
     {
         return filterBar;
     }
+
 
     @FXML
     private void onAddTaskClicked()
