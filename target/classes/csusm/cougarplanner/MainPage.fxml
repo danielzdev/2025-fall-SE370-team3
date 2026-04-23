@@ -1,0 +1,429 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.text.Font?>
+
+<VBox fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1100.0" style="-fx-background-color: transparent;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="csusm.cougarplanner.controllers.MainPageController">
+    <children>
+        <AnchorPane onMouseDragged="#updateWindowPosition" onMousePressed="#recordWindowPosition" prefHeight="90.0" prefWidth="200.0" styleClass="app-titlebar">
+            <children>
+                <AnchorPane layoutY="51.0" prefWidth="200.0" AnchorPane.leftAnchor="0.0">
+                    <children>
+                        <Label fx:id="viewingMenuLabel" text="Viewing" styleClass="app-navbar-text" AnchorPane.leftAnchor="20.0">
+                            <font>
+                                <Font name="Arial Rounded MT Bold" size="20.0" />
+                            </font>
+                        </Label>
+                        <Label fx:id="viewingMenuLabelMutable" layoutX="102.0" text="Announcements" styleClass="app-navbar-text">
+                            <font>
+                                <Font name="Arial Rounded MT Bold" size="20.0" />
+                            </font>
+                        </Label>
+                        <Pane layoutX="4.0" layoutY="23.0" prefHeight="6.0" prefWidth="152.0" style="-fx-background-color: F8BA2BFF; -fx-background-radius: 10;" AnchorPane.leftAnchor="10.0" />
+                    </children>
+                </AnchorPane>
+                <Pane layoutX="280.0" layoutY="84.66666666666667" prefHeight="10.0" prefWidth="170.0" style="-fx-background-color: #d1d3d4; -fx-background-radius: 8;" AnchorPane.bottomAnchor="-4.666666666666671" />
+                <Pane layoutX="653.6666666666667" layoutY="88.0" prefHeight="10.0" prefWidth="170.0" style="-fx-background-color: #d1d3d4; -fx-background-radius: 8;" AnchorPane.bottomAnchor="-4.666666666666671" AnchorPane.rightAnchor="276.5" />
+                <AnchorPane onMouseClicked="#openSettingsPanel" layoutX="847.9999999999999" layoutY="51.0" prefHeight="29.0" prefWidth="251.0" AnchorPane.rightAnchor="0.0">
+                    <children>
+                        <Label text="Settings" styleClass="app-navbar-text" AnchorPane.rightAnchor="20.0">
+                            <font>
+                                <Font name="Arial Rounded MT Bold" size="20.0" />
+                            </font>
+                        </Label>
+                        <Pane layoutX="90.0" layoutY="23.0" prefHeight="6.0" prefWidth="152.0" style="-fx-background-color: F8BA2BFF; -fx-background-radius: 10;" AnchorPane.rightAnchor="10.0" />
+                        <Pane layoutX="63.0" layoutY="23.0" prefHeight="6.0" prefWidth="23.0" style="-fx-background-color: F8BA2BFF; -fx-background-radius: 10;" />
+                        <Pane layoutX="50.0" layoutY="23.0" prefHeight="6.0" prefWidth="10.0" style="-fx-background-color: F8BA2BFF; -fx-background-radius: 10;" />
+                        <Pane layoutX="23.0" layoutY="23.0" prefHeight="6.0" prefWidth="6.0" style="-fx-background-color: F8BA2BFF; -fx-background-radius: 10;" />
+                        <Pane layoutX="32.0" layoutY="23.0" prefHeight="6.0" prefWidth="6.0" style="-fx-background-color: F8BA2BFF; -fx-background-radius: 10;" />
+                        <Pane layoutX="41.0" layoutY="23.0" prefHeight="6.0" prefWidth="6.0" style="-fx-background-color: F8BA2BFF; -fx-background-radius: 10;" />
+                    </children>
+                    <cursor>
+                        <Cursor fx:constant="HAND" />
+                    </cursor>
+                </AnchorPane>
+                <AnchorPane layoutX="445.0" layoutY="7.0" prefHeight="63.0" prefWidth="206.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="445.0" AnchorPane.rightAnchor="445.0" AnchorPane.topAnchor="7.0">
+                    <children>
+                        <Pane layoutX="13.0" layoutY="31.0" prefHeight="4.0" prefWidth="183.0" style="-fx-background-color: F8BA2BFF; -fx-background-radius: 10;" AnchorPane.bottomAnchor="30.66666666666667" AnchorPane.leftAnchor="13.0" AnchorPane.rightAnchor="13.0" AnchorPane.topAnchor="31.0" />
+                        <Pane layoutX="85.0" layoutY="38.0" prefHeight="4.0" prefWidth="40.0" style="-fx-background-color: F8BA2BFF; -fx-background-radius: 10;" AnchorPane.bottomAnchor="24.0" AnchorPane.leftAnchor="84.5" AnchorPane.rightAnchor="84.5" AnchorPane.topAnchor="38.0" />
+                        <Pane layoutX="100.0" layoutY="45.0" prefHeight="4.0" prefWidth="10.0" style="-fx-background-color: F8BA2BFF; -fx-background-radius: 10;" AnchorPane.bottomAnchor="16.666666666666664" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="100.0" AnchorPane.topAnchor="45.0" />
+                        <Pane layoutX="103.0" layoutY="52.0" prefHeight="4.0" prefWidth="4.0" style="-fx-background-color: F8BA2BFF; -fx-background-radius: 10;" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="102.5" AnchorPane.rightAnchor="102.5" AnchorPane.topAnchor="52.0" />
+                        <Label layoutX="13.333333333333334" layoutY="5.666666666666667" text="Cougar Planner" textFill="#fffefe" AnchorPane.bottomAnchor="31.666666666666664" AnchorPane.leftAnchor="13.333333333333334" AnchorPane.rightAnchor="13.333333333333343" AnchorPane.topAnchor="5.666666666666667">
+                            <font>
+                                <Font name="Arial Rounded MT Bold" size="24.0" />
+                            </font>
+                        </Label>
+                    </children>
+                </AnchorPane>
+                <AnchorPane layoutX="1022.0" layoutY="11.0" prefHeight="22.0" prefWidth="22.0" AnchorPane.rightAnchor="60.0" AnchorPane.topAnchor="10.0">
+                    <children>
+                        <Pane layoutY="9.0" prefHeight="4.0" prefWidth="25.0" style="-fx-background-color: F8BA2BFF; -fx-background-radius: 10;" AnchorPane.bottomAnchor="8.666666666666666" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="9.0" />
+                        <Pane onMouseClicked="#minimizeWindow" prefHeight="22.0" prefWidth="22.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="5.0">
+                            <cursor>
+                                <Cursor fx:constant="HAND" />
+                            </cursor>
+                        </Pane>
+                    </children>
+                </AnchorPane>
+                <AnchorPane layoutX="1056.3333333333333" layoutY="11.0" prefHeight="22.0" prefWidth="22.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="10.0">
+                    <children>
+                        <Pane layoutY="9.0" prefHeight="4.0" prefWidth="25.0" rotate="-45.0" style="-fx-background-color: F8BA2BFF; -fx-background-radius: 10;" AnchorPane.bottomAnchor="8.666666666666666" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="9.0" />
+                        <Pane layoutY="9.0" prefHeight="4.0" prefWidth="25.0" rotate="45.0" style="-fx-background-color: F8BA2BFF; -fx-background-radius: 10;" AnchorPane.bottomAnchor="8.666666666666666" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="9.0" />
+                        <Pane onMouseClicked="#closeApplication" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="3.0" AnchorPane.leftAnchor="3.0" AnchorPane.rightAnchor="3.0" AnchorPane.topAnchor="3.0">
+                            <cursor>
+                                <Cursor fx:constant="HAND" />
+                            </cursor>
+                        </Pane>
+                    </children>
+                </AnchorPane>
+            </children>
+        </AnchorPane>
+        <HBox prefHeight="565.0" prefWidth="1100.0">
+            <children>
+                <AnchorPane mouseTransparent="true" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: transparent;" HBox.hgrow="ALWAYS">
+                    <children>
+                        <Circle styleClass="app-accent-shape" layoutX="21.0" layoutY="1.0" radius="14.0" strokeType="INSIDE" />
+                        <Circle styleClass="app-accent-shape" layoutX="25.0" layoutY="28.0" radius="9.0" strokeType="INSIDE" />
+                        <Circle styleClass="app-accent-shape" layoutX="28.0" layoutY="51.0" radius="6.0" strokeType="INSIDE" />
+                    </children>
+                </AnchorPane>
+                <AnchorPane prefWidth="998.0" styleClass="app-tabsbar">
+                    <children>
+                        <AnchorPane fx:id="plannerBody" prefHeight="564.0" prefWidth="1100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                            <children>
+                                <Pane layoutX="30.0" layoutY="-5.333333333333333" prefHeight="10.0" prefWidth="150.0" styleClass="app-accent-shape" AnchorPane.topAnchor="-5.333333333333333" />
+                                <Pane layoutX="910.0" layoutY="-5.333333333333333" prefHeight="10.0" prefWidth="150.0" styleClass="app-accent-shape" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="-5.333333333333333" />
+                                <Pane fx:id="displayDateParent" layoutX="412.0" layoutY="-6.0" prefHeight="15.0" prefWidth="203.0" styleClass="app-accent-shape" AnchorPane.leftAnchor="413.6" AnchorPane.rightAnchor="410.66666666666663">
+                                    <children>
+                                        <Label fx:id="dateLabel" layoutX="72.0" layoutY="-11.0" text="DATE" textFill="WHITE">
+                                            <font>
+                                                <Font name="Arial Rounded MT Bold" size="20.0" />
+                                            </font>
+                                        </Label>
+                                    </children>
+                                </Pane>
+                                <AnchorPane fx:id="weekPlanner" layoutX="11.0" layoutY="57.0" prefHeight="461.0" prefWidth="1015.0" visible="false" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="20.0">
+                                    <children>
+                                        <VBox prefHeight="382.0" prefWidth="1015.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="0.0">
+                                            <children>
+                                                <AnchorPane prefHeight="46.0" prefWidth="1005.0" styleClass="app-surface">
+                                                    <children>
+                                                        <HBox prefHeight="100.0" prefWidth="1004.6666666666666" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                            <children>
+                                                                <AnchorPane prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
+                                                                    <children>
+                                                                        <Label fx:id="weekSundayHeaderLabel" layoutX="48.0" layoutY="14.0" text="SUNDAY" styleClass="app-body-text">
+                                                                            <font>
+                                                                                <Font name="Arial Rounded MT Bold" size="12.0" />
+                                                                            </font>
+                                                                        </Label>
+                                                                        <Pane fx:id="headerPaneDecoration1" layoutY="43.0" prefHeight="1.0" prefWidth="143.0" scaleY="0.0" style="-fx-background-color: F8BA2BFF;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                                                                        <Pane onMouseClicked="#selectHeaderFromPane" onMouseEntered="#weekViewHeaderAnimation" onMouseExited="#weekViewHeaderAnimation" opacity="0.3" prefHeight="200.0" prefWidth="200.0" userData="1" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                                    </children>
+                                                                </AnchorPane>
+                                                                <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                                                                    <children>
+                                                                        <Label fx:id="weekMondayHeaderLabel" layoutX="46.0" layoutY="14.0" text="MONDAY" styleClass="app-body-text">
+                                                                            <font>
+                                                                                <Font name="Arial Rounded MT Bold" size="12.0" />
+                                                                            </font>
+                                                                        </Label>
+                                                                        <Pane fx:id="headerPaneDecoration2" prefHeight="1.0" prefWidth="143.0" scaleY="0.0" style="-fx-background-color: F8BA2BFF;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                                                                        <Pane onMouseClicked="#selectHeaderFromPane" onMouseEntered="#weekViewHeaderAnimation" onMouseExited="#weekViewHeaderAnimation" opacity="0.3" prefHeight="200.0" prefWidth="200.0" userData="2" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                                    </children>
+                                                                </AnchorPane>
+                                                                <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                                                                    <children>
+                                                                        <Label fx:id="weekTuesdayHeaderLabel" layoutX="47.0" layoutY="14.0" text="TUESDAY" styleClass="app-body-text">
+                                                                            <font>
+                                                                                <Font name="Arial Rounded MT Bold" size="12.0" />
+                                                                            </font>
+                                                                        </Label>
+                                                                        <Pane fx:id="headerPaneDecoration3" prefHeight="1.0" prefWidth="143.0" scaleY="0.0" style="-fx-background-color: F8BA2BFF;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                                                                        <Pane onMouseClicked="#selectHeaderFromPane" onMouseEntered="#weekViewHeaderAnimation" onMouseExited="#weekViewHeaderAnimation" opacity="0.3" prefHeight="200.0" prefWidth="200.0" userData="3" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                                    </children>
+                                                                </AnchorPane>
+                                                                <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                                                                    <children>
+                                                                        <Label fx:id="weekWednesdayHeaderLabel" layoutX="37.0" layoutY="14.0" text="WEDNESDAY" styleClass="app-body-text">
+                                                                            <font>
+                                                                                <Font name="Arial Rounded MT Bold" size="12.0" />
+                                                                            </font>
+                                                                        </Label>
+                                                                        <Pane fx:id="headerPaneDecoration4" prefHeight="1.0" prefWidth="143.0" scaleY="0.0" style="-fx-background-color: F8BA2BFF;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                                                                        <Pane onMouseClicked="#selectHeaderFromPane" onMouseEntered="#weekViewHeaderAnimation" onMouseExited="#weekViewHeaderAnimation" opacity="0.3" prefHeight="200.0" prefWidth="200.0" userData="4" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                                    </children>
+                                                                </AnchorPane>
+                                                                <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                                                                    <children>
+                                                                        <Label fx:id="weekThursdayHeaderLabel" layoutX="42.0" layoutY="14.0" text="THURSDAY" styleClass="app-body-text">
+                                                                            <font>
+                                                                                <Font name="Arial Rounded MT Bold" size="12.0" />
+                                                                            </font>
+                                                                        </Label>
+                                                                        <Pane fx:id="headerPaneDecoration5" prefHeight="1.0" prefWidth="143.0" scaleY="0.0" style="-fx-background-color: F8BA2BFF;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                                                                        <Pane onMouseClicked="#selectHeaderFromPane" onMouseEntered="#weekViewHeaderAnimation" onMouseExited="#weekViewHeaderAnimation" opacity="0.3" prefHeight="200.0" prefWidth="200.0" userData="5" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                                    </children>
+                                                                </AnchorPane>
+                                                                <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                                                                    <children>
+                                                                        <Label fx:id="weekFridayHeaderLabel" layoutX="52.0" layoutY="14.0" text="FRIDAY" styleClass="app-body-text">
+                                                                            <font>
+                                                                                <Font name="Arial Rounded MT Bold" size="12.0" />
+                                                                            </font>
+                                                                        </Label>
+                                                                        <Pane fx:id="headerPaneDecoration6" prefHeight="1.0" prefWidth="143.0" scaleY="0.0" style="-fx-background-color: F8BA2BFF;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                                                                        <Pane onMouseClicked="#selectHeaderFromPane" onMouseEntered="#weekViewHeaderAnimation" onMouseExited="#weekViewHeaderAnimation" opacity="0.3" prefHeight="200.0" prefWidth="200.0" userData="6" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                                    </children>
+                                                                </AnchorPane>
+                                                                <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                                                                    <children>
+                                                                        <Label fx:id="weekSaturdayHeaderLabel" layoutX="43.0" layoutY="14.0" text="SATURDAY" styleClass="app-body-text">
+                                                                            <font>
+                                                                                <Font name="Arial Rounded MT Bold" size="12.0" />
+                                                                            </font>
+                                                                        </Label>
+                                                                        <Pane fx:id="headerPaneDecoration7" prefHeight="1.0" prefWidth="143.0" scaleY="0.0" style="-fx-background-color: F8BA2BFF;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                                                                        <Pane onMouseClicked="#selectHeaderFromPane" onMouseEntered="#weekViewHeaderAnimation" onMouseExited="#weekViewHeaderAnimation" opacity="0.3" prefHeight="200.0" prefWidth="200.0" userData="7" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                                    </children>
+                                                                </AnchorPane>
+                                                            </children>
+                                                        </HBox>
+                                                        <Pane layoutX="142.0" layoutY="3.0" prefHeight="40.0" prefWidth="2.0" style="-fx-background-color: #696969; -fx-background-radius: 10;" />
+                                                        <Pane layoutX="286.0" layoutY="3.0" prefHeight="40.0" prefWidth="2.0" style="-fx-background-color: #696969; -fx-background-radius: 10;" />
+                                                        <Pane layoutX="429.0" layoutY="3.0" prefHeight="40.0" prefWidth="2.0" style="-fx-background-color: #696969; -fx-background-radius: 10;" />
+                                                        <Pane layoutX="573.0" layoutY="3.0" prefHeight="40.0" prefWidth="2.0" style="-fx-background-color: #696969; -fx-background-radius: 10;" />
+                                                        <Pane layoutX="717.0" layoutY="3.0" prefHeight="40.0" prefWidth="2.0" style="-fx-background-color: #696969; -fx-background-radius: 10;" />
+                                                        <Pane layoutX="861.0" layoutY="3.0" prefHeight="40.0" prefWidth="2.0" style="-fx-background-color: #696969; -fx-background-radius: 10;" />
+                                                    </children>
+                                                </AnchorPane>
+                                                <AnchorPane prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+                                                    <children>
+                                                        <HBox fx:id="hboxWeekContentsContainer" prefHeight="330.6666666666667" prefWidth="1004.6666666666666" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                            <children>
+                                                                <AnchorPane fx:id="sundayContentsPane" prefHeight="200.0" prefWidth="200.0" styleClass="app-surface">
+                                                                    <children>
+                                                                        <VBox fx:id="sundayContentsVBox" prefHeight="404.6666666666667" prefWidth="143.33333333333334" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                                    </children>
+                                                                </AnchorPane>
+                                                                <AnchorPane fx:id="mondayContentsPane" prefHeight="200.0" prefWidth="200.0" styleClass="app-surface">
+                                                                    <children>
+                                                                        <VBox fx:id="mondayContentsVBox" prefHeight="404.6666666666667" prefWidth="143.33333333333334" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                                    </children>
+                                                                </AnchorPane>
+                                                                <AnchorPane fx:id="tuesdayContentsPane" prefHeight="200.0" prefWidth="200.0" styleClass="app-surface">
+                                                                    <children>
+                                                                        <VBox fx:id="tuesdayContentsVBox" prefHeight="404.6666666666667" prefWidth="143.33333333333334" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                                    </children>
+                                                                </AnchorPane>
+                                                                <AnchorPane fx:id="wednesdayContentsPane" prefHeight="200.0" prefWidth="200.0" styleClass="app-surface">
+                                                                    <children>
+                                                                        <VBox fx:id="wednesdayContentsVBox" prefHeight="404.6666666666667" prefWidth="143.33333333333334" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                                    </children>
+                                                                </AnchorPane>
+                                                                <AnchorPane fx:id="thursdayContentsPane" prefHeight="200.0" prefWidth="200.0" styleClass="app-surface">
+                                                                    <children>
+                                                                        <VBox fx:id="thursdayContentsVBox" prefHeight="404.6666666666667" prefWidth="143.33333333333334" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                                    </children>
+                                                                </AnchorPane>
+                                                                <AnchorPane fx:id="fridayContentsPane" prefHeight="200.0" prefWidth="200.0" styleClass="app-surface">
+                                                                    <children>
+                                                                        <VBox fx:id="fridayContentsVBox" prefHeight="404.6666666666667" prefWidth="144.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                                    </children>
+                                                                </AnchorPane>
+                                                                <AnchorPane fx:id="saturdayContentsPane" prefHeight="200.0" prefWidth="200.0" styleClass="app-surface">
+                                                                    <children>
+                                                                        <VBox fx:id="saturdayContentsVBox" prefHeight="404.6666666666667" prefWidth="144.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                                    </children>
+                                                                </AnchorPane>
+                                                            </children>
+                                                        </HBox>
+                                                        <Pane prefHeight="2.0" prefWidth="1006.0" style="-fx-background-color: F8BA2BFF; -fx-background-radius: 10;" AnchorPane.topAnchor="0.0" />
+                                                        <Pane layoutX="142.0" layoutY="8.0" prefHeight="390.0" prefWidth="2.0" style="-fx-background-color: #696969; -fx-background-radius: 10;" AnchorPane.bottomAnchor="8.0" AnchorPane.topAnchor="8.0" />
+                                                        <Pane layoutX="286.0" layoutY="8.0" prefHeight="390.0" prefWidth="2.0" style="-fx-background-color: #696969; -fx-background-radius: 10;" AnchorPane.bottomAnchor="8.0" AnchorPane.topAnchor="8.0" />
+                                                        <Pane layoutX="429.0" layoutY="8.0" prefHeight="390.0" prefWidth="2.0" style="-fx-background-color: #696969; -fx-background-radius: 10;" AnchorPane.bottomAnchor="8.0" AnchorPane.topAnchor="8.0" />
+                                                        <Pane layoutX="573.0" layoutY="8.0" prefHeight="390.0" prefWidth="2.0" style="-fx-background-color: #696969; -fx-background-radius: 10;" AnchorPane.bottomAnchor="8.0" AnchorPane.topAnchor="8.0" />
+                                                        <Pane layoutX="717.0" layoutY="8.0" prefHeight="390.0" prefWidth="2.0" style="-fx-background-color: #696969; -fx-background-radius: 10;" AnchorPane.bottomAnchor="8.0" AnchorPane.topAnchor="8.0" />
+                                                        <Pane layoutX="861.0" layoutY="8.0" prefHeight="390.0" prefWidth="2.0" style="-fx-background-color: #696969; -fx-background-radius: 10;" AnchorPane.bottomAnchor="8.0" AnchorPane.topAnchor="8.0" />
+                                                        <AnchorPane fx:id="assignmentsWeekViewHitboxField" prefHeight="487.3333333333333" prefWidth="1006.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                            <children>
+                                                                <AnchorPane layoutY="33.0" prefHeight="10.0" prefWidth="143.0" style="-fx-background-color: #696969;" visible="false" />
+                                                                <AnchorPane layoutX="143.0" layoutY="33.0" prefHeight="10.0" prefWidth="430.0" style="-fx-background-color: #696969;" visible="false" />
+                                                            </children>
+                                                        </AnchorPane>
+                                                    </children>
+                                                </AnchorPane>
+                                            </children>
+                                        </VBox>
+                                    </children>
+                                </AnchorPane>
+                                <AnchorPane fx:id="dayPlanner" layoutX="10.0" layoutY="57.0" prefHeight="461.0" prefWidth="1015.0" styleClass="app-tabsbar" style="-fx-background-radius: 2;" visible="false" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="20.0">
+                                    <children>
+                                        <VBox prefHeight="461.3333333333333" prefWidth="1015.3333333333334" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
+                                            <children>
+                                                <HBox prefHeight="46.0" prefWidth="200.0">
+                                                    <children>
+                                                        <AnchorPane fx:id="sundayDayHeaderPane" prefHeight="46.0" prefWidth="200.0" styleClass="app-surface">
+                                                            <children>
+                                                                <Label fx:id="daySundayHeaderLabel" layoutX="46.0" layoutY="15.0" text="SUNDAY" styleClass="app-body-text">
+                                                                    <font>
+                                                                        <Font name="Arial Rounded MT Bold" size="12.0" />
+                                                                    </font>
+                                                                </Label>
+                                                            </children>
+                                                        </AnchorPane>
+                                                        <AnchorPane fx:id="mondayDayHeaderPane" prefHeight="200.0" prefWidth="200.0" styleClass="app-surface" visible="false">
+                                                            <children>
+                                                                <Label fx:id="dayMondayHeaderLabel" layoutX="45.0" layoutY="15.0" text="MONDAY" styleClass="app-body-text">
+                                                                    <font>
+                                                                        <Font name="Arial Rounded MT Bold" size="12.0" />
+                                                                    </font>
+                                                                </Label>
+                                                            </children>
+                                                        </AnchorPane>
+                                                        <AnchorPane fx:id="tuesdayDayHeaderPane" prefHeight="200.0" prefWidth="200.0" styleClass="app-surface" visible="false">
+                                                            <children>
+                                                                <Label fx:id="dayTuesdayHeaderLabel" layoutX="43.0" layoutY="15.0" text="TUESDAY" styleClass="app-body-text">
+                                                                    <font>
+                                                                        <Font name="Arial Rounded MT Bold" size="12.0" />
+                                                                    </font>
+                                                                </Label>
+                                                            </children>
+                                                        </AnchorPane>
+                                                        <AnchorPane fx:id="wednesdayDayHeaderPane" prefHeight="200.0" prefWidth="200.0" styleClass="app-surface" visible="false">
+                                                            <children>
+                                                                <Label fx:id="dayWednesdayHeaderLabel" layoutX="33.0" layoutY="15.0" text="WEDNESDAY" styleClass="app-body-text">
+                                                                    <font>
+                                                                        <Font name="Arial Rounded MT Bold" size="12.0" />
+                                                                    </font>
+                                                                </Label>
+                                                            </children>
+                                                        </AnchorPane>
+                                                        <AnchorPane fx:id="thursdayDayHeaderPane" prefHeight="200.0" prefWidth="200.0" styleClass="app-surface" visible="false">
+                                                            <children>
+                                                                <Label fx:id="dayThursdayHeaderLabel" layoutX="38.0" layoutY="15.0" text="THURSDAY" styleClass="app-body-text">
+                                                                    <font>
+                                                                        <Font name="Arial Rounded MT Bold" size="12.0" />
+                                                                    </font>
+                                                                </Label>
+                                                            </children>
+                                                        </AnchorPane>
+                                                        <AnchorPane fx:id="fridayDayHeaderPane" prefHeight="200.0" prefWidth="200.0" styleClass="app-surface" visible="false">
+                                                            <children>
+                                                                <Label fx:id="dayFridayHeaderLabel" layoutX="50.0" layoutY="15.0" text="FRIDAY" styleClass="app-body-text">
+                                                                    <font>
+                                                                        <Font name="Arial Rounded MT Bold" size="12.0" />
+                                                                    </font>
+                                                                </Label>
+                                                            </children>
+                                                        </AnchorPane>
+                                                        <AnchorPane fx:id="saturdayDayHeaderPane" prefHeight="200.0" prefWidth="200.0" styleClass="app-surface" visible="false">
+                                                            <children>
+                                                                <Label fx:id="daySaturdayHeaderLabel" layoutX="38.0" layoutY="15.0" text="SATURDAY" styleClass="app-body-text">
+                                                                    <font>
+                                                                        <Font name="Arial Rounded MT Bold" size="12.0" />
+                                                                    </font>
+                                                                </Label>
+                                                            </children>
+                                                        </AnchorPane>
+                                                    </children>
+                                                </HBox>
+                                                <AnchorPane prefHeight="200.0" prefWidth="200.0" styleClass="app-surface" VBox.vgrow="ALWAYS">
+                                                    <children>
+                                                        <Pane layoutY="-1.0" prefHeight="2.0" prefWidth="1006.0" style="-fx-background-color: F8BA2BFF; -fx-background-radius: 10;" />
+                                                        <AnchorPane fx:id="assignmentDayDisplayContainer" prefHeight="476.6666666666667" prefWidth="1006.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="10.0" />
+                                                    </children>
+                                                </AnchorPane>
+                                            </children>
+                                        </VBox>
+                                    </children>
+                                </AnchorPane>
+                                <AnchorPane fx:id="announcementsPlanner" layoutX="20.0" layoutY="67.0" prefHeight="461.0" prefWidth="1015.0" styleClass="app-surface" style="-fx-background-radius: 2;" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="20.0">
+                                    <children>
+                                        <AnchorPane layoutX="-3.6666666666666665" layoutY="15.333333333333334" prefHeight="38.0" prefWidth="244.0" styleClass="app-accent-gradient" AnchorPane.leftAnchor="-4.0" AnchorPane.topAnchor="15.0" />
+                                        <Label text="Announcements" textFill="WHITE" AnchorPane.leftAnchor="40.0" AnchorPane.topAnchor="20.0">
+                                            <font>
+                                                <Font name="Arial Rounded MT Bold" size="24.0" />
+                                            </font>
+                                        </Label>
+                                        <ScrollPane hbarPolicy="NEVER" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="62.0">
+                                            <content>
+                                                <AnchorPane fx:id="announcementsLabelField" prefHeight="471.0" prefWidth="1017.0" />
+                                            </content>
+                                        </ScrollPane>
+                                    </children>
+                                </AnchorPane>
+                                <fx:include fx:id="tasksPlanner" source="TaskPanel.fxml" visible="false"
+                                            AnchorPane.topAnchor="20.0" AnchorPane.bottomAnchor="10.0"
+                                            AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" />
+                                <fx:include fx:id="settingsPlanner" source="SettingsPanel.fxml" visible="false"
+                                            AnchorPane.topAnchor="20.0" AnchorPane.bottomAnchor="10.0"
+                                            AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" />
+                            </children>
+                        </AnchorPane>
+                    </children>
+                </AnchorPane>
+                <AnchorPane mouseTransparent="true" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: transparent;" HBox.hgrow="ALWAYS">
+                    <children>
+                        <Circle styleClass="app-accent-shape" layoutX="16.0" layoutY="1.0" radius="14.0" strokeType="INSIDE" />
+                        <Circle styleClass="app-accent-shape" layoutX="11.0" layoutY="28.0" radius="9.0" strokeType="INSIDE" />
+                        <Circle styleClass="app-accent-shape" layoutX="9.0" layoutY="51.0" radius="6.0" strokeType="INSIDE" />
+                    </children>
+                </AnchorPane>
+            </children>
+        </HBox>
+        <AnchorPane prefHeight="45.0" prefWidth="1100.0" styleClass="app-panel-footer">
+            <children>
+                <Pane prefHeight="6.0" prefWidth="1100.0" style="-fx-background-color: #222222;" AnchorPane.bottomAnchor="39.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                <Pane layoutX="350.0" prefHeight="10.0" prefWidth="400.0" style="-fx-background-color: #222222; -fx-background-radius: 8;" />
+                <Label layoutX="411.0" layoutY="19.0" onMouseClicked="#viewPreviousBlock" text="&lt;&lt;PREV&lt;&lt;" styleClass="app-body-text">
+                    <font>
+                        <Font name="Arial Rounded MT Bold" size="14.0" />
+                    </font>
+                    <cursor>
+                        <Cursor fx:constant="HAND" />
+                    </cursor>
+                </Label>
+                <Label layoutX="616.0" layoutY="19.0" onMouseClicked="#viewNextBlock" text="&gt;&gt; NEXT&gt;&gt;" styleClass="app-body-text">
+                    <font>
+                        <Font name="Arial Rounded MT Bold" size="14.0" />
+                    </font>
+                    <cursor>
+                        <Cursor fx:constant="HAND" />
+                    </cursor>
+                </Label>
+                <Label layoutX="525.0" layoutY="19.0" onMouseClicked="#viewTodayBlock" text="TODAY" styleClass="app-body-text">
+                    <font>
+                        <Font name="Arial Rounded MT Bold" size="14.0" />
+                    </font>
+                    <cursor>
+                        <Cursor fx:constant="HAND" />
+                    </cursor>
+                </Label>
+                <Label layoutX="592.0" layoutY="19.0" onMouseClicked="#viewPreviousBlock" text="|" styleClass="app-body-text">
+                    <font>
+                        <Font name="Arial Rounded MT Bold" size="14.0" />
+                    </font>
+                    <cursor>
+                        <Cursor fx:constant="HAND" />
+                    </cursor>
+                </Label>
+                <Label layoutX="503.0" layoutY="19.0" onMouseClicked="#viewPreviousBlock" text="|" styleClass="app-body-text">
+                    <font>
+                        <Font name="Arial Rounded MT Bold" size="14.0" />
+                    </font>
+                    <cursor>
+                        <Cursor fx:constant="HAND" />
+                    </cursor>
+                </Label>
+            </children>
+        </AnchorPane>
+    </children>
+</VBox>
