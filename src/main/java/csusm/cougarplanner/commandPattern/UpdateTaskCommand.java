@@ -17,4 +17,12 @@ public class UpdateTaskCommand implements Command {
     public void execute() throws Exception {
         tasksRepository.upsert(updatedTask);
     }
+
+    @Override
+    public void undo() {
+        // In-row field edits are excluded from the undo stack (see isUndoable).
+    }
+
+    @Override
+    public boolean isUndoable() { return false; }
 }

@@ -51,12 +51,24 @@
         </content>
     </ScrollPane>
 
-    <!-- Bottom: Add Task & Delete All -->
+    <!-- Bottom: Undo / Redo / Add Task / Delete All -->
     <HBox alignment="CENTER" spacing="20.0"
           styleClass="app-panel-footer"
           style="-fx-padding: 8;"
           AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
         <children>
+
+            <Button fx:id="undoButton" text="Undo"
+                    mnemonicParsing="false" onAction="#onUndoClicked"
+                    style="-fx-background-color: white; -fx-background-radius: 8;
+                           -fx-font-family: 'Arial Rounded MT Bold'; -fx-font-size: 13;
+                           -fx-padding: 5 18 5 18; -fx-cursor: hand;" />
+
+            <Button fx:id="redoButton" text="Redo"
+                    mnemonicParsing="false" onAction="#onRedoClicked"
+                    style="-fx-background-color: white; -fx-background-radius: 8;
+                           -fx-font-family: 'Arial Rounded MT Bold'; -fx-font-size: 13;
+                           -fx-padding: 5 18 5 18; -fx-cursor: hand;" />
 
             <Button fx:id="addTaskButton" text="Add Task"
                     mnemonicParsing="false" onAction="#onAddTaskClicked"

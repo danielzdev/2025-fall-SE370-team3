@@ -9,6 +9,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
@@ -23,22 +24,23 @@ import java.util.ResourceBundle;
 // Controller for TaskPanel.fxml — the Tasks tab.
 public class TaskPanelController implements Initializable
 {
-    // attributes linking to command manager and task repository
     private final CommandManager cmdManager = new CommandManager();
     private final TasksRepository tasksRepo = new TasksRepository();
 
-    @FXML private HBox filterBar;         // Manal's filter controller adds ComboBoxes here
-    @FXML private VBox taskListContainer;
+    @FXML private HBox   filterBar;
+    @FXML private VBox   taskListContainer;
+    @FXML private Button undoButton;
+    @FXML private Button redoButton;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle)
     {
         hydrateCacheFromCsv();
         refreshTaskList();
+        updateUndoRedoButtons();
     }
 
     // Loads tasks.csv into the in-memory cache so tasks persist across app restarts.
-    // Cache starts empty on each launch; without this, saved tasks would never appear.
     private void hydrateCacheFromCsv()
     {
         TaskCache cache = TaskCache.getInstance();
@@ -59,13 +61,13 @@ public class TaskPanelController implements Initializable
 
     /**
      * Clears and rebuilds the task list from the cache.
-     * Called after any add, delete, or toggle, and by Manal's filter bar on change.
+     * Called after any add, delete, toggle, undo, or redo.
      */
     public void refreshTaskList()
     {
         taskListContainer.getChildren().clear();
 
-        List<Task> tasks = TaskCache.getInstance().getAll(); // Kenny's cache
+        List<Task> tasks = TaskCache.getInstance().getAll();
 
         for (Task task : tasks)
         {
@@ -85,7 +87,6 @@ public class TaskPanelController implements Initializable
         }
     }
 
-    // Manal's filter controller calls this to get the HBox to add ComboBoxes into.
     public HBox getFilterBar()
     {
         return filterBar;
@@ -102,12 +103,9 @@ public class TaskPanelController implements Initializable
 
             dialogCtrl.setOnTaskCreated(newTask ->
             {
-                // CreateTaskCommand
-                Command cmd = new CreateTaskCommand(tasksRepo, newTask);
-                cmdManager.execute(cmd);
-
-                TaskCache.getInstance().add(newTask); // connect to Maria's AddTaskCommand
+                cmdManager.execute(new CreateTaskCommand(tasksRepo, newTask));
                 refreshTaskList();
+                updateUndoRedoButtons();
             });
 
             Stage stage = new Stage();
@@ -128,51 +126,53 @@ public class TaskPanelController implements Initializable
     @FXML
     private void onDeleteAllClicked()
     {
-        // DeleteAllTasksCommand
-        Command cmd = new DeleteAllTasksCommand(tasksRepo);
-        cmdManager.execute(cmd);
-
-        TaskCache.getInstance().removeAll(); // connect to Maria's DeleteAllTasksCommand
+        cmdManager.execute(new DeleteAllTasksCommand(tasksRepo));
         refreshTaskList();
+        updateUndoRedoButtons();
+    }
+
+    @FXML
+    private void onUndoClicked()
+    {
+        cmdManager.undo();
+        refreshTaskList();
+        updateUndoRedoButtons();
+    }
+
+    @FXML
+    private void onRedoClicked()
+    {
+        cmdManager.redo();
+        refreshTaskList();
+        updateUndoRedoButtons();
     }
 
     private void handleDelete(String taskId)
     {
-        // DeleteTaskCommand
-        Command cmd = new DeleteTaskCommand(tasksRepo, taskId);
-        cmdManager.execute(cmd);
-
-        TaskCache.getInstance().remove(taskId); // connect to Maria's DeleteTaskCommand
+        cmdManager.execute(new DeleteTaskCommand(tasksRepo, taskId));
         refreshTaskList();
+        updateUndoRedoButtons();
     }
 
     private void handleToggle(String taskId)
     {
-        Command cmd = new CompletedTaskCommand(tasksRepo, taskId);
-        cmdManager.execute(cmd);
-
-        TaskCache.getInstance().toggleCompleted(taskId);
+        cmdManager.execute(new CompletedTaskCommand(tasksRepo, taskId));
         refreshTaskList();
+        updateUndoRedoButtons();
     }
 
     // Persists in-row edits (title, description, status, priority) to CSV.
-    // Cache is already updated by the row controller; we only write through here.
+    // Cache is already updated by the row controller; this only writes through.
+    // Not added to the undo stack — see UpdateTaskCommand.isUndoable().
     // No refreshTaskList() — rebuilding the list would steal focus mid-edit.
     private void handleUpdate(Task updated)
     {
-        Command cmd = new UpdateTaskCommand(tasksRepo, updated);
-        cmdManager.execute(cmd);
+        cmdManager.execute(new UpdateTaskCommand(tasksRepo, updated));
     }
 
-    // handleStatusChange - update status
-    // handlePriorityChange - update priority
-    // handleDueDateChange - update due date
-    // handleCourseChange - update course
-    // handleEditTask - universal update task
-        // this could be for a single button similar
-        // to the delete button but just to save/update
-        // a task. EX: you just change the status and then click a
-        // button that will take the whole state of the task and
-        // save what is there
-
+    private void updateUndoRedoButtons()
+    {
+        if (undoButton != null) undoButton.setDisable(!cmdManager.canUndo());
+        if (redoButton != null) redoButton.setDisable(!cmdManager.canRedo());
+    }
 }

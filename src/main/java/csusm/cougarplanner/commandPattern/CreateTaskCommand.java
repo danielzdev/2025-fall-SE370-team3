@@ -2,6 +2,7 @@ package csusm.cougarplanner.commandPattern;
 
 import csusm.cougarplanner.io.TasksRepository;
 import csusm.cougarplanner.models.Task;
+import csusm.cougarplanner.services.TaskCache;
 
 public class CreateTaskCommand implements Command {
 
@@ -15,6 +16,13 @@ public class CreateTaskCommand implements Command {
 
     @Override
     public void execute() throws Exception {
+        TaskCache.getInstance().add(task);
         tasksRepository.upsert(task);
+    }
+
+    @Override
+    public void undo() throws Exception {
+        TaskCache.getInstance().remove(task.getTaskId());
+        tasksRepository.deleteById(task.getTaskId());
     }
 }
