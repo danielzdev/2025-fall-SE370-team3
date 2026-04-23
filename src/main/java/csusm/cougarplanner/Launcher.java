@@ -42,6 +42,10 @@ public class Launcher extends Application {
         String themeName = profileConfig != null ? profileConfig.getTheme() : ThemeManager.COUGAR;
         ThemeManager.apply(scene, themeName);
 
+        scene.getStylesheets().add(
+                Launcher.class.getResource("/csusm/cougarplanner/styles/filter-styles.css").toExternalForm()
+        );
+
         Stage newStage = new Stage();
 
         // app logo :)
