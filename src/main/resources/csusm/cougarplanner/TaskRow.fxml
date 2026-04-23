@@ -2,6 +2,7 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
@@ -24,9 +25,9 @@
             <!-- title / description -->
             <ColumnConstraints hgrow="ALWAYS" />
             <!-- due date -->
-            <ColumnConstraints prefWidth="85.0" maxWidth="85.0" />
+            <ColumnConstraints prefWidth="120.0" maxWidth="120.0" />
             <!-- course -->
-            <ColumnConstraints prefWidth="75.0" maxWidth="75.0" />
+            <ColumnConstraints prefWidth="110.0" maxWidth="110.0" />
             <!-- status -->
             <ColumnConstraints prefWidth="105.0" maxWidth="105.0" />
             <!-- priority -->
@@ -48,23 +49,22 @@
                           -fx-border-radius: 6;
                           -fx-font-family: 'Arial Rounded MT Bold'; -fx-font-size: 12;" />
 
-        <Label fx:id="dateCreatedLabel" text="No due date"
-               maxWidth="Infinity"
-               GridPane.columnIndex="1" GridPane.rowIndex="0"
-               style="-fx-background-color: white; -fx-text-fill: black;
-                      -fx-background-radius: 6; -fx-border-color: #cccccc;
-                      -fx-border-radius: 6; -fx-padding: 4 3 4 3; -fx-alignment: center;">
-            <font><Font name="Arial Rounded MT Bold" size="10.0"/></font>
-        </Label>
+        <DatePicker fx:id="dueDatePicker"
+                    promptText="No due date"
+                    maxWidth="Infinity"
+                    GridPane.columnIndex="1" GridPane.rowIndex="0"
+                    style="-fx-background-color: white;
+                           -fx-border-color: #cccccc; -fx-border-radius: 6;
+                           -fx-background-radius: 6;
+                           -fx-font-family: 'Arial Rounded MT Bold'; -fx-font-size: 10;" />
 
-        <Label fx:id="courseLabel" text="No course"
-               maxWidth="Infinity"
-               GridPane.columnIndex="2" GridPane.rowIndex="0"
-               style="-fx-background-color: white; -fx-text-fill: #555555;
-                      -fx-background-radius: 6; -fx-border-color: #cccccc;
-                      -fx-border-radius: 6; -fx-padding: 4 3 4 3; -fx-alignment: center;">
-            <font><Font name="Arial Rounded MT Bold" size="10.0"/></font>
-        </Label>
+        <ComboBox fx:id="courseComboBox"
+                  maxWidth="Infinity"
+                  GridPane.columnIndex="2" GridPane.rowIndex="0"
+                  style="-fx-background-color: white;
+                         -fx-border-color: #cccccc; -fx-border-radius: 6;
+                         -fx-background-radius: 6;
+                         -fx-font-family: 'Arial Rounded MT Bold'; -fx-font-size: 10;" />
 
         <Label text="Status"
                maxWidth="Infinity"

@@ -7,24 +7,31 @@ import csusm.cougarplanner.services.TaskCache;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 // Controller for a single task card (TaskRow.fxml).
 public class TaskRowController
 {
 
+    // Matches the format used by AddTaskDialogController when saving dueDate.
+    private static final DateTimeFormatter DUE_DATE_FMT = DateTimeFormatter.ofPattern("MM-dd-yyyy");
+    private static final String COURSE_NONE = "None";
+
     @FXML private VBox             taskRowRoot;
     @FXML private TextField        titleField;
-    @FXML private Label            dateCreatedLabel;
-    @FXML private Label            courseLabel;
+    @FXML private DatePicker       dueDatePicker;
+    @FXML private ComboBox<String> courseComboBox;
     @FXML private Button           completedButton;
     @FXML private Button           deleteButton;
     @FXML private TextArea         descriptionArea;
@@ -38,8 +45,9 @@ public class TaskRowController
     private Consumer<String> onToggle;
     private Consumer<Task> onUpdate;
     private final Map<String, String> courseIdToName = new LinkedHashMap<>();
+    private final Map<String, String> courseNameToId = new LinkedHashMap<>();
 
-    // Same border style used by both dropdowns
+    // Same border style used by the status/priority dropdowns
     private static final String COMBO_BASE =
             "-fx-border-color: #cccccc; -fx-border-radius: 6; -fx-background-radius: 6;" +
                     "-fx-font-family: 'Arial Rounded MT Bold'; -fx-font-size: 10;";
@@ -113,10 +121,13 @@ public class TaskRowController
 
     private void loadCourseNames()
     {
+        courseIdToName.clear();
+        courseNameToId.clear();
         try {
             for (Course c : new CoursesRepository().findAll())
             {
                 courseIdToName.put(c.getCourseId(), c.getCourseName());
+                courseNameToId.put(c.getCourseName(), c.getCourseId());
             }
         }
         catch (IOException e)
@@ -132,6 +143,9 @@ public class TaskRowController
 
         priorityComboBox.getItems().addAll(
                 Task.PRIORITY_HIGH, Task.PRIORITY_MEDIUM, Task.PRIORITY_LOW);
+
+        courseComboBox.getItems().add(COURSE_NONE);
+        courseComboBox.getItems().addAll(courseNameToId.keySet());
 
         statusComboBox.setOnAction(e -> {
             String selected = statusComboBox.getValue();
@@ -152,6 +166,27 @@ public class TaskRowController
                 applyPriorityStyle(selected);
             }
         });
+
+        courseComboBox.setOnAction(e ->
+        {
+            String selectedName = courseComboBox.getValue();
+            String newId = COURSE_NONE.equals(selectedName) ? null : courseNameToId.get(selectedName);
+            if (!Objects.equals(newId, task.getCourseId()))
+            {
+                task.setCourseId(newId);
+                fireUpdate();
+            }
+        });
+
+        dueDatePicker.valueProperty().addListener((obs, oldVal, newVal) ->
+        {
+            String newStr = (newVal != null) ? newVal.format(DUE_DATE_FMT) : null;
+            if (!Objects.equals(newStr, task.getDueDate()))
+            {
+                task.setDueDate(newStr);
+                fireUpdate();
+            }
+        });
     }
 
     private void populate()
@@ -159,16 +194,21 @@ public class TaskRowController
         titleField.setText(task.getTitle() != null ? task.getTitle() : "");
         descriptionArea.setText(task.getDescription() != null ? task.getDescription() : "");
 
-        // Due Date
-        dateCreatedLabel.setText(
-                task.getDueDate() != null && !task.getDueDate().isBlank()
-                        ? task.getDueDate() : "No due date");
+        // Due date — parse the stored "MM-dd-yyyy" string back into a LocalDate.
+        String dueStr = task.getDueDate();
+        LocalDate dueDate = null;
+        if (dueStr != null && !dueStr.isBlank())
+        {
+            try { dueDate = LocalDate.parse(dueStr, DUE_DATE_FMT); }
+            catch (Exception ignored) { /* leave null on malformed */ }
+        }
+        dueDatePicker.setValue(dueDate);
 
         // Course
         String courseId = task.getCourseId();
-        courseLabel.setText(
-                (courseId != null && courseIdToName.containsKey(courseId))
-                        ? courseIdToName.get(courseId) : "No course");
+        String courseName = (courseId != null && courseIdToName.containsKey(courseId))
+                ? courseIdToName.get(courseId) : COURSE_NONE;
+        courseComboBox.setValue(courseName);
 
         // Dropdowns
         statusComboBox.setValue(
