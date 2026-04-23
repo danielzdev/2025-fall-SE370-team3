@@ -1,5 +1,0 @@
-taskID,title,description,createdDate,dueDate,courseId,status,priority,completed
-f4161a08-fece-4e0b-8155-b90fdfb697b2,task 1111,,2026-04-21,,,not-started,medium,false
-3b1ecb88-0b90-4f6b-8466-5d1b097b488f,test 2,,2026-04-21,,,in-progress,medium,false
-00e43428-bb8d-425f-a108-e1a96427c3ed,test 3,,2026-04-21,,,not-started,medium,false
-414ff332-622b-450c-a828-69861fe045b1,test 6,,2026-04-21,,,not-started,medium,false
