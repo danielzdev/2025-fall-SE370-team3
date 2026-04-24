@@ -15,6 +15,16 @@ import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * Builds and owns the filter bar above the task list (course, priority,
+ * status, due-date, and sort dropdowns). On any change it rebuilds an
+ * {@link AndFilter} out of whichever dropdowns are not at their "All …"
+ * defaults and notifies the host controller via the {@code onFilterChange}
+ * callback so it can refresh the visible rows.
+ * <p>
+ * This class is not a JavaFX FXML controller — it's driven programmatically
+ * by {@link TaskPanelController}, which hands it the HBox to populate.
+ */
 public class FilterBarController {
     private HBox filterBar;
     private ComboBox<String> courseFilter;
@@ -34,6 +44,11 @@ public class FilterBarController {
         setupFilters();
     }
 
+    /**
+     * Instantiates every ComboBox, seeds it with its options (including the
+     * "All …" default), wires up its change handler, and places the whole
+     * row into the HBox provided at construction time.
+     */
     private void setupFilters() {
         // load course from CourseRepo
 
@@ -113,6 +128,15 @@ public class FilterBarController {
         return label;
     }
 
+    /**
+     * Rebuilds the composite filter from the current dropdown values and
+     * fires the change callback so the host can refresh its task list.
+     * <p>
+     * Each dropdown only contributes to the filter if it's not on its
+     * default "All …" value, so the composite shrinks to zero children
+     * when the user has cleared everything (in which case
+     * {@link #getCurrentFilter()} returns null).
+     */
     private void applyFilters() {
         AndFilter andFilter = new AndFilter();
 
@@ -143,6 +167,8 @@ public class FilterBarController {
                     andFilter.addFilter(new DueDateFilter(LocalDate.now(), "eq"));
                     break;
                 case "This Week":
+                    // getDayOfWeek().getValue() returns 1 (Mon) to 7 (Sun), so this rolls
+                    // the target date forward to the upcoming Sunday (end of the current week).
                     LocalDate endOfWeek = LocalDate.now().plusDays(7 - LocalDate.now().getDayOfWeek().getValue());
                     andFilter.addFilter(new DueDateFilter(endOfWeek, "onOrBefore"));
                     break;

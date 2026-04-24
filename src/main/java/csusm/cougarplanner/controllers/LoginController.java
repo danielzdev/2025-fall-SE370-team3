@@ -16,6 +16,14 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.util.Duration;
 
+/**
+ * Controller for the login / onboarding screen (Login.fxml).
+ * <p>
+ * Collects the user's Canvas API token, validates it against Canvas in a
+ * background thread (so the UI stays responsive), captures their preferred
+ * week start (Sunday vs. Monday), and then writes the result to
+ * {@code data/profile.properties} before handing off to the main view.
+ */
 public class LoginController implements Initializable {
 
     @FXML
@@ -41,7 +49,14 @@ public class LoginController implements Initializable {
     //if sundayCheckBox is selected, sunday status = true
     private static boolean sundayStatus = true; //you only need to know the selected status of sunday because the status of monday is implied
 
-    //will flip the selected status of both the sunday and monday check boxes
+    /**
+     * Toggles the Sunday/Monday checkboxes as a mutually-exclusive pair.
+     * Because they're logically one "first day of week" choice, checking
+     * one always unchecks the other; this method drives both from a single
+     * current value so neither can land in an inconsistent state.
+     *
+     * @param entry the previous state of {@code sundayStatus}; the new state is {@code !entry}
+     */
     private void flip (boolean entry) {
         sundayStatus = !entry;
         sundayCheckBox.setSelected(sundayStatus);

@@ -15,6 +15,19 @@ import java.util.List;
 
 import static csusm.cougarplanner.util.ColorUtil.getAssignmentColor;
 
+/**
+ * Builds one horizontal "row" of assignment bars in the weekly assignments view.
+ * <p>
+ * Each {@link csusm.cougarplanner.models.CourseManager} owns one or more of
+ * these rows; together they stack vertically inside a course column. A row
+ * is an 8-wide array of {@link BarComponentController} cells (the extra
+ * 8th slot exists to support Monday-start weeks without re-indexing —
+ * see the constructor and {@link #renderBar}).
+ * <p>
+ * {@link #configureAssignments} walks the assignments assigned to this row,
+ * lights up the correct day cells, paints them, and sets left/right bevels
+ * so continuous assignments look like a single connected bar.
+ */
 public class AssignmentBarRowManager {
     private final int DAYS_IN_WEEK = 8;
 

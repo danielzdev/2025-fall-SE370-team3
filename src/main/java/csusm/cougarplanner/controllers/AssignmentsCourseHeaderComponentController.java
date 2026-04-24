@@ -10,6 +10,12 @@ import javafx.scene.text.Font;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+/**
+ * Controller for the small course-name header that sits above each column
+ * of assignment bars (AssignmentsCourseHeaderComponent.fxml). Renders a
+ * centered course label that resizes its font to match the available
+ * header height.
+ */
 public class AssignmentsCourseHeaderComponentController implements Initializable {
 
     @FXML

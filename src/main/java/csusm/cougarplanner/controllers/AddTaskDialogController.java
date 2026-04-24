@@ -54,6 +54,12 @@ public class AddTaskDialogController implements Initializable
         this.onTaskCreated = onTaskCreated;
     }
 
+    /**
+     * Builds a {@link Task} from the current form state and hands it back to
+     * the host via {@code onTaskCreated}. Title is the only required field;
+     * everything else is optional or has a sensible default. The date picker
+     * value is converted into the project's canonical MM-dd-yyyy CSV format.
+     */
     @FXML
     private void onSaveClicked()
     {
@@ -92,6 +98,13 @@ public class AddTaskDialogController implements Initializable
         closeDialog();
     }
 
+    /**
+     * Populates the course dropdown from the courses repository, preceded
+     * by a "None" option so the user can create a task that isn't tied to a
+     * specific course. The {@code courseNameToId} map is kept in sync so
+     * {@link #onSaveClicked()} can look up the id for whichever name the
+     * user chose.
+     */
     private void loadCourses()
     {
         courseComboBox.getItems().add("None");

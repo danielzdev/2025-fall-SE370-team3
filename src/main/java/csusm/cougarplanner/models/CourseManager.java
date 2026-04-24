@@ -190,6 +190,21 @@ public class CourseManager {
      *      LinkedList objects because placementArray is going to be read from more than it is going to be
      *      written to)
      */
+    /*
+     * Packing algorithm (roughly first-fit, greedy by due date):
+     *
+     *   1. Start with row 0 and keep adding rows until every assignment has
+     *      been placed (tracked by the assignmentsEntered flags).
+     *   2. For each row, repeatedly ask findViableAssignment() for the next
+     *      unplaced assignment whose start falls after the current row's
+     *      rightmost occupied day. Prefer assignments due this week so that
+     *      the prominent "due this week" bars land in the top rows.
+     *   3. If no due-this-week assignment fits, fall back to assignments
+     *      due later. Any such match fills the remainder of the row, so we
+     *      break out and move on to the next row.
+     *   4. The inner DAYS_IN_WEEK counter is a safety cap — a row can never
+     *      hold more than DAYS_IN_WEEK assignments, so this bounds the loop.
+     */
     private void generatePlacementArray() {
         //cycle to the next row (bar) after editing each column (day)
         for (int row = 0; numberOfUnenteredAssignments() > 0; row++) {

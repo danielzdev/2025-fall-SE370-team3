@@ -20,7 +20,22 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Consumer;
 
-// Controller for a single task card (TaskRow.fxml).
+/**
+ * Controller for a single task card (TaskRow.fxml).
+ * <p>
+ * Binds the form fields inside one row to an underlying {@link Task}.
+ * In-row edits to title, description, due date, course, status, and
+ * priority are persisted through three callbacks injected by the host
+ * via {@link #init}:
+ * <ul>
+ *   <li>{@code onDelete} — invoked with a task id when the user deletes the row</li>
+ *   <li>{@code onToggle} — invoked when the user checks/unchecks "completed"</li>
+ *   <li>{@code onUpdate} — invoked after any field-level edit so the host can persist the change</li>
+ * </ul>
+ * Field edits are only committed on focus-loss (text fields) or on change
+ * (dropdowns / date picker) rather than per keystroke, to avoid spamming
+ * the CSV writer with intermediate values.
+ */
 public class TaskRowController
 {
 

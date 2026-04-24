@@ -28,7 +28,22 @@ import java.time.format.DateTimeFormatter;
 import csusm.cougarplanner.FilterPattern.AndFilter;
 
 
-// Controller for TaskPanel.fxml — the Tasks tab.
+/**
+ * Controller for TaskPanel.fxml — the Tasks tab.
+ * <p>
+ * Wires together the three subsystems that drive this tab:
+ * <ul>
+ *   <li>The {@link TaskCache} singleton, which mirrors tasks.csv in memory</li>
+ *   <li>The {@link TasksRepository}, which reads/writes the CSV file</li>
+ *   <li>The {@link CommandManager}, which routes every mutation through
+ *       the Command pattern so add/delete/toggle are undoable</li>
+ * </ul>
+ * Every user action (add, delete, toggle, undo, redo) goes through the
+ * command manager, then calls {@link #refreshTaskList()} to rebuild the
+ * visible rows and {@link #updateUndoRedoButtons()} to re-enable/disable
+ * the undo/redo buttons. The only exception is in-row field edits, which
+ * intentionally skip the undo stack and the list refresh (see {@link #handleUpdate}).
+ */
 public class TaskPanelController implements Initializable
 {
     private final CommandManager cmdManager = new CommandManager();
@@ -92,7 +107,8 @@ public class TaskPanelController implements Initializable
         taskListContainer.getChildren().clear();
 
         List<Task> allTasks = TaskCache.getInstance().getAll();// Kenny's cache
-// Apply filter if active
+        // Apply the active filter (course/status/priority/due-date combo) if the
+        // filter bar has one; otherwise fall through with the full task list.
         List<Task> tasksToDisplay;
         TaskFilter activeFilter = filterBarController.getCurrentFilter();
 

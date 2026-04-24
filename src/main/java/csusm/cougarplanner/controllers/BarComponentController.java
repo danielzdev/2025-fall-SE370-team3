@@ -16,6 +16,15 @@ import java.util.ResourceBundle;
 
 import static csusm.cougarplanner.util.ColorUtil.toCssHex;
 
+/**
+ * Controller for a single cell in the weekly assignment grid (BarComponent.fxml).
+ * <p>
+ * One of these exists for every (course × day) slot on screen. The
+ * {@link AssignmentBarRowManager} stitches neighboring cells together by
+ * toggling which corners are rounded (via {@link #setVisibleSideBlocks}),
+ * so a multi-day assignment looks like a single pill even though it's
+ * really several adjacent cells painted the same color.
+ */
 public class BarComponentController implements Initializable {
 
     @FXML

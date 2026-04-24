@@ -4,6 +4,30 @@ import java.security.InvalidParameterException;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * Pixel-width estimator for Arial-rendered text. Given a string and a font
+ * size, returns roughly how many horizontal pixels the string will occupy
+ * when drawn. Used for laying out assignment bars and truncating labels
+ * without having to query the JavaFX text layout engine (which can be slow
+ * or unavailable when building data structures off the render thread).
+ * <p>
+ * How it works:
+ * <ul>
+ *   <li>Per-character pixel widths were measured once at font size 24 and
+ *       hard-coded into the {@link #SC1}, {@link #SC2}, {@link #UPW24},
+ *       {@link #LPW24}, and {@link #digits} lookup tables. Each table
+ *       covers a contiguous ASCII range (see the inline legends).</li>
+ *   <li>To support other sizes, {@link #sizeW} stores the width of the
+ *       capital 'W' at every supported font size. Since character widths
+ *       scale uniformly with font size, any character's width at a given
+ *       size is <code>(widthAt24 / W@24) * W@size</code>.</li>
+ *   <li>A small correction term ({@link #averagePixelErrorPerCharacter})
+ *       is subtracted per character to offset systematic over-estimation
+ *       observed during measurement.</li>
+ * </ul>
+ * Only the ASCII printable range (32–126) has data; out-of-range characters
+ * fall back to a reasonable average width. Arial is assumed throughout.
+ */
 public class TextSizingUtil {
     /*private final double[] lowercaseWidthPercentage = new double[] { 0.589, 0.589, 0.53, 0.589, 0.589, 0.294, 0.589, 0.589, 0.235, 0.235, 0.53, 0.235, 0.884, 0.589, 0.589, 0.589, 0.589, 0.355, 0.53, 0.294, 0.589, 0.53, 0.765, 0.53, 0.53, 0.53};
     private final double[] uppercaseWidthPercentage = new double[] { 0.707, 0.707, 0.765, 0.765, 0.707, 0.647, 0.824, 0.765, 0.294, 0.53, 0.707, 0.589, 0.884, 0.765, 0.824, 0.707, 0.824, 0.765, 0.707, 0.647, 0.765, 0.707, 1, 0.707, 0.707, 0.647};
@@ -40,6 +64,13 @@ public class TextSizingUtil {
     private static final double averagePixelErrorPerCharacter = 0.3724461813;
 
 
+    /**
+     * Snaps an arbitrary font size to the closest supported size in
+     * {@link #availableFontSizes}. If the requested size is already supported,
+     * it is returned unchanged. Otherwise we find the nearest neighbor by
+     * simple numeric distance (ties go to the larger value). Sizes outside
+     * the table clamp to the smallest / largest supported size.
+     */
     public static double findNearestFontSize(Double initFontSize) {
         if(findFontIndex(initFontSize) != null) { return initFontSize; }
 
@@ -59,6 +90,12 @@ public class TextSizingUtil {
         return availableFontSizes[largerFontIndex];
     }
 
+    /**
+     * Returns the approximate pixel width of the first {@code length} chars
+     * of {@code text} rendered in Arial at {@code fontSize}. The font size
+     * must be one of the values in {@link #availableFontSizes} — call
+     * {@link #findNearestFontSize} first if you have an arbitrary size.
+     */
     public static int findPixelWidth(String text, Double fontSize, int length) {
         Integer fontIndex = findFontIndex(fontSize);
 
@@ -91,16 +128,24 @@ public class TextSizingUtil {
         return fontIndex;
     }
 
+    /**
+     * Looks up the pixel width of a single character at font size 24.
+     * The checks walk ASCII in order — special chars, digits, more specials,
+     * uppercase, more specials, lowercase, trailing specials — using each
+     * range's corresponding lookup table. Characters outside the printable
+     * ASCII range fall back to a conservative average width.
+     */
     private static Double findWidthAt24(char c) {
+        // Non-printable / extended ASCII — fall back to a plausible average.
         if (c < 32 || c > 126) { return 15.2; }
 
-        if (c <= 47) { return SC1[c - 32]; }
-        if (c <= 57) { return digits; }
-        if (c <= 64) { return SC2[c - 58]; }
-        if (c <= 90) { return UPW24[c - 65]; }
-        if (c <= 96) { return SC2[c - 84]; }
-        if (c <= 122) { return LPW24[c - 97]; }
-        return SC2[c - 110];
+        if (c <= 47) { return SC1[c - 32]; }   // ' ' through '/'
+        if (c <= 57) { return digits; }        // '0' through '9' (uniform width)
+        if (c <= 64) { return SC2[c - 58]; }   // ':' through '@'
+        if (c <= 90) { return UPW24[c - 65]; } // 'A' through 'Z'
+        if (c <= 96) { return SC2[c - 84]; }   // '[' through '`' (continues in SC2)
+        if (c <= 122) { return LPW24[c - 97]; }// 'a' through 'z'
+        return SC2[c - 110];                   // '{' through '~'
     }
 
     private static Double interpretFontSize(char c, Integer fontIndex, Double width) {

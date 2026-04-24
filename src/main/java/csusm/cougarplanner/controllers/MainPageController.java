@@ -39,13 +39,40 @@ import javafx.util.Duration;
 
 import org.jsoup.Jsoup;
 
+/**
+ * Controller for MainPage.fxml — the primary application window.
+ * <p>
+ * Owns the top-level layout and routes between the three main views:
+ * Assignments (weekly bar grid), Announcements, and Tasks. Also hosts the
+ * Settings panel and the custom window chrome.
+ * <p>
+ * Some non-obvious state worth knowing about:
+ * <ul>
+ *   <li>{@code currentlySelectedObject} — the single node that currently
+ *       has a "selected" highlight style applied. Kept as a field so
+ *       {@link #selectNewObject(Node)} can strip the style from the
+ *       previous selection before painting the new one.</li>
+ *   <li>{@code lastDateAssignmentsHadOpen} / {@code lastDateAnnouncementsHadOpen} —
+ *       remember which week each view was last showing so that switching
+ *       back and forth between the two panes doesn't reset the user's
+ *       place in time.</li>
+ *   <li>{@code showAnnouncements} — which of the two info panels is active
+ *       (announcements vs. assignments); affects a few branches below.</li>
+ * </ul>
+ */
 public class MainPageController implements Initializable {
 
     ProfileReader reader = new ProfileReader(Path.of("data/profile.properties"));
     Profile profile = reader.readProfile().getProfile();
 
+    // Tracks whichever node currently has the "selected" highlight so we can
+    // remove the style from it before highlighting a different node.
     private Node currentlySelectedObject = null;
 
+    /**
+     * Replaces the currently-highlighted node with the given one, clearing the
+     * previous selection's inline style so at most one node ever looks selected.
+     */
     private void selectNewObject(Node node) {
         if (currentlySelectedObject != null) {
             currentlySelectedObject.setStyle(null);
@@ -62,6 +89,11 @@ public class MainPageController implements Initializable {
     @FXML
     private SettingsPanelController settingsPlannerController;
 
+    /**
+     * Generic hover handler for Label-based "menu item" text. Shows the
+     * yellow highlight on mouse-enter and restores the default white on
+     * mouse-exit. Wired up from FXML so any Label can reuse it.
+     */
     @FXML
     private void highlightFromText(MouseEvent event) {
         if (event.getSource() instanceof Label label) {
@@ -96,6 +128,19 @@ public class MainPageController implements Initializable {
         }
     }
 
+    /**
+     * Switches the main content area to one of the top-level views
+     * ("Announcements", "Assignments", "Tasks", or the settings panel).
+     * <p>
+     * Hides every pane first and then re-shows only the one we want. For the
+     * Announcements/Assignments views we also remember the week the *other*
+     * pane was last showing (via {@code lastDate…HadOpen}) and only repopulate
+     * data when the user's time-navigation has moved outside that cached week,
+     * so bouncing between the two panes doesn't thrash the UI or re-fetch data.
+     * <p>
+     * The currently selected view name is persisted to the profile so the app
+     * reopens on whichever tab the user left it on.
+     */
     public void showView(String viewName) {
         if (viewName.equals("Announcements") || viewName.equals("Assignments") || viewName.equals("Tasks")) {
             profile.setSelectedView(viewName);

@@ -12,6 +12,12 @@ import javafx.stage.StageStyle;
 
 import java.nio.file.Path;
 
+/**
+ * JavaFX application entry point. On startup, reads the saved profile to
+ * decide whether to open the login screen or jump straight into the main
+ * weekly view, then hands off all subsequent scene swaps to
+ * {@link #loadScene(String, String, boolean)}.
+ */
 public class Launcher extends Application {
 
     private static Stage primaryStage;
@@ -35,6 +41,15 @@ public class Launcher extends Application {
         }
     }
 
+    /**
+     * Loads an FXML file into a new stage, applies the user's current theme,
+     * then closes the previous stage. Used for the login → main view handoff
+     * and any other full-scene swap.
+     *
+     * @param transparent if true, uses a chromeless transparent stage (the main
+     *                    view draws its own custom window chrome); if false,
+     *                    uses the OS-decorated window frame (login screen).
+     */
     public static void loadScene(String fxmlPath, String title, boolean transparent) throws Exception {
         FXMLLoader loader = new FXMLLoader(Launcher.class.getResource(fxmlPath));
         Scene scene = new Scene(loader.load());
@@ -53,6 +68,8 @@ public class Launcher extends Application {
                 new javafx.scene.image.Image(Launcher.class.getResourceAsStream("/csusm/cougarplanner/images/logo1.png"))
         );
 
+        // Transparent stages let us draw rounded corners / custom chrome in the main view;
+        // the login screen uses the OS-decorated frame since it doesn't draw its own chrome.
         if (transparent) {
             newStage.initStyle(StageStyle.TRANSPARENT);
             scene.setFill(Color.TRANSPARENT);

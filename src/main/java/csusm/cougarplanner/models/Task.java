@@ -3,15 +3,22 @@ package csusm.cougarplanner.models;
 import java.time.LocalDate;
 import java.util.UUID;
 
-// Represents a user-created task in the Cougar Planner Tasks tab.
+/**
+ * Represents a user-created task in the Cougar Planner Tasks tab.
+ * <p>
+ * Tasks are persisted as CSV rows via {@link csusm.cougarplanner.io.TasksRepository};
+ * the no-arg constructor exists specifically for that deserialization path.
+ * The string constants below are the canonical values written to disk — use
+ * them rather than raw literals so filters and CSVs stay in sync.
+ */
 public class Task
 {
-    // Status constants
+    // Canonical status values written to the CSV. Keep these in sync with the StatusFilter dropdown options.
     public static final String STATUS_NOT_STARTED = "not-started";
     public static final String STATUS_IN_PROGRESS = "in-progress";
     public static final String STATUS_COMPLETED   = "completed";
 
-    // Priority constants
+    // Canonical priority values written to the CSV. Keep these in sync with the PriorityFilter dropdown options.
     public static final String PRIORITY_HIGH   = "high";
     public static final String PRIORITY_MEDIUM = "medium";
     public static final String PRIORITY_LOW    = "low";

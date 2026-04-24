@@ -14,6 +14,16 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 
+/**
+ * Controller for the small hover popup that appears when the user mouses
+ * over an assignment bar (AssignmentDetailsComponent.fxml). Shows the
+ * assignment name, the course's bar color (Color Burn-blended for
+ * readability), and a 5-level difficulty meter.
+ * <p>
+ * Because this controller is sometimes instantiated before FXML injection
+ * runs (the non-default constructors are called from code, not by the
+ * FXMLLoader), all UI wiring is deferred to {@link #initialize}.
+ */
 public class AssignmentDetailsComponentController implements Initializable {
 
     private Assignment assignment;

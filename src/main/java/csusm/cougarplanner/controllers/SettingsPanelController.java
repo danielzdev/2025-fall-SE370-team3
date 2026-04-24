@@ -10,10 +10,25 @@ import javafx.scene.layout.AnchorPane;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+/**
+ * Controller for the sliding settings panel (SettingsPanel.fxml).
+ * <p>
+ * Implements a simple "radio button out of Labels" pattern for each option
+ * group (sort-by view, week/day display, week start, theme): at most one
+ * Label per group has the {@link #SELECTED} CSS class at a time, and the
+ * controller tracks that currently-active Label in an {@code active…Label}
+ * field so it can strip the style on the next selection.
+ * <p>
+ * {@link #bindMainController(MainPageController)} wires the panel to the
+ * main controller and seeds the initially-selected options from the user's
+ * current state.
+ */
 public class SettingsPanelController implements Initializable {
-    private static final String UNSELECTED = "option-unselected";
-    private static final String SELECTED = "option-selected";
-    private static final String HOVER = "option-hover";
+    // CSS classes driving the option label styling — one of these is applied
+    // to every option Label at any given time.
+    private static final String UNSELECTED = "option-unselected"; // neutral idle state
+    private static final String SELECTED = "option-selected";     // currently-active option in its group
+    private static final String HOVER = "option-hover";           // mouse-over state on a non-selected option
 
     @FXML private AnchorPane settingsPanelRoot;
 
@@ -54,6 +69,11 @@ public class SettingsPanelController implements Initializable {
         applyUnselected(themeSunsetLabel);
     }
 
+    /**
+     * Connects this panel to the main controller and seeds the initially
+     * selected option in each group to match the user's current settings
+     * (week vs. day view, Sunday vs. Monday start, current theme).
+     */
     public void bindMainController(MainPageController controller) {
         this.mainController = controller;
         selectSortLabel(sortAnnouncementsLabel);
@@ -62,6 +82,11 @@ public class SettingsPanelController implements Initializable {
         selectThemeLabel(themeLabelFor(controller.getTheme()));
     }
 
+    /**
+     * Syncs the "Sort by" highlight to whichever top-level view is currently
+     * active. Called by the main controller whenever the user switches views
+     * from outside the settings panel.
+     */
     public void markSortSelection(String viewName) {
         switch (viewName) {
             case "Announcements" -> selectSortLabel(sortAnnouncementsLabel);

@@ -2,12 +2,22 @@ package csusm.cougarplanner.util;
 
 import javafx.scene.paint.Color;
 
+/**
+ * Small grab-bag of color helpers used across the UI: hex validation,
+ * Color Burn blending (for assignment bar shading), CSS hex formatting,
+ * and a fixed palette of assignment bar colors.
+ */
 public class ColorUtil {
     /** Returns true if the input is NOT a valid 6-digit hex color string (e.g. "#FF00AA"). */
     public static boolean isInvalidHexColor(String hexColor) {
         return !hexColor.matches("#[\\dA-Fa-f]{6}");
     }
 
+    /**
+     * Applies the Color Burn blend mode to two JavaFX Colors channel-by-channel,
+     * returning the blended result. Used to darken assignment bar fills against
+     * a background tint so the bars stay legible on any theme.
+     */
     public static Color getColorBurn(Color bottomColor, Color topColor) {
         int red, green, blue;
 
@@ -45,6 +55,7 @@ public class ColorUtil {
         return value;
     }
 
+    /** Formats a JavaFX {@link Color} as a lowercase 6-digit CSS hex string (e.g. "#ff00aa"). */
     public static String toCssHex(Color c) {
         return String.format(
                 "#%02x%02x%02x",

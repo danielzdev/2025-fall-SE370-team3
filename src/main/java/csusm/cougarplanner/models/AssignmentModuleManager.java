@@ -5,14 +5,24 @@ import csusm.cougarplanner.util.DateTimeUtil;
 import java.time.LocalDate;
 import javafx.scene.paint.Color;
 
+/**
+ * Per-assignment wrapper that augments an {@link Assignment} with the
+ * display state needed by the weekly bar renderer — its bar row, its
+ * color, its duration in days, and a reference to its detail popup
+ * controller once instantiated.
+ * <p>
+ * {@link CourseManager} creates one of these for every assignment it
+ * places into the week grid and queries it for layout decisions.
+ */
 public class AssignmentModuleManager {
 
     private final Assignment assignment;
     private final AssignmentDisplay assignmentDisplay;
-    private int assignmentDuration; //number of days between the date assigned and the due date of the assignment
-    //!!! assignment duration counts one less day than the complete range of days the assignment takes up;
-    //    if the assignment goes from the 17th to the 20th, it takes up 4 total days. However, the assignment
-    //    duration value stores 3 for this example. !!!
+    // Number of days between the date assigned and the due date.
+    // NOTE: this is a "span" value, not a "count" — an assignment going from
+    // the 17th to the 20th covers 4 days but assignmentDuration stores 3.
+    // Call getAssignmentDurationWithin8DayWeek() if you need the actual day count.
+    private int assignmentDuration;
     private Integer bar = null; //the bar that the assignment belongs to, starts at 0 and increases the lower the bar is
     private Color assignmentColor = null; //this is where the color for this assignment is stored
     private boolean empty;
@@ -140,6 +150,8 @@ public class AssignmentModuleManager {
     public int getAssignmentDurationWithin8DayWeek(LocalDate date, boolean weekStart) {
         int counter = 0;
 
+        // Normalize to the Sunday-based 8-day window the renderer uses internally,
+        // regardless of whether the user has toggled the week to start on Monday.
         LocalDate weekBeginning = date;
         weekBeginning = weekBeginning.minusDays((weekStart) ? 0 : 1); //if the week starts on Monday, change it back to Sunday
         LocalDate weekEnd = weekBeginning.plusDays(7); //adding 7 days gets you back to Sunday of the next week
@@ -147,6 +159,7 @@ public class AssignmentModuleManager {
         //iterate through each day of the week, change week beginning to be the iterating variable
         for (; weekBeginning.isBefore(weekEnd.plusDays(1)); weekBeginning = weekBeginning.plusDays(1)) {
             //if the day is within the range of the assignment, add to the counter
+            // (isAfter/isBefore are strict, so we offset by one day on each side to make them inclusive)
             if (
                 weekBeginning.isAfter(getAssignmentBeginning().minusDays(1)) &&
                 weekBeginning.isBefore(DateTimeUtil.parseDate(assignment.getDueDate()).plusDays(1))
