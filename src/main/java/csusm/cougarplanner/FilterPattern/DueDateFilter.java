@@ -6,6 +6,15 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * Filters tasks by their due date relative to a target date.
+ * The comparison is controlled by the operator string passed in the
+ * constructor — see the list of accepted values below.
+ *
+ * Tasks with a missing or unparseable due date are always dropped, regardless
+ * of the operator. That way the rest of the UI never has to deal with junk
+ * dates leaking through.
+ */
 public class DueDateFilter implements TaskFilter {
     private LocalDate targetDate;
     private String operator;
@@ -22,6 +31,7 @@ public class DueDateFilter implements TaskFilter {
     public List<Task> filter(List<Task> tasks) {
         return tasks.stream()
                 .filter(task -> {
+                    // Skip tasks that don't have a due date set at all
                     if (task.getDueDate() == null || task.getDueDate().isBlank())
                         return false;
                     try{
@@ -36,6 +46,7 @@ public class DueDateFilter implements TaskFilter {
                             default: return false;
                         }
                     } catch (Exception e) {
+                        // Bad date strings get filtered out rather than crashing the view
                         return false;
                     }
 
