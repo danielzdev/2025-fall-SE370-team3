@@ -52,14 +52,18 @@ public class FilterBarController {
     private void setupFilters() {
         // load course from CourseRepo
 
-        List<String> courses = loadCourses();
         // Course filter
         courseFilter = new ComboBox<>();
         courseFilter.setItems(FXCollections.observableArrayList("All Courses"));
-        courseFilter.getItems().addAll(courses);
         courseFilter.setValue("All Courses");
         courseFilter.getStyleClass().add("filter-combobox");
         courseFilter.setOnAction(e -> applyFilters());
+        // Re-read courses.csv every time the dropdown opens. On first login the CSV is
+        // empty when this controller is constructed (TaskPanel.fxml is included into
+        // MainPage.fxml, so it initializes before MainPageController's Canvas fetch
+        // populates the file), so a one-shot load at construction misses those courses.
+        courseFilter.setOnShowing(e -> refreshCourseItems());
+        refreshCourseItems();
 
         // Priority filter
         priorityFilter = new ComboBox<>();
@@ -120,6 +124,22 @@ public class FilterBarController {
             System.err.println("Could not load courses for filter: " + e.getMessage());
         }
         return courseNames;
+    }
+
+    // Reloads the course dropdown from courses.csv while preserving the user's
+    // current selection (or falling back to "All Courses" if the prior selection
+    // is no longer present).
+    private void refreshCourseItems() {
+        String previousSelection = courseFilter.getValue();
+        courseNameToIdMap.clear();
+        List<String> courses = loadCourses();
+        courseFilter.setItems(FXCollections.observableArrayList("All Courses"));
+        courseFilter.getItems().addAll(courses);
+        if (previousSelection != null && courseFilter.getItems().contains(previousSelection)) {
+            courseFilter.setValue(previousSelection);
+        } else {
+            courseFilter.setValue("All Courses");
+        }
     }
 
     private Label createStyledLabel(String text) {
